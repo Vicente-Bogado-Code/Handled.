@@ -1,0 +1,267 @@
+from flask import Flask, jsonify, request, session
+import psycopg2
+from dotenv import load_dotenv
+import os
+import bcrypt
+
+handled_server = Flask(__name__)
+
+load_dotenv()
+handled_server.secret_key = os.environ.get("SECRET_KEY")
+
+
+def get_conn():
+    return psycopg2.connect(
+        host=os.environ.get("CONN_HOST"),
+        database=os.environ.get("CONN_DATABASE"),
+        user=os.environ.get("CONN_USER"),
+        password=os.environ.get("CONN_PASSWORD")
+    )
+def get_user_data(request):
+    user_data = request.get_json()
+    uname = user_data.get("username")
+    pw = user_data.get("password")
+    return uname, pw
+"""
+MAIN ROUTES IN THIS FILE (in order):
+@/register,
+@/login, 
+@/logout, 
+#
+@/addProject, 
+@/getMyProjects, 
+@/setCurrentProject,
+# 
+@/addMainNote, 
+@/getMainNotes, 
+@/setCurrentMainNote
+#
+@/addSecondaryNote,
+@/getSecondaryNotes
+"""
+
+@handled_server.route("/register",methods=["POST"])
+def register_user():
+    username, password = get_user_data(request)
+    hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode()
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT username FROM handled_users WHERE username = %s", (username,))
+    db_response = cursor.fetchone()
+    if db_response is None:
+        cursor.execute("INSERT INTO handled_users (username,password) VALUES (%s,%s) RETURNING id", (username,hashed_pw))
+    else: 
+        cursor.close()
+        conn.close()
+        return jsonify({"Status": "Conflict"}),409
+    user_id = cursor.fetchone()[0]
+    conn.commit()
+    cursor.close()
+    conn.close
+    session["user_id"] = user_id
+    return jsonify({"Status":"Created"}),201
+
+@handled_server.route("/login", methods=["POST"])
+def log_user():
+    username,password = get_user_data()
+    password = password.encode('utf-8')
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM handled_users WHERE username = %s RETURNING id", (username,))
+    db_response = cursor.fetchone()
+    if db_response is None:
+        cursor.close()
+        conn.close()
+        return jsonify({"Status": "User doesn't exists"}),401
+    user_id = db_response[0]
+    user_hds_pw = db_response[2].encode('utf-8')
+    coincidence = bcrypt.checkpw(password,user_hds_pw)
+    cursor.close()
+    conn.close()
+    if coincidence == True:
+        session["user_id"] = user_id
+        return jsonify ({"Status": "Valid credentials"}),200
+    else: return jsonify({"Status": "Invalid credentials"}),401
+
+@handled_server.route("/logout", methods=["POST"])
+def execute_logout():
+    session.clear()
+    return jsonify({"Status": "Logged out"}),200
+
+@handled_server.route("/addProject", methods=["POST"])
+def add_project():
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"Status": "Not logged"}),401
+    data = request.get_json()
+    project_name = data.get("project_name")
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT project_name FROM users_projects WHERE project_name = %s", (project_name,))
+    db_response = cursor.fetchall()
+    if db_response == []:
+        cursor.execute("INSERT INTO users_projects (project_name, user_id) VALUES (%s,%s)", (project_name, user_id))
+        conn.commit()
+    else: 
+        cursor.close()
+        conn.close()
+        return jsonify({"Status": "Project already exists"}),409
+    cursor.close()
+    conn.close()
+    return jsonify({"Status":"Project created"}),200
+
+@handled_server.route("/getMyProjects",methods=["POST"])
+def get_projects():
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"Status": "Not logged"}),401
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT project_name FROM users_projects WHERE user_id = %s",(user_id,))
+    db_response = cursor.fetchall()
+    if db_response is None:
+        return jsonify({"Status":"No projects found"}),404
+    project_names = [name[0] for name in db_response]
+    cursor.close()
+    conn.close()
+    return jsonify({"project_names": project_names,"Status": "Projects retrieved"}),200
+
+@handled_server.route("/setCurrentProject", methods=["POST"])
+def set_current_project():
+    current_user_id = session.get("user_id")
+    if not current_user_id:
+        return jsonify({"Status": "Not logged"}),401
+    data = request.get_json()
+    current_main_pjt = data["current_project_name"]
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT project_id, user_id FROM users_projects WHERE project_name = %s", (current_main_pjt,))
+    db_response = cursor.fetchone()
+    if db_response is None:
+        return jsonify({"Status": "Project doesn't exist"}),404
+    belongs_to_user_id = db_response[1]
+    if belongs_to_user_id == current_user_id:
+        current_pjt_id = db_response[0]
+        session["current_project_id"] = current_pjt_id
+    else:
+        cursor.close()
+        conn.close()
+        return jsonify({"Status": "Forbidden"}), 403
+    cursor.close()
+    conn.close()
+    return jsonify({"Status": "Current project set as token"}),200
+
+
+@handled_server.route("/addMainNote", methods=["POST"])
+def add_main_note():
+    current_user_id = session.get("user_id")
+    if not current_user_id:
+        return jsonify({"Status": "Not logged"}),401
+    current_project_id = session.get("current_project_id")
+    if not current_project_id:
+        return jsonify({"Status": "No project selected"}),400
+    data = request.get_json()
+    main_note_name = data.get("main_note_name")
+    main_note_content = data.get("main_note_content")
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO main_notes (Mnote_name, Mnote_content, FKproject_id) VALUES (%s, %s,%s)", (main_note_name,main_note_content, current_project_id))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({"Status": "Main note created"}),200
+
+@handled_server.route("/getMainNotes", methods=["POST"])
+def get_main_notes():
+    current_user_id = session.get("user_id")
+    if not current_user_id:
+        return jsonify({"Status": "Not logged"}),401
+    current_project_id = session.get("current_project_id")
+    if not current_project_id:
+        return jsonify({"Status": "No project selected"}),400
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT Mnote_name FROM main_notes WHERE FKproject_id = %s", (current_project_id,))
+    db_response = cursor.fetchall()
+    if db_response == []:
+        cursor.close()
+        conn.close()
+        return jsonify({"Status":"No main notes found"}),404
+    main_notes_on_current_id = [note[0] for note in db_response]
+    cursor.close()
+    conn.close()
+    return jsonify({"Main notes on current id": main_notes_on_current_id, "Status": "Main notes retrieved"}),200
+
+@handled_server.route("/setCurrentMainNote", methods=["POST"])
+def set_current_main_note():
+    current_user_id = session.get("user_id")
+    if not current_user_id:
+        return jsonify({"Status": "Not logged"}),401
+    current_project_id = session.get("current_project_id")
+    if not current_project_id:
+        return jsonify({"Status": "No project selected"}),400 
+    data = request.get_json()
+    main_note_name = data.get("main_note_name")
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT Mnote_id,FKproject_id FROM main_notes WHERE Mnote_name = %s", (main_note_name,))
+    db_response = cursor.fetchone()
+    if db_response is None:
+        cursor.close()
+        conn.close()
+        return jsonify({"Status": "Main note doesn't exist"}),404
+    if current_project_id == db_response[1]:
+        current_main_note_id = db_response[0]
+        session["current_main_note_id"] = current_main_note_id
+    else:
+        cursor.close()
+        conn.close()
+        return jsonify({"Status": "Forbidden"}), 403
+    cursor.close()
+    conn.close()
+    return jsonify({"Status":"Current main note set as cookie"}),200
+        
+@handled_server.route("/addSecondaryNote", methods=["POST"])
+def add_secondary_note():
+    current_user_id = session.get("user_id")
+    if not current_user_id:return jsonify({"Status": "Not logged"}),401
+    current_project_id = session.get("current_project_id")
+    if not current_project_id:return jsonify({"Status": "No project selected"}),400 
+    current_main_note_id = session.get("current_main_note_id")
+    if not current_main_note_id:return jsonify({"Status": "No main note selected"}),400 
+    data = request.get_json()
+    secondary_note_name = data.get("secondary_note_name")
+    secondary_note_content = data.get("secondary_note_content")
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO secondary_notes(Snote_name,Snote_content,FKMnote_id) VALUES (%s,%s,%s)", (secondary_note_name,secondary_note_content,current_main_note_id))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({"Status": "Secondary note created"}),200
+
+@handled_server.route("/getSecondaryNotes",methods=["POST"])
+def get_secondary_notes():
+    current_user_id = session.get("user_id")
+    if not current_user_id:return jsonify({"Status": "Not logged"}),401
+    current_project_id = session.get("current_project_id")
+    if not current_project_id:return jsonify({"Status": "No project selected"}),400 
+    current_main_note_id = session.get("current_main_note_id")
+    if not current_main_note_id:return jsonify({"Status": "No main note selected"}),400 
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT Snote_name FROM secondary_notes WHERE FKMnote_id = %s", (current_main_note_id,))
+    db_response = cursor.fetchall()
+    if db_response == []:
+        cursor.close()
+        conn.close()
+        return jsonify({"Status":"No main notes found"}),404
+    secondary_notes_on_this_id = [note[0] for note in db_response]
+    cursor.close()
+    conn.close()
+    return jsonify({"Secondary notes on main note current id": secondary_notes_on_this_id, "Status": "Main notes retrieved"}),200
+
+
+
+if __name__ == "__main__": handled_server.run(debug=True)
+
