@@ -1,0 +1,58 @@
+body {
+    background-color: var(--bg-primary);
+    margin: 0;
+}
+
+.mainRegisterDiv {
+    display: flex;
+    min-height: calc(100vh - 65px);
+}
+
+.registerContextDiv {
+    flex: 6;
+    display: flex;
+    align-items: center;
+    padding: 0 6%;
+}
+
+.text {
+    max-width: 620px;
+}
+
+.builtBcs {
+    color: var(--text-primary);
+    font-size: 2.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0 0 16px 0;
+}
+.littleDescription {
+    color: var(--accent);
+    font-size: 1.15rem;
+    font-weight: 500;
+    margin: 0 0 20px 0;
+}
+.bigDescription {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.changeStateBtn{
+    background: none;
+    border: none;
+    border: 1px solid var(--accent);
+    border-radius: 15px;
+    padding: 10px 0;
+    width: 100%;
+    height: 90%;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.15s ease;
+    cursor: pointer;
+}
+.changeStateBtn:hover{
+    color: var(--text-primary);
+}
