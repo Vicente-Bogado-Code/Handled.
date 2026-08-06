@@ -1,27 +1,56 @@
-export default function LoginPage({onSwitchMode}){
+import { loginUser } from "./api/auth";
+import { useState } from "react";
+
+export default function LoginPage({onSwitchMode ,onLoginSuccess}){
+    const [username,setUsername] = useState("")
+    const [password,setPassword] = useState("")
+    const [error,setError] = useState("")
+
+    async function handleLogin() {
+        if (username == "" || password == "") {return}
+        const response = await loginUser(username,password)
+        console.log(response)
+        if (response.Status === "Valid credentials"){
+            onLoginSuccess(response)
+        }
+        else{
+            setError(`»${response.Status}`);
+        }
+    }
+
     return (
     <div className="loginDataDiv">
-        <h2 className='strKpngTrack'>Already <span id='track'>handling</span> it?</h2>
+        <h2 className='strKpngTrack'>What are you <span id='track'>working</span> on?</h2>
         <p className='wclmBack'>Welcome back!</p>
-        <form className="loginForm">
+        <div className="loginForm">
             <div className="loginDiv">
                 <label htmlFor="loginUsername" className='inputsLabels'>Username</label>
-                <input type="text" id="loginUsername" className='inputs'/>
+                <input 
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                type="text" id="loginUsername" className='inputs'/>
 
                 <label htmlFor="loginPassword" className='inputsLabels'>Password</label>
-                <input type="password" id="loginPassword" className='inputs'/>
+                <input 
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type="password" id="loginPassword" className='inputs'/>
 
-               <button type="submit" id="loginSubmitBtn">Log in</button>
+               <button onClick={handleLogin} id="loginSubmitBtn">Log in</button>
                <button type="button" className="btn" onClick={onSwitchMode}>
                   Need an account? Register
                 </button>
             </div>
-       </form>
+       </div>
        <p id='handleDataDesc'>
-        No email required to log in — just your username and password.
-        Handled doesn't track you, sell your data, or lock features behind
-        a paywall. It's just a tool built to help you keep track of your own work.
+        Both inputs are CASE SENSITIVE, double check if your username and password are correct. <br />
+        Handled is open source! You can check it out here: <a href="https://github.com/Vicente-Bogado-Code/Handled."> Source code</a>.
        </p>
+       <div className='errorDiv'>
+         <p> 
+          {error}
+         </p>
+       </div>
     </div>
     );
 }

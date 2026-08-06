@@ -5,7 +5,8 @@ import RegisterPage from './registerPage';
 import LoginPage from './loginPage';
 import { use, useState } from 'react';
 
-export default function AuthMainPortal() {
+
+export default function AuthMainPortal({ onLoginSuccess }) {
     const [mode, setMode] = useState('Register')
     function toggleMode(){
         setMode(prev => prev === 'Register' ? 'Login' : "Register")
@@ -28,8 +29,9 @@ export default function AuthMainPortal() {
         </div>
     </div>
     {mode === 'Login' ?
-     <LoginPage onSwitchMode={toggleMode}/> :
-     <RegisterPage onSwitchMode={toggleMode}/>}
+     <LoginPage onSwitchMode={toggleMode} onLoginSuccess={onLoginSuccess}/> 
+     :
+     <RegisterPage onSwitchMode={toggleMode} onLoginSuccess={onLoginSuccess}/>}
   </main>
   );
 }

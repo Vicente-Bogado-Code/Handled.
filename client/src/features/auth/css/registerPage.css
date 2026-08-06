@@ -5,6 +5,7 @@
     border-left: 1px solid var(--border);
     display: flex;
     flex-direction: column;
+    min-height: calc(100vh - 65px);
     align-items: center;
 }
 .strKpngTrack{
@@ -21,19 +22,17 @@
 
 .registerForm{
     width: 100%;
-    height: 30%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
+
 .registerDiv{
-    height: 70%;
     width: 80%;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-
 }
 .inputs{
     width: 40%;
@@ -88,4 +87,12 @@
     color: var(--text-secondary);
     border-top: solid 1px var(--accent);
     padding: 10px 0 0 0;
+}
+
+.errorDiv{
+    width: 100%;
+    margin-top: 10px;
+    text-align: center;
+    color: rgb(255, 99, 99);
+    font-size: 20px;
 }

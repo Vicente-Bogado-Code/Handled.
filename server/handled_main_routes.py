@@ -1,19 +1,19 @@
 from flask import Flask, jsonify, request, session
+from flask_cors import CORS
 import psycopg2
-from dotenv import load_dotenv
 import os
+from dotenv import load_dotenv
+load_dotenv()
 import bcrypt
 
 handled_server = Flask(__name__)
-
-load_dotenv()
+CORS(handled_server,supports_credentials=True,origins=["http://localhost:5173"])
 handled_server.secret_key = os.environ.get("SECRET_KEY")
-
 
 def get_conn():
     return psycopg2.connect(
         host=os.environ.get("CONN_HOST"),
-        database=os.environ.get("CONN_DATABASE"),
+        database=os.environ.get("CONN_DB"),
         user=os.environ.get("CONN_USER"),
         password=os.environ.get("CONN_PASSWORD")
     )
@@ -21,7 +21,9 @@ def get_user_data(request):
     user_data = request.get_json()
     uname = user_data.get("username")
     pw = user_data.get("password")
-    return uname, pw
+    email = user_data.get("email")
+    
+    return uname, pw, email
 """
 MAIN ROUTES IN THIS FILE (in order):
 @/register,
@@ -42,14 +44,14 @@ MAIN ROUTES IN THIS FILE (in order):
 
 @handled_server.route("/register",methods=["POST"])
 def register_user():
-    username, password = get_user_data(request)
-    hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode()
+    username, password, email = get_user_data(request)
+    hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     conn = get_conn()
     cursor = conn.cursor()
     cursor.execute("SELECT username FROM handled_users WHERE username = %s", (username,))
     db_response = cursor.fetchone()
     if db_response is None:
-        cursor.execute("INSERT INTO handled_users (username,password) VALUES (%s,%s) RETURNING id", (username,hashed_pw))
+        cursor.execute("INSERT INTO handled_users (username,hsd_password,email) VALUES (%s,%s,%s) RETURNING id", (username,hashed_pw,email))
     else: 
         cursor.close()
         conn.close()
@@ -59,15 +61,15 @@ def register_user():
     cursor.close()
     conn.close
     session["user_id"] = user_id
-    return jsonify({"Status":"Created"}),201
+    return jsonify({"Status":"Created","username":username}),201
 
 @handled_server.route("/login", methods=["POST"])
 def log_user():
-    username,password = get_user_data()
+    username,password,email = get_user_data(request)
     password = password.encode('utf-8')
     conn = get_conn()
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM handled_users WHERE username = %s RETURNING id", (username,))
+    cursor.execute("SELECT * FROM handled_users WHERE username = %s", (username,))
     db_response = cursor.fetchone()
     if db_response is None:
         cursor.close()
@@ -75,12 +77,12 @@ def log_user():
         return jsonify({"Status": "User doesn't exists"}),401
     user_id = db_response[0]
     user_hds_pw = db_response[2].encode('utf-8')
-    coincidence = bcrypt.checkpw(password,user_hds_pw)
     cursor.close()
     conn.close()
-    if coincidence == True:
+    coincidence = bcrypt.checkpw(password,user_hds_pw)
+    if coincidence:
         session["user_id"] = user_id
-        return jsonify ({"Status": "Valid credentials"}),200
+        return jsonify ({"Status": "Valid credentials", "username":username}),200
     else: return jsonify({"Status": "Invalid credentials"}),401
 
 @handled_server.route("/logout", methods=["POST"])
@@ -250,7 +252,6 @@ def get_secondary_notes():
     if not current_main_note_id:return jsonify({"Status": "No main note selected"}),400 
     conn = get_conn()
     cursor = conn.cursor()
-    cursor.execute("SELECT Snote_name FROM secondary_notes WHERE FKMnote_id = %s", (current_main_note_id,))
     db_response = cursor.fetchall()
     if db_response == []:
         cursor.close()
