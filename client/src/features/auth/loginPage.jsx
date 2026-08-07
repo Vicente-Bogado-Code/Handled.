@@ -1,4 +1,4 @@
-import { loginUser } from "./api/auth";
+import { loginUser } from "../api/auth";
 import { useState } from "react";
 
 export default function LoginPage({onSwitchMode ,onLoginSuccess}){
@@ -11,7 +11,7 @@ export default function LoginPage({onSwitchMode ,onLoginSuccess}){
         const response = await loginUser(username,password)
         console.log(response)
         if (response.Status === "Valid credentials"){
-            onLoginSuccess(response)
+            onLoginSuccess(response.username)
         }
         else{
             setError(`»${response.Status}`);
@@ -43,7 +43,7 @@ export default function LoginPage({onSwitchMode ,onLoginSuccess}){
             </div>
        </div>
        <p id='handleDataDesc'>
-        Both inputs are CASE SENSITIVE, double check if your username and password are correct. <br />
+        Both inputs are CASE SENSITIVE, double check if your username and password are correct. <br /> <br />
         Handled is open source! You can check it out here: <a href="https://github.com/Vicente-Bogado-Code/Handled."> Source code</a>.
        </p>
        <div className='errorDiv'>

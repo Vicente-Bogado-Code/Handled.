@@ -8,7 +8,7 @@ export default function App(){
     return(
         <>
         <Header/>
-        {user ? <HomePage/> : <AuthMainPortal onLoginSuccess={setUser}/>}
+        {user ? <HomePage username={user}/> : <AuthMainPortal onLoginSuccess={setUser}/>}
     </>
     );
 }

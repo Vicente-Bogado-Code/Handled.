@@ -1,5 +1,5 @@
 export async function registerUser(username, password, email) {
-    const request = await fetch(("http://127.0.0.1:5000/register"), {
+    const request = await fetch(("http://localhost:5000/register"), {
         method:"POST",
         credentials:"include",
         headers:{
@@ -15,7 +15,7 @@ export async function registerUser(username, password, email) {
     return response
 }
 export async function loginUser(username, password) {
-    const request = await fetch("http://127.0.0.1:5000/login",{
+    const request = await fetch("http://localhost:5000/login",{
     method:"POST",
     credentials:"include",
     headers:{

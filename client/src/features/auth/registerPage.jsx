@@ -1,4 +1,4 @@
-import { registerUser } from './api/auth';
+import { registerUser } from '../api/auth';
 import { useState } from 'react';
 
 export default function RegisterPage({onSwitchMode, onLoginSuccess}){
@@ -24,7 +24,7 @@ export default function RegisterPage({onSwitchMode, onLoginSuccess}){
      }
      const response = await registerUser(username,password,email)
      if (response.Status === "Created"){
-          onLoginSuccess(response)
+          onLoginSuccess(response.username)
      }
      }
 
@@ -46,7 +46,7 @@ export default function RegisterPage({onSwitchMode, onLoginSuccess}){
                  onChange={(e) => setPassword(e.target.value)}
                  type="password" id="registerPassword" className='inputs'/>
 
-                 <label htmlFor="registerEmail" className='inputsLabels'>Type your email (optional)</label>
+                 <label htmlFor="registerEmail" className='inputsLabels'>Email (optional)</label>
                  <input 
                  value={email}
                  onChange={(e) => setEmail(e.target.value)}
@@ -62,7 +62,8 @@ export default function RegisterPage({onSwitchMode, onLoginSuccess}){
        <p id='handleDataDesc'>
             Both inputs are CASE SENSITIVE. <br />
             Just a username. That's it.
-            Handled only needs a username to give you your own space for your projects — no email required to sign up. Adding one is optional, mostly useful if you ever lose your password, but that's entirely up to you.
+            Handled only needs a username to give you your own space for your projects — no email required to sign up. Adding one is optional, mostly useful if you ever lose your password, but that's entirely up to you. <br /> <br />
+            Handled is open source! You can check it out here: <a href="https://github.com/Vicente-Bogado-Code/Handled."> Source code</a>.
        </p>
        <div className='errorDiv'>
          <p> 

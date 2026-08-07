@@ -96,13 +96,20 @@ def add_project():
     if not user_id:
         return jsonify({"Status": "Not logged"}),401
     data = request.get_json()
-    project_name = data.get("project_name")
+    project_name = data.get("name")
+    project_desc = data.get("desc")
+    project_status = data.get("status")
+    project_ghrepo = data.get("gh_repo")
+    project_atDate = data.get("atDate")
     conn = get_conn()
     cursor = conn.cursor()
     cursor.execute("SELECT project_name FROM users_projects WHERE project_name = %s", (project_name,))
     db_response = cursor.fetchall()
     if db_response == []:
-        cursor.execute("INSERT INTO users_projects (project_name, user_id) VALUES (%s,%s)", (project_name, user_id))
+        cursor.execute(
+        "INSERT INTO users_projects (project_name, user_id,description,gh_repo,status,atDate) VALUES (%s,%s,%s,%s,%s,%s) RETURNING project_id, project_name, description, gh_repo, status,atDate", 
+       (project_name, user_id,project_desc,project_ghrepo,project_status,project_atDate))
+        row = cursor.fetchone()
         conn.commit()
     else: 
         cursor.close()
@@ -110,7 +117,15 @@ def add_project():
         return jsonify({"Status": "Project already exists"}),409
     cursor.close()
     conn.close()
-    return jsonify({"Status":"Project created"}),200
+    return jsonify({"Status":"Project created",
+    "projects": {
+        "project_id": row[0],
+        "name": row[1],
+        "description": row[2],
+        "repoLink": row[3],
+        "status": row[4],
+        "atDate": row[5]
+    }}),200
 
 @handled_server.route("/getMyProjects",methods=["POST"])
 def get_projects():
@@ -119,14 +134,21 @@ def get_projects():
         return jsonify({"Status": "Not logged"}),401
     conn = get_conn()
     cursor = conn.cursor()
-    cursor.execute("SELECT project_name FROM users_projects WHERE user_id = %s",(user_id,))
+    cursor.execute("SELECT project_id,project_name,description,gh_repo,status,atDate FROM users_projects WHERE user_id = %s",(user_id,))
     db_response = cursor.fetchall()
-    if db_response is None:
-        return jsonify({"Status":"No projects found"}),404
-    project_names = [name[0] for name in db_response]
+    projects = []
+    for row in db_response:
+        projects.append({
+            "project_id":row[0],
+            "name":row[1],
+            "description":row[2],
+            "repoLink":row[3],
+            "status":row[4],
+            "atDate":row[5]
+        })
     cursor.close()
     conn.close()
-    return jsonify({"project_names": project_names,"Status": "Projects retrieved"}),200
+    return jsonify({"projects": projects,"Status": "Projects retrieved"}),200
 
 @handled_server.route("/setCurrentProject", methods=["POST"])
 def set_current_project():

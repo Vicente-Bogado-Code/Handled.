@@ -25,6 +25,7 @@
 }
 
 .avatarCircle {
+    font-family: sans-serif;
     width: 48px;
     height: 48px;
     border-radius: 50%;
@@ -110,27 +111,26 @@
 
 #createProjectBtn {
     cursor: pointer;
-    padding: 5px 20px;
+    padding: 8px 40px;
     border-radius: 15px;
-    background-color: var(--bg-secondary);
-    border: 1px solid var(--text-primary);
-    color: var(--text-primary);
+    background-color: var(--text-primary);;
+    border: none;
     transition: background-color 0.15s ease;
 }
 
 #createProjectBtn:hover {
-    color: black;
-    background-color: var(--text-primary);
+    transition: transform 0.15 ease;
+    transform: scale(1.02);
 }
 
 .showMyProjects {
-    flex: 1;
-    padding: 24px 32px;
+    padding: 16px 32px;
+    max-height: 310px;
     overflow-y: auto;
 }
 
 .projectsGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 16px;
+    gap: 45px;
 }

@@ -37,7 +37,7 @@
 .inputs{
     width: 40%;
     margin-bottom: 10px;
-    padding: 3px 10px;
+    padding: 5px 10px;
     border-radius: 4px;
     border: none;
 }
@@ -68,27 +68,33 @@
     background-color: var(--text-primary);
 }
 .btn {
+    font-weight: 600;
     background: none;
     border: none;
-    color: var(--text-secondary);
+    color: var(--accent);
     text-decoration: none;
     font-size: 0.95rem;
     transition: color 0.15s ease;
     cursor: pointer;
-    margin: 5px 0 0 0;
+    margin: 15px 20px 0 0;
 }
 .btn:hover {
     color: var(--text-primary);
 }
 #handleDataDesc{
-    margin: 0;
     width: 80%;
     letter-spacing: 1px;
     color: var(--text-secondary);
-    border-top: solid 1px var(--accent);
+    border-top: solid 1px var(--border);
     padding: 10px 0 0 0;
 }
-
+#handleDataDesc a{
+    color: blue;
+    text-decoration: none;
+}
+#handleDataDesc a:hover{
+    text-decoration: underline;
+}
 .errorDiv{
     width: 100%;
     margin-top: 10px;

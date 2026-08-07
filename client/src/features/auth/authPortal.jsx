@@ -7,7 +7,7 @@ import { use, useState } from 'react';
 
 
 export default function AuthMainPortal({ onLoginSuccess }) {
-    const [mode, setMode] = useState('Register')
+    const [mode, setMode] = useState('Login')
     function toggleMode(){
         setMode(prev => prev === 'Register' ? 'Login' : "Register")
     }
