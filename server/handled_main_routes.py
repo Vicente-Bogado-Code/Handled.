@@ -150,6 +150,36 @@ def get_projects():
     conn.close()
     return jsonify({"projects": projects,"Status": "Projects retrieved"}),200
 
+@handled_server.route("/changeStatus", methods=["POST"])
+def change_status():
+    current_user_id = session.get("user_id")
+    if not current_user_id:
+        return jsonify({"Status": "Not logged"}),401
+    data = request.get_json()
+    project_id = data.get("projectId")
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("SELECT status,user_id FROM users_projects WHERE project_id = %s", (project_id,))
+    db_response = cursor.fetchone()
+    if db_response is None:
+        cursor.close()
+        conn.close()
+        return jsonify({"Status": "Project not found"}), 404
+    project_current_status = db_response[0]
+    project_user_id = db_response[1]
+    change_status = "active" if project_current_status == "done" else "done"
+    if current_user_id == project_user_id:
+        cursor.execute("UPDATE users_projects SET status = %s WHERE project_id = %s", (change_status, project_id))
+        conn.commit()
+        cursor.close()
+        conn.close()
+        return jsonify({"Status": "Status changed", "new_status": change_status}),200
+    else:
+        cursor.close()
+        conn.close()
+        return jsonify({"Status": "Project doesn't belong to you"}),401
+
+
 @handled_server.route("/setCurrentProject", methods=["POST"])
 def set_current_project():
     current_user_id = session.get("user_id")
@@ -286,5 +316,7 @@ def get_secondary_notes():
 
 
 
+print("Listening on routes: ")
+print(handled_server.url_map)
 if __name__ == "__main__": handled_server.run(debug=True)
 

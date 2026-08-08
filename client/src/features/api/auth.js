@@ -29,3 +29,9 @@ export async function loginUser(username, password) {
     const response = await request.json()
     return response
 }
+export async function logout() {
+    const request = await fetch("http://localhost:5000/logout",{
+        method:"POST",
+        credentials:"include",
+    })
+}

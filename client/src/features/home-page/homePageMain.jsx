@@ -4,8 +4,10 @@ import { useState,useEffect } from 'react';
 import { createProject } from '../api/createProject';
 import { getMyProjects } from '../api/getMyProjects';
 import { getDate } from '../otherJSfunctions/getExactTime';
+import { changeStatus } from '../api/changeStatus';
 
-export default function HomePage({ username }) {
+
+export default function HomePage({ username, onLogout}) {
     const [projectName, setProjectName] = useState("")
     const [description, setDescription] = useState("")
     const [gh_repo, setGh_repo] = useState("")
@@ -43,6 +45,22 @@ export default function HomePage({ username }) {
         }
     }
 
+    async function handleStatus(project_id){
+        const response = await changeStatus(project_id)
+        if (response.Status === "Status changed"){
+            setMyProjects(prev =>
+                prev.map(project =>
+                    project.project_id === project_id
+                    ? {...project, status: response.new_status}
+                    : project
+                )
+            )
+        }
+    }
+
+    const activeProjects = myProjects.filter(project => project.status === "active");
+    const markedAsDone = myProjects.filter(project => project.status === "done")
+
     return (
         <div className="homePageWrapper">
             <aside className="sidebar">
@@ -51,9 +69,9 @@ export default function HomePage({ username }) {
                     <p className="username"> {username}</p>
                 </div>
                 <nav className="sidebarNav">
-                    <a href="#">My projects</a>
-                    <a href="#">Settings</a>
-                    <a href="#">Logout</a>
+                    <button>My projects</button>
+                    <button>Settings</button>
+                    <button onClick={onLogout}>Logout</button>
                 </nav>
             </aside>
 
@@ -92,13 +110,14 @@ export default function HomePage({ username }) {
                 <div className='showMyProjects'>
                     <h2 className="sectionTitle">Your <span className="activeSpan">active</span> projects</h2>
                     <div className="projectsGrid">
-                        {myProjects.map(p => (<ProjectCard key={p.project_id} {...p} />)
+                        {activeProjects.map(p => (<ProjectCard key={p.project_id} {...p} id={p.project_id} onClickHandle={handleStatus}/>)
                     )}
                     </div>
                 </div>
                 <div className='showMyProjects'>
                     <h2 className="sectionTitle">Marked as <span className='doneSpan'>done</span></h2>
                     <div className="projectsGrid">
+                        {markedAsDone.map(p => (<ProjectCard key={p.project_id} {...p} id={p.project_id} onClickHandle={handleStatus}/>))}
                     </div>
                 </div>
             </main>
