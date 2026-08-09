@@ -1,11 +1,14 @@
 import Header from "./features/header/header";
 import HomePage from "./features/home-page/homePageMain";
-import AuthMainPortal from "./features/auth/authPortal"
+import AuthMainPortal from "./features/auth/authPortal";
+import CurrentProjectComp from "./features/onProject/onProject";
 import { useState } from "react";
 import { logout } from "./features/api/auth";
 
 export default function App(){
     const [user,setUser] = useState(null)
+    const [currentId, setCurrentId] = useState("")
+    console.log(currentId)
     function handleLogout(){
         logout()
         setUser(null)
@@ -13,7 +16,8 @@ export default function App(){
     return(
         <>
         <Header/>
-        {user ? <HomePage username={user} onLogout={handleLogout}/> : <AuthMainPortal onLoginSuccess={setUser}/>}
+        {user ? (currentId ? <CurrentProjectComp project_id={currentId}/> : <HomePage username={user} onLogout={handleLogout} handleProjectClick={setCurrentId}/>)
+        : <AuthMainPortal onLoginSuccess={setUser}/>}
     </>
     );
 }

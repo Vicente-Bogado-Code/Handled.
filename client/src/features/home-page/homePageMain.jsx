@@ -7,7 +7,7 @@ import { getDate } from '../otherJSfunctions/getExactTime';
 import { changeStatus } from '../api/changeStatus';
 
 
-export default function HomePage({ username, onLogout}) {
+export default function HomePage({ username, onLogout, handleProjectClick}) {
     const [projectName, setProjectName] = useState("")
     const [description, setDescription] = useState("")
     const [gh_repo, setGh_repo] = useState("")
@@ -110,14 +110,15 @@ export default function HomePage({ username, onLogout}) {
                 <div className='showMyProjects'>
                     <h2 className="sectionTitle">Your <span className="activeSpan">active</span> projects</h2>
                     <div className="projectsGrid">
-                        {activeProjects.map(p => (<ProjectCard key={p.project_id} {...p} id={p.project_id} onClickHandle={handleStatus}/>)
+                        {activeProjects.map(p => (<ProjectCard key={p.project_id} {...p} id={p.project_id} onClickHandle={handleStatus} onClickProject={handleProjectClick}/>)
                     )}
                     </div>
                 </div>
                 <div className='showMyProjects'>
                     <h2 className="sectionTitle">Marked as <span className='doneSpan'>done</span></h2>
                     <div className="projectsGrid">
-                        {markedAsDone.map(p => (<ProjectCard key={p.project_id} {...p} id={p.project_id} onClickHandle={handleStatus}/>))}
+                        {markedAsDone.map(p => (<ProjectCard key={p.project_id} {...p} id={p.project_id} onClickHandle={handleStatus} onClick={() => handleProjectClick(p.project_id)}/>)
+                    )}
                     </div>
                 </div>
             </main>

@@ -53,6 +53,7 @@
 }
 
 .projectCardDesc {
+    min-height: 32px;
     color: black;
     font-size: 0.9rem;
     margin: 0;

@@ -44,7 +44,9 @@ MAIN ROUTES IN THIS FILE (in order):
 
 @handled_server.route("/register",methods=["POST"])
 def register_user():
-    username, password, email = get_user_data(request)
+    username, password, get_email = get_user_data(request)
+    print(get_email)
+    email = "not given" if get_email == "" else get_email
     hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
     conn = get_conn()
     cursor = conn.cursor()
@@ -99,7 +101,8 @@ def add_project():
     project_name = data.get("name")
     project_desc = data.get("desc")
     project_status = data.get("status")
-    project_ghrepo = data.get("gh_repo")
+    get_project_ghrepo = data.get("gh_repo")
+    project_ghrepo = "not given"  if get_project_ghrepo is None else get_project_ghrepo
     project_atDate = data.get("atDate")
     conn = get_conn()
     cursor = conn.cursor()
@@ -186,16 +189,18 @@ def set_current_project():
     if not current_user_id:
         return jsonify({"Status": "Not logged"}),401
     data = request.get_json()
-    current_main_pjt = data["current_project_name"]
+    current_pjt_id = data.get("project_id")
     conn = get_conn()
     cursor = conn.cursor()
-    cursor.execute("SELECT project_id, user_id FROM users_projects WHERE project_name = %s", (current_main_pjt,))
+    cursor.execute("SELECT project_name,user_id FROM users_projects WHERE project_id = %s", (current_pjt_id,))
     db_response = cursor.fetchone()
     if db_response is None:
+        cursor.close()
+        conn.close()
         return jsonify({"Status": "Project doesn't exist"}),404
+    project_name = db_response[0]
     belongs_to_user_id = db_response[1]
     if belongs_to_user_id == current_user_id:
-        current_pjt_id = db_response[0]
         session["current_project_id"] = current_pjt_id
     else:
         cursor.close()
@@ -203,7 +208,7 @@ def set_current_project():
         return jsonify({"Status": "Forbidden"}), 403
     cursor.close()
     conn.close()
-    return jsonify({"Status": "Current project set as token"}),200
+    return jsonify({"Status": "Current project set", "projectName": project_name}),200
 
 
 @handled_server.route("/addMainNote", methods=["POST"])
