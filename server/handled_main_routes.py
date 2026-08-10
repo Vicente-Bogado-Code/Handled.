@@ -31,7 +31,8 @@ MAIN ROUTES IN THIS FILE (in order):
 @/logout, 
 #
 @/addProject, 
-@/getMyProjects, 
+@/getMyProjects,
+@/changeStatus 
 @/setCurrentProject,
 # 
 @/addMainNote, 

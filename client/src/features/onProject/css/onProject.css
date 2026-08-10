@@ -1,0 +1,169 @@
+.mainDiv{
+    display: flex;
+    height: 100vh
+}
+
+.onProjectNav{
+    background-color: var(--bg-secondary);
+    margin: 0;
+    width:fit-content;
+    padding: 10px 10px;
+    min-width: 200px;
+    height: 100vh;
+    border-right:1px solid var(--border);
+}
+.backBtnOnNav{
+    cursor: pointer;
+    margin: 10px 0 15px 0;
+    font-size: 15px;
+    background: none;
+    border: none;
+    text-align: left;
+    color: var(--text-secondary);
+    transition: color 0.15s ease;
+}
+.backBtnOnNav:hover{
+    transition: color 0.15s ease;
+    color: var(--text-primary);
+}
+
+.titleDiv{
+    display: flex;
+    justify-content: center;
+}
+.titleOnNav{
+    margin: 0;
+    text-align: center;
+    font-size: 24px;
+    color: var(--text-primary);
+    border-bottom: 2px solid var(--border);
+}
+
+.mainNoteBtnDiv{
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    height: 70px;
+}
+.mainNoteLabel{
+    margin:10px 0 5px 0;
+    color: var(--text-primary);
+}
+
+
+.buttonOnNav{
+    background-color: var(--bg-primary);
+    color: var(--text-secondary);
+    border: none;
+    text-align: center;
+    width: 100%;
+    height: 40px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 7px;
+    padding: 5px 5px;
+}
+.buttonOnNav:hover{
+    color: var(--text-primary);
+}
+
+
+.addNoteBtn{
+    cursor: pointer;
+    width: 100%;
+    height: 40px;
+    font-size: 15px;
+    background-color: var(--text-primary);
+    border: none;
+    color: var(--bg-primary);
+    border-radius: 8px;
+    margin-bottom: 0;
+}
+.addNoteBtn:hover{
+    transform: scale(1.01);
+    
+}
+.secondaryNotesDiv{
+    border-bottom: 1px solid var(--border);
+    padding: 5px 0;
+    margin-top: 5px;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+}
+.secondaryNote{
+    background-color: var(--bg-primary);
+    color: var(--text-secondary);
+    border: none;
+    text-align: center;
+    width: 100%;
+    height: 30px;
+    font-size: 14px;
+    cursor: pointer;
+    border-radius: 7px;
+    padding: 5px 5px;
+}
+.secondaryNote:hover{
+    color: var(--text-primary);
+}
+
+.mainOnProject{
+    flex: 1;
+    overflow-x: hidden;
+}
+.navWindows {
+    background-color: var(--bg-secondary);
+    gap: 2px;
+    min-width: 100%;
+    width: fit-content;
+    min-height: 30px;
+    height: fit-content;
+    padding: 0 0 0 10px;
+    display: flex;
+    align-items: center; /* pushes children to the bottom of the flex container */
+}
+.navWindows button{
+    cursor: pointer;
+}
+.navWindows button:active{
+    transform: scale(0.9);
+}
+.windowCSS{
+    background: none;
+    border: none;
+    padding: 0 10px 0 5px;
+    border-bottom: none;
+    width: fit-content;
+    height: 25px;
+    color: var(--text-secondary);
+    margin: 0;
+    font-size: 15px;
+}
+.windowCSS:hover{
+    color: var(--text-primary);
+}
+.windowActive{
+    background-color: var(--bg-primary);
+    border: none;
+    border-radius: 10px 10px 0 0;
+    font-weight: 550;
+    width: fit-content;
+    height: 30px;
+    color: var(--text-primary);
+    margin: 0;
+    font-size: 15px;
+}
+.currentWindowContentDiv{
+    overflow-y: auto;
+    height: fit-content;
+    display: flex;
+    padding: 10px 0 150px 0;
+    justify-content: center;
+    background-color: var(--bg-primary);
+}
+.windowContent{
+    background-color: rgb(217, 217, 217);
+    width: 50%;
+    border: 1px solid rgb(132, 132, 132);
+    height: fit-content;
+    min-height: 1500px;
+}

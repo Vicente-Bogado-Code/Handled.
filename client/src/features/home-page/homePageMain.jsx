@@ -82,7 +82,7 @@ export default function HomePage({ username, onLogout, handleProjectClick}) {
                         <div className="newProjectForm">
                             <input 
                             style={{borderColor: nameBorderColor}}
-                            type="text" placeholder="Project name? (max 30 characters)" className="inputsOnHome" maxLength={30}
+                            type="text" placeholder="Project name? (max 20 characters)" className="inputsOnHome" maxLength={20}
                             value={projectName}
                             onChange={e => setProjectName(e.target.value)}
                             />
@@ -117,7 +117,7 @@ export default function HomePage({ username, onLogout, handleProjectClick}) {
                 <div className='showMyProjects'>
                     <h2 className="sectionTitle">Marked as <span className='doneSpan'>done</span></h2>
                     <div className="projectsGrid">
-                        {markedAsDone.map(p => (<ProjectCard key={p.project_id} {...p} id={p.project_id} onClickHandle={handleStatus} onClick={() => handleProjectClick(p.project_id)}/>)
+                        {markedAsDone.map(p => (<ProjectCard key={p.project_id} {...p} id={p.project_id} onClickHandle={handleStatus} onClickProject={handleProjectClick}/>)
                     )}
                     </div>
                 </div>
