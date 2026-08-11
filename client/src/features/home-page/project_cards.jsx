@@ -13,10 +13,13 @@ export default function ProjectCard({id, name, description, repoLink, status, at
             <p className="projectCardDesc">{description}</p>
             <p className="dateOnCards">Created on {atDate}</p>
             <div className='footerOnCards'>
-            <a href={repoLink} target="_blank" rel="noreferrer" className="repoLink">
+            <a href={repoLink} target="_blank" rel="noreferrer" className="repoLink" onClick={(e) => e.stopPropagation()}>
                 {gh_repo}
             </a>
-            <button className={`statusText-${status}`} onClick={() => onClickHandle(id)}>{statusText}</button>
+            <button className={`statusText-${status}`} onClick={(e) => {
+                e.stopPropagation()
+                onClickHandle(id)
+            }}>{statusText}</button>
 
             </div>
         </div>

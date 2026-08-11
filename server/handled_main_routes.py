@@ -252,53 +252,30 @@ def get_main_notes():
     conn.close()
     return jsonify({"Main notes on current id": main_notes_on_current_id, "Status": "Main notes retrieved"}),200
 
-@handled_server.route("/setCurrentMainNote", methods=["POST"])
-def set_current_main_note():
-    current_user_id = session.get("user_id")
-    if not current_user_id:
-        return jsonify({"Status": "Not logged"}),401
-    current_project_id = session.get("current_project_id")
-    if not current_project_id:
-        return jsonify({"Status": "No project selected"}),400 
-    data = request.get_json()
-    main_note_name = data.get("main_note_name")
-    conn = get_conn()
-    cursor = conn.cursor()
-    cursor.execute("SELECT Mnote_id,FKproject_id FROM main_notes WHERE Mnote_name = %s", (main_note_name,))
-    db_response = cursor.fetchone()
-    if db_response is None:
-        cursor.close()
-        conn.close()
-        return jsonify({"Status": "Main note doesn't exist"}),404
-    if current_project_id == db_response[1]:
-        current_main_note_id = db_response[0]
-        session["current_main_note_id"] = current_main_note_id
-    else:
-        cursor.close()
-        conn.close()
-        return jsonify({"Status": "Forbidden"}), 403
-    cursor.close()
-    conn.close()
-    return jsonify({"Status":"Current main note set as cookie"}),200
-        
+
 @handled_server.route("/addSecondaryNote", methods=["POST"])
 def add_secondary_note():
     current_user_id = session.get("user_id")
     if not current_user_id:return jsonify({"Status": "Not logged"}),401
     current_project_id = session.get("current_project_id")
     if not current_project_id:return jsonify({"Status": "No project selected"}),400 
-    current_main_note_id = session.get("current_main_note_id")
-    if not current_main_note_id:return jsonify({"Status": "No main note selected"}),400 
     data = request.get_json()
-    secondary_note_name = data.get("secondary_note_name")
-    secondary_note_content = data.get("secondary_note_content")
+    Snote_name = data.get("noteName")
+    Snote_content = data.get("content")
+
     conn = get_conn()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO secondary_notes(Snote_name,Snote_content,FKMnote_id) VALUES (%s,%s,%s)", (secondary_note_name,secondary_note_content,current_main_note_id))
+    cursor.execute("INSERT INTO secondary_notes(Snote_name,Snote_content,on_project_id) VALUES (%s,%s,%s) RETURNING Snote_id,Snote_name, Snote_content", (Snote_name,Snote_content,current_project_id))
+    db_response = cursor.fetchone()
+    note = {
+        "id": db_response[0],
+        "name": db_response[1],
+        "content": db_response[2]
+    }
     conn.commit()
     cursor.close()
     conn.close()
-    return jsonify({"Status": "Secondary note created"}),200
+    return jsonify({"Status": "Secondary note created", "Snote":note}),200
 
 @handled_server.route("/getSecondaryNotes",methods=["POST"])
 def get_secondary_notes():
@@ -306,20 +283,56 @@ def get_secondary_notes():
     if not current_user_id:return jsonify({"Status": "Not logged"}),401
     current_project_id = session.get("current_project_id")
     if not current_project_id:return jsonify({"Status": "No project selected"}),400 
-    current_main_note_id = session.get("current_main_note_id")
-    if not current_main_note_id:return jsonify({"Status": "No main note selected"}),400 
     conn = get_conn()
     cursor = conn.cursor()
+    cursor.execute("SELECT Snote_id,Snote_name,Snote_content FROM secondary_notes WHERE on_project_id = %s", (current_project_id,))
     db_response = cursor.fetchall()
-    if db_response == []:
-        cursor.close()
-        conn.close()
-        return jsonify({"Status":"No main notes found"}),404
-    secondary_notes_on_this_id = [note[0] for note in db_response]
+    retrieved_notes = [
+        {
+            "id": row[0],
+            "name": row[1],
+            "content": row[2]
+        }
+        for row in db_response
+    ]
     cursor.close()
     conn.close()
-    return jsonify({"Secondary notes on main note current id": secondary_notes_on_this_id, "Status": "Main notes retrieved"}),200
+    return jsonify({"Snotes": retrieved_notes, "Status": "Main notes retrieved"}),200
 
+@handled_server.route("/saveSnoteContent",methods=["POST"])
+def save_content():
+    current_user_id = session.get("user_id")
+    if not current_user_id:return jsonify({"Status": "Not logged"}),401
+    current_project_id = session.get("current_project_id")
+    if not current_project_id:return jsonify({"Status": "No project selected"}),400 
+    data = request.get_json()
+    new_content = data.get("newContent")
+    Snote_id = data.get("SnoteId")
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute("""
+    SELECT users_projects.user_id 
+    FROM secondary_notes
+    JOIN users_projects ON secondary_notes.on_project_id = users_projects.project_id
+    WHERE secondary_notes.Snote_id = %s
+    """, (Snote_id,))
+    row = cursor.fetchone()
+    if row is None:
+        cursor.close()
+        conn.close()
+        return jsonify({"Status": "Note not found"}), 404
+    if row[0] != current_user_id:
+        cursor.close()
+        conn.close()
+        return jsonify({"Status": "Forbidden"}), 403
+    cursor.execute("UPDATE secondary_notes SET Snote_content = %s WHERE Snote_id = %s",(new_content,Snote_id))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return jsonify({"Status": "Note content updated"}), 200
+    
+
+    
 
 
 print("Listening on routes: ")
