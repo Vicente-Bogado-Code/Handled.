@@ -1,0 +1,100 @@
+.mainNoteBtnDiv{
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+    height: 70px;
+}
+.mainNoteLabel{
+    margin:10px 0 5px 0;
+    color: var(--text-primary);
+    font-weight: 550;
+}
+
+.buttonOnNav{
+    background: none;
+    color: var(--text-primary);
+    border: none;
+    text-align: center;
+    width: 100%;
+    height: 40px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 7px;
+    padding: 2px 5px;
+}
+.buttonOnNav:hover{
+    background-color: var(--bg-primary);
+}
+
+.newSnoteForm{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.noteNameInput{
+    width: 80%;
+    height: 15px;
+    margin-bottom: 8px;
+    padding: 5px 5px;
+    border-radius: 8px;
+    border: none;
+}
+.addNoteBtn{
+    cursor: pointer;
+    width: 100%;
+    height: 40px;
+    font-size: 15px;
+    background-color: var(--text-primary);
+    border: none;
+    color: var(--bg-primary);
+    border-radius: 8px;
+    margin-bottom: 0;
+}
+.addNoteBtn:hover{
+    transform: scale(1.01);
+    
+}
+
+.secondaryNotesDiv{
+    border-bottom: 1px solid var(--border);
+    padding: 5px 0;
+    margin-top: 5px;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+}
+.secondaryNote{
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    text-align: center;
+    width: 100%;
+    height: 30px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    padding: 5px 5px;
+}
+.secondaryNote:hover{
+    background-color: var(--bg-primary);
+}
+.activeSnote{
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    text-align: center;
+    width: 100%;
+    height: 30px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    padding: 5px 5px;
+    background-color: var(--bg-primary);
+}
+.Slabel{
+    color: var(--text-secondary);
+    position: absolute;
+    left: 30px;
+    font-size: 15px;
+}

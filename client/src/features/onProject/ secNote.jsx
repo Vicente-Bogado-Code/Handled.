@@ -1,7 +1,18 @@
 import './css/onProject.css'
+import './css/notesBtn.css'
 
-export default function SecondaryProjectComp({name, noteId, setNoteId,content, setContentValue}){
+export default function SecondaryProjectComp({importance,name,noteId,content,windows,setWindow,activeWindowId,setActiveWindowId}){
     return(
-        <button className="secondaryNote" onClick={() => {setNoteId(noteId),setContentValue(content)}} >{name}</button>
+        <button
+        className={activeWindowId === noteId ? "activeSnote" : "secondaryNote"} onClick={
+        () => {
+            {const alreadyExists = windows.find(window => window.id === noteId)
+                if (!alreadyExists){
+                    setWindow(prev => [...prev, {"id":noteId,"name":name}]);
+                }
+            }
+            setActiveWindowId(noteId);
+        }}>
+        <span className='Slabel'>{importance}</span> {name} </button>
     );
 }
