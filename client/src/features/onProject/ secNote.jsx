@@ -1,8 +1,10 @@
 import './css/onProject.css'
 import './css/notesBtn.css'
+import { Trash2 } from 'lucide-react';
 
-export default function SecondaryProjectComp({importance,name,noteId,content,windows,setWindow,activeWindowId,setActiveWindowId}){
+export default function SecondaryProjectComp({importance,name,noteId,content,windows,setWindow,activeWindowId,setActiveWindowId,setDeleting}){
     return(
+    <div className="secNoteOnNavDiv">
         <button
         className={activeWindowId === noteId ? "activeSnote" : "secondaryNote"} onClick={
         () => {
@@ -14,5 +16,7 @@ export default function SecondaryProjectComp({importance,name,noteId,content,win
             setActiveWindowId(noteId);
         }}>
         <span className='Slabel'>{importance}</span> {name} </button>
+        {activeWindowId === noteId ? (importance === "S" ? <button className='deleteBtn' onClick={() => setDeleting(true)}><Trash2 size={16} /></button> : null ) : null}
+    </div>
     );
 }

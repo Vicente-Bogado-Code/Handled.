@@ -1,11 +1,11 @@
 .mainNoteBtnDiv{
     margin-bottom: 20px;
     border-bottom: 1px solid var(--border);
-    height: 70px;
+    height: 60px;
 }
 .mainNoteLabel{
     margin:10px 0 5px 0;
-    color: var(--text-primary);
+    color: var(--text-secondary);
     font-weight: 550;
 }
 
@@ -36,24 +36,57 @@
     width: 80%;
     height: 15px;
     margin-bottom: 8px;
-    padding: 5px 5px;
-    border-radius: 8px;
+    padding: 5px 10px;
     border: none;
+    border-bottom: 2px solid var(--text-primary);
+    background: none;
+    color: var(--text-primary);
+}
+.noteNameInput:focus{
+    outline: none;
+    border: none;
+    border-bottom: 2px solid var(--accent);
 }
 .addNoteBtn{
     cursor: pointer;
     width: 100%;
     height: 40px;
     font-size: 15px;
-    background-color: var(--text-primary);
+    background-color: var(--accent);
     border: none;
-    color: var(--bg-primary);
+    color: var(--text-primary);
     border-radius: 8px;
     margin-bottom: 0;
 }
 .addNoteBtn:hover{
     transform: scale(1.01);
-    
+}
+
+.newNoteFormDiv{
+    background-color: var(--bg-secondary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 150px;
+    padding: 8px 0;
+}
+.labelOnNewNote{
+    color: var(--text-primary);
+    font-size: 15px;
+    margin: 0;
+    text-align: left;
+    margin-bottom: 5px;
+}
+.createSnoteBtn{
+    background-color: white;
+    width: 80%;
+    height: 17%;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+.createSnoteBtn:hover{
+    transform: scale(1.02);
 }
 
 .secondaryNotesDiv{
@@ -75,6 +108,7 @@
     cursor: pointer;
     margin-bottom: 5px;
     padding: 5px 5px;
+    border-left: 2px solid green;
 }
 .secondaryNote:hover{
     background-color: var(--bg-primary);
@@ -97,4 +131,21 @@
     position: absolute;
     left: 30px;
     font-size: 15px;
+}
+.secNoteOnNavDiv{
+    display: flex;
+}
+.deleteBtn{
+    margin: 0;
+    background: none;
+    color: red;
+    border: none;
+}
+.deleteBtn:hover{
+    transform: scale(1.10);
+    cursor: pointer;
+}
+
+.hide{
+    display: none;
 }

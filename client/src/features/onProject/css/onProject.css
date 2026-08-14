@@ -1,12 +1,16 @@
+html{
+    overflow-y: hidden;
+}
 .mainDiv{
     display: flex;
-    height: 100vh
+    height: 100vh;
+    overflow: hidden;
 }
 
 .onProjectNav{
     background-color: var(--bg-secondary);
     margin: 0;
-    width:fit-content;
+    width:240px;
     padding: 10px 20px;
     min-width: 200px;
     height: 100vh;
@@ -34,28 +38,35 @@
 .titleOnNav{
     margin: 0;
     text-align: center;
-    font-size: 24px;
+    font-size: 28px;
     color: var(--text-primary);
-    border-bottom: 2px solid var(--accent);
     padding:  0 0 5px 0;
 }
 
-.mainOnProject{
+.mainOnProject {
     flex: 1;
     overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width:thin;
+    scrollbar-color: var(--accent) var(--bg-secondary);
 }
+
 .navWindows {
     background-color: var(--bg-secondary);
-    gap: 0;
+    gap: 4px;
     min-width: 100%;
     width: fit-content;
     min-height: 44px;
-    height: fit-content;
-    padding: 0 8px;
+    height: 20px;
+    padding: 8px 8px 0 8px;
     display: flex;
     align-items: flex-end;
+    position: sticky;
+    top: 0;
+    z-index: 6;
 }
-.navWindowsOnPH{
+
+.navWindowsOnPH {
     display: none;
 }
 
@@ -65,73 +76,101 @@
 }
 
 .navWindows button:active {
-    transform: none; /* Google's tabs don't "press" visually, keep it flat */
+    transform: none;
 }
 
 .windowCSS {
+    cursor: pointer;
     background: none;
     border: none;
-    border-bottom: 3px solid transparent;
     width: fit-content;
-    padding: 10px 16px;
-    height: 40px;
+    height: 100%;
     color: var(--text-secondary);
     margin: 0;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     display: flex;
     flex-direction: row;
     align-items: center;
+    border-radius: 8px 8px 0 0;
+}
+.windowCSS button{
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    width: fit-content;
+    height: 100%;
 }
 
 .windowCSS:hover {
     color: var(--text-primary);
+    background-color: color-mix(in srgb, var(--bg-primary) 40%, transparent);
 }
 
 .windowActive {
-    background-color: var(--bg-primary);
+    background-color: var(--bg-secondary);
     border: none;
-    border-radius: 15px 15px 0 0;
+    border-radius: 8px 8px 0 0;
     width: fit-content;
-    padding: 10px 16px;
-    height: 40px;
-    color: var(--accent);
+    height: 100%;
+    color: var(--text-primary);
     margin: 0;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 500;
     display: flex;
     flex-direction: row;
     align-items: center;
+    position: relative;
 }
-.deleteWindow{
+.windowActive button{
     background: none;
-    color: var(--text-secondary);
-    font-size: larger;
     border: none;
-    margin-left: 20px;
-    border-radius: 20px;
-}
-.deleteWindow:hover{
     color: var(--text-primary);
-    background-color: rgb(98, 98, 98);
+    width: fit-content;
+    height: 100%;
 }
-.currentWindowContentDiv{
-    overflow-y: auto;
+.dltWinBtn:hover{
+    color: red;
+}
+
+
+.windowActive::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 2px;
+    background-color: var(--accent);
+    border-radius: 2px;
+}
+.windowBtnDiv{
+    display: flex;
+}
+
+.currentWindowContentDiv {
     height: fit-content;
     display: flex;
-    padding: 10px 0 150px 0;
+    flex-direction: column;
+    padding: 0 0 150px 0;
     justify-content: center;
     background-color: var(--bg-primary);
 }
-.windowContent{
+.windowContent {
     background-color: var(--bg-secondary);
     width: 50%;
     border: 1px solid var(--border);
+    border-radius: 12px;
     min-height: 80vh;
     height: fit-content;
-    padding: 10px 20px;
+    padding: 24px 32px;
     display: flex;
     justify-content: center;
+    align-self: center;
+    margin-top: 20px;
 }
+
+
+
 .windowPH{
     background-color: var(--bg-primary);
     width: 100%;
@@ -144,4 +183,42 @@
     justify-content: center;
     align-items: center;
     font-size: 30px;
+}
+
+.overlayDlt{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    color: var(--text-primary);
+}
+.permaDltNoteBtn{
+    cursor: pointer;
+    border-radius: 10px;
+    padding: 10px 50px;
+    background-color: red;
+    border: none;
+    color: var(--text-primary);
+}
+.permaDltNoteBtn:hover{
+    transform: scale(1.03);
+}
+.dontDltBtn{
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 10px;
+    padding: 10px 50px;
+    background-color: var(--accent);
+    border: none;
+    color: var(--text-primary);
+}
+.dontDltBtn:hover{
+    transform: scale(1.03);
 }

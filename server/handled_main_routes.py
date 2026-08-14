@@ -119,6 +119,13 @@ def add_project():
         cursor.close()
         conn.close()
         return jsonify({"Status": "Project already exists"}),409
+    cursor.execute("INSERT INTO secondary_notes (Snote_name,Snote_content,on_project_id,importance) VALUES (%s,%s,%s,%s)",("Commit history","<p>This is a note created by default.</p><p>This default note will track your commit history (only if your project have a github repository linked) and log it here, you can modify this note by clicking the 'turn on modifications' button in the project settings.</p>"+f"<h2>{project_name} commit history:</h2>",row[0],"D"))
+    #
+    cursor.execute("INSERT INTO secondary_notes (Snote_name,Snote_content,on_project_id,importance) VALUES (%s,%s,%s,%s)",(f"{project_name} main","<p>This is a note created by default.</p><p>This default note is meant to be your 'main' note, where you track important events of your project.</p>",row[0],"M"))
+    #
+    cursor.execute("INSERT INTO secondary_notes (Snote_name,Snote_content,on_project_id,importance) VALUES (%s,%s,%s,%s)",("README","<p>This is a note created by default.</p><h2 style='text-align: center;'><span style='color: rgb(153, 0, 255); font-size: 18px;'><strong>A README text acts as the front door and core guide to a software project</strong></span></h2><p>It tells visitors what the project <strong>does</strong>, why it is <strong>useful</strong> and how other people can help or contribute.</p>" f"<p>What is <strong>{project_name}</strong> about?",row[0],"D"))
+    #
+    conn.commit()
     cursor.close()
     conn.close()
     return jsonify({"Status":"Project created",
@@ -262,15 +269,16 @@ def add_secondary_note():
     data = request.get_json()
     Snote_name = data.get("noteName")
     Snote_content = data.get("content")
-
+    imp = data.get("importance")
     conn = get_conn()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO secondary_notes(Snote_name,Snote_content,on_project_id) VALUES (%s,%s,%s) RETURNING Snote_id,Snote_name, Snote_content", (Snote_name,Snote_content,current_project_id))
+    cursor.execute("INSERT INTO secondary_notes(Snote_name,Snote_content,on_project_id,importance) VALUES (%s,%s,%s,%s) RETURNING Snote_id,Snote_name, Snote_content,importance", (Snote_name,Snote_content,current_project_id,imp))
     db_response = cursor.fetchone()
     note = {
         "id": db_response[0],
         "name": db_response[1],
-        "content": db_response[2]
+        "content": db_response[2],
+        "importance": db_response[3]
     }
     conn.commit()
     cursor.close()
@@ -285,19 +293,56 @@ def get_secondary_notes():
     if not current_project_id:return jsonify({"Status": "No project selected"}),400 
     conn = get_conn()
     cursor = conn.cursor()
-    cursor.execute("SELECT Snote_id,Snote_name,Snote_content FROM secondary_notes WHERE on_project_id = %s", (current_project_id,))
+    cursor.execute("SELECT Snote_id,Snote_name,Snote_content,importance FROM secondary_notes WHERE on_project_id = %s", (current_project_id,))
     db_response = cursor.fetchall()
     retrieved_notes = [
         {
             "id": row[0],
             "name": row[1],
-            "content": row[2]
+            "content": row[2],
+            "importance": row[3]
         }
         for row in db_response
     ]
     cursor.close()
     conn.close()
     return jsonify({"Snotes": retrieved_notes, "Status": "Main notes retrieved"}),200
+
+@handled_server.route("/deleteSnote",methods=["POST"])
+def delete_Snote():
+    current_user_id = session.get("user_id")
+    if not current_user_id:return jsonify({"Status": "Not logged"}),401
+    current_project_id = session.get("current_project_id")
+    if not current_project_id:return jsonify({"Status": "No project selected"}),400
+    data = request.get_json()
+    if not data or "id" not in data:
+        return jsonify({"Status": "Missing note id"}), 400
+    Snote_id = data.get("id")
+    conn = get_conn()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("""
+        SELECT users_projects.user_id 
+        FROM secondary_notes
+        JOIN users_projects ON secondary_notes.on_project_id = users_projects.project_id
+        WHERE secondary_notes.Snote_id = %s
+        """, (Snote_id,))
+        row = cursor.fetchone()
+        if row is None:
+            cursor.close()
+            conn.close()
+            return jsonify({"Status": "Note not found"}), 404
+        if row[0] != current_user_id:
+            cursor.close()
+            conn.close()
+            return jsonify({"Status": "Forbidden"}), 403
+        cursor.execute("DELETE FROM secondary_notes WHERE Snote_id = %s",(Snote_id,))
+        conn.commit()
+        return jsonify({"Status":"Note deleted"}),200
+    finally:
+        cursor.close()
+        conn.close()
+
 
 @handled_server.route("/saveSnoteContent",methods=["POST"])
 def save_content():

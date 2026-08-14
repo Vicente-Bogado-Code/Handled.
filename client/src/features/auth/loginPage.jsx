@@ -8,8 +8,13 @@ export default function LoginPage({onSwitchMode ,onLoginSuccess}){
 
     async function handleLogin() {
         if (username == "" || password == "") {return}
-        const response = await loginUser(username,password)
-        console.log(response)
+        let response;
+        try {
+            response = await loginUser(username,password)
+        }
+        catch(err){
+            if (err instanceof TypeError){setError("»Server unreachable, try again later.")}
+        }
         if (response.Status === "Valid credentials"){
             onLoginSuccess(response.username)
         }

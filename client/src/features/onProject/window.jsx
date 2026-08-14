@@ -1,20 +1,17 @@
+import { X } from 'lucide-react'
 
 export default function Window({windowName, id, activeWindowId, setActiveWindowId,handleWindowClosing}){
     return(
-        <div className="windowBtnDiv">
+        <div className={id === activeWindowId ? "windowActive" : "windowCSS"}>
             <button 
-            className={id === activeWindowId ? "windowActive" : "windowCSS"}
-            onClick={() => 
-                {
-                 setActiveWindowId(id);
-                }
-            }
-            
-            >{windowName} <button className='deleteWindow' onClick={
+            onClick={() =>  {setActiveWindowId(id);}}
+            >{windowName}</button>
+             
+            <button onClick={
                (e) => {
                 e.stopPropagation()
                 handleWindowClosing(id);
-               }}>x</button></button>
+               }}><X size={16} className='dltWinBtn'/></button>
         </div>
     );
 }
