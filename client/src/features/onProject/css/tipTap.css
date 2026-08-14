@@ -1,0 +1,78 @@
+.tiptap.ProseMirror {
+  min-height: 70vh;
+  cursor: text;
+  outline: none;
+  color: var(--text-primary);
+  font-family: inherit; 
+  margin-top: 20px;
+}
+.tiptap.ProseMirror pre {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  padding: 16px;
+  border-radius: 10px;
+  overflow-x: auto;
+  margin: 12px 0;
+  font-family: 'Fira Code', 'Courier New', monospace;
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+.tiptap.ProseMirror pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+  font-family: inherit;
+}
+
+.toolbar button{
+    background-color: var(--bg-primary);
+    border: none;
+    padding: 10px 10px;
+    cursor: pointer;
+    color: var(--text-primary);
+    border-radius: 10px;
+}
+.toolbar{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+.TextStyle, .TextPositioning, .TextFormatting, .sizeNcolor{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.toolbar button.active { 
+  color: var(--accent);
+}
+
+.tiptap.ProseMirror a {
+  color: #2563eb;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.toolbar select {
+  text-align: center;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: none;
+  padding: 10px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.valueOnSelect{
+    text-align: left;
+}
+
+.colorPicker {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 10px;
+  padding: 2px;
+  cursor: pointer;
+  background-color: var(--bg-primary);
+}

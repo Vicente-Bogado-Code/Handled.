@@ -8,7 +8,6 @@ import { logout } from "./features/api/auth";
 export default function App(){
     const [user,setUser] = useState(null)
     const [currentId, setCurrentId] = useState("")
-    console.log("On project with an id of: ", currentId)
     function handleLogout(){
         logout()
         setUser(null)

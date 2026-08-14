@@ -5,16 +5,18 @@ import { newSecondaryNote } from "../api/newSecNote"
 import { saveNoteContent } from "../api/saveNoteContent";
 import SecondaryProjectComp from "./ secNote";
 import Window from "./window";
+import TipTap from "./TipTap";
+import placeholder from "./placeholder";
 import './css/onProject.css'
-
+import MainPlaceHolder from "./placeholder";
 export default function CurrentProjectComp({ project_id , handleGoBack}) {
   const [projectName, setProjectName] = useState("");
   const [mySecNotes, setMySecNotes] = useState([]);
   const [nameOfNewSnote, setNameOfSnote] = useState("");
-  const [currentSnoteId, setCurrentSnoteId] = useState(0);
   const [windows,setWindows] = useState([]);
   const [activeWindowId, setActiveWindowId] = useState(null)
   const activeSnote = mySecNotes.find(note => note.id === activeWindowId);
+  const activeSnoteId = activeSnote ? activeSnote.id : null;
   const currentNoteContent = activeSnote ? activeSnote.content : "";
 
   useEffect(() => {
@@ -26,7 +28,10 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
       }
     });
   }, [project_id]);
-
+  //debug
+  function debuging(SnoteId, content){
+    console.log("Saving on ID :", SnoteId, "Which content: ", content)
+  }
   //Content
   async function handleCreateSnote(name,content){
     const response = await newSecondaryNote(name,content)
@@ -59,7 +64,10 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
   return (
   <div className="mainDiv">
     <nav className="onProjectNav">
-      <button className="backBtnOnNav" onClick={() => {handleGoBack(""), handleSaveContent(activeSnote.id,currentNoteContent)}}>🠔 Go back</button>
+      <button className="backBtnOnNav" onClick={() => {
+        handleGoBack("");
+        if (activeSnote){handleSaveContent(activeSnote.id,currentNoteContent);}
+        }}>🠔 Go back</button>
       <div className="titleDiv">
         <h3 className="titleOnNav">{projectName}</h3>
       </div>
@@ -93,7 +101,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
       </div>
     </nav>
     <main className="mainOnProject">
-     <div className="navWindows">
+     <div className={activeSnoteId ? "navWindows" : "navWindowsOnPH"}>
       {windows.map(window => <Window 
       key={window.id}
       windowName={window.name}
@@ -105,12 +113,13 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
      </div>
      <div className="currentWindowContentDiv">
 
-      <div className="windowContent">
-        <textarea
-         className="testTextArea"
-         value={currentNoteContent}
-         onChange={change => handleContentChange(change.target.value)}
-           ></textarea>
+      <div className={activeSnoteId ? "windowContent" : "windowPH"}>
+        {activeSnoteId ? <TipTap 
+        currentContent={currentNoteContent}
+        onContentChange={handleContentChange}
+        debugging={debuging}
+        activeSnote={activeSnote ? activeSnote.id : null}
+        /> : <MainPlaceHolder/> }
       </div>
 
      </div>
