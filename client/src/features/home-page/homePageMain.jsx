@@ -5,7 +5,8 @@ import { createProject } from '../api/createProject';
 import { getMyProjects } from '../api/getMyProjects';
 import { getDate } from '../otherJSfunctions/getExactTime';
 import { changeStatus } from '../api/changeStatus';
-
+import { changeGhRepo } from '../api/alterOther';
+import { deleteProject } from '../api/deleteProject';
 
 export default function HomePage({ username, onLogout, handleProjectClick}) {
     const [projectName, setProjectName] = useState("")
@@ -58,6 +59,25 @@ export default function HomePage({ username, onLogout, handleProjectClick}) {
         }
     }
 
+    async function handleChangeRepo(newLink, id){
+        const request = await changeGhRepo(newLink,id)
+        if (request.Status === "Link changed"){
+            setMyProjects(prev => prev.map(p => p.project_id === id ? {...p, repoLink:newLink} : p))
+        }
+        else if (request.Status === "Invalid GitHub link"){
+            alert("Invalid GitHub link given")
+        }
+
+    }
+
+    async function handleDeleteProject(id) {
+        const request = await deleteProject(id)
+        if (request.response === "Project deleted"){
+            setMyProjects(prev => prev.filter(p => p.id === id))
+        }
+        
+    }
+
     const activeProjects = myProjects.filter(project => project.status === "active");
     const markedAsDone = myProjects.filter(project => project.status === "done")
 
@@ -108,16 +128,16 @@ export default function HomePage({ username, onLogout, handleProjectClick}) {
                     </div>
                 </div>
                 <div className='showMyProjects'>
-                    <h2 className="sectionTitle">Your <span className="activeSpan">active</span> projects</h2>
+                    <h2 className="sectionTitle">Your <span className="activeSpan">active</span> projects cards</h2>
                     <div className="projectsGrid">
-                        {activeProjects.map(p => (<ProjectCard key={p.project_id} {...p} id={p.project_id} onClickHandle={handleStatus} onClickProject={handleProjectClick}/>)
+                        {activeProjects.map(p => (<ProjectCard key={p.project_id} {...p} id={p.project_id} onClickHandle={handleStatus} onClickProject={handleProjectClick} changeRepo={handleChangeRepo}/>)
                     )}
                     </div>
                 </div>
                 <div className='showMyProjects'>
-                    <h2 className="sectionTitle">Marked as <span className='doneSpan'>done</span></h2>
+                    <h2 className="sectionTitle">Marked as <span className='doneSpan'>done cards</span></h2>
                     <div className="projectsGrid">
-                        {markedAsDone.map(p => (<ProjectCard key={p.project_id} {...p} id={p.project_id} onClickHandle={handleStatus} onClickProject={handleProjectClick}/>)
+                        {markedAsDone.map(p => (<ProjectCard key={p.project_id} {...p} id={p.project_id} onClickHandle={handleStatus} onClickProject={handleProjectClick} changeRepo={handleChangeRepo}/>)
                     )}
                     </div>
                 </div>

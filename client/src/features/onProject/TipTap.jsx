@@ -34,15 +34,11 @@ const TipTap = ({currentContent, onContentChange,activeSnote,setEditor}) => {
     if (editor){setEditor(editor)}
   },[editor,setEditor])
 
-  useEffect(() => {
-    if (
-      editor &&
-      currentContent !== undefined &&
-      currentContent !== editor.getHTML()
-    ){ 
-      editor.commands.setContent(currentContent)
-    }
-  }, [editor, currentContent]);
+useEffect(() => {
+  if (editor && currentContent !== undefined) {
+    editor.commands.setContent(currentContent);
+  }
+}, [activeSnote]);
 
   return (
     <div>

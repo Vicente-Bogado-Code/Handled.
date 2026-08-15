@@ -1,5 +1,5 @@
 import { setCurrentProject } from "../api/setCurrentProject";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getSecondaryNotes } from "../api/getSecNotes"
 import { newSecondaryNote } from "../api/newSecNote"
 import { saveNoteContent } from "../api/saveNoteContent";
@@ -9,14 +9,17 @@ import Window from "./window";
 import TipTap from "./TipTap";
 import Toolbar from "./toolBar";
 import placeholder from "./placeholder";
+import CounterToSave from "./savingIn";
 import './css/onProject.css'
 import MainPlaceHolder from "./placeholder";
-
+import { ArrowLeft } from 'lucide-react';
+import { Plus,Minus } from 'lucide-react';
 
 export default function CurrentProjectComp({ project_id , handleGoBack}) {
   const [editor,setEditor] = useState(null)
   const [projectName, setProjectName] = useState("");
   const [mySecNotes, setMySecNotes] = useState([]);
+  const mySecNotesRef = useRef(mySecNotes)
   const [nameOfNewSnote, setNameOfSnote] = useState("");
   const [windows,setWindows] = useState([]);
   const [activeWindowId, setActiveWindowId] = useState(null)
@@ -29,6 +32,21 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
   const [title,setTitle] = useState("")
   const [isCreating,setIsCreating] = useState(false)
   const [isDeleting,setIsDeleting] = useState(false)
+  const [modifiedNotesId,setModifiedNotesId] = useState([])
+  const modifiedNotesIdRef = useRef(modifiedNotesId)
+  const timerRef = useRef(null)
+  const secondsRef = useRef(10)
+  const [seconds, setSeconds] = useState(10)
+  const [saving,setSaving] = useState(false)
+  
+  useEffect(() =>{
+    mySecNotesRef.current = mySecNotes;
+    console.log("Content of some note changed");
+  }, [mySecNotes])
+  useEffect(() =>{
+    modifiedNotesIdRef.current = modifiedNotesId;
+    console.log("New note ID added");
+  }, [modifiedNotesId])
 
   useEffect(() => {
     setCurrentProject(project_id).then(response => {
@@ -48,12 +66,41 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
       setMySecNotes(prev => [...prev, response.Snote])
     }
   }
+  //
+  function startAutoSaveTimer(EveryXseconds){
+    clearInterval(timerRef.current)
+    secondsRef.current = 10;
+    setSeconds(10)
+
+    timerRef.current = setInterval(() =>{
+      setSaving(true)
+      secondsRef.current--;
+      setSeconds(secondsRef.current)
+      if (secondsRef.current === EveryXseconds){
+        clearInterval(timerRef.current)
+        console.log("Saved after ",EveryXseconds," seconds!")
+        for (let i = 0; i < modifiedNotesIdRef.current.length; i++){
+          const note = mySecNotesRef.current.find(n => n.id === modifiedNotesIdRef.current[i]);
+          const noteC = note ? note.content : null
+          handleSaveContent(note.id,noteC)
+        }
+        setModifiedNotesId([]);
+        setSaving(false)
+      }
+    },1000)
+    };
+  
   function handleContentChange(newContent){
+    const inIt = modifiedNotesId.find(id => id === activeSnoteId);
+    if (inIt === undefined){
+      setModifiedNotesId(prev => [...prev, activeSnoteId])
+    }
     setMySecNotes(prev =>
       prev.map(note =>
-        note.id === activeWindowId ? {...note, content: newContent} : note
+        note.id === activeSnoteId ? {...note, content: newContent} : note
       )
     )
+    startAutoSaveTimer(0)
   }
   async function handleSaveContent(Snote_id,content) {
     const response = await saveNoteContent(Snote_id,content)
@@ -68,11 +115,14 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
   }
   //Delete Snote
   async function handleDeleteSnote(Snote_id){
+    clearInterval(timerRef.current)
     const response = await deleteSecNote(Snote_id)
     if (response.Status === "Note deleted"){
       setMySecNotes(prev => prev.filter(n => n.id !== Snote_id));
+      setModifiedNotesId(prev => prev.filter(id => id !== Snote_id))
       setWindows(prev => prev.filter(w => w.id !== Snote_id));
-      setActiveWindowId(null)
+      setActiveWindowId(null);
+      startAutoSaveTimer(0)
     }
   }
   
@@ -84,7 +134,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
       <button className="backBtnOnNav" onClick={() => {
         handleGoBack("");
         if (activeSnote){handleSaveContent(activeSnote.id,currentNoteContent);}
-        }}>🠔 Go back</button>
+        }}><ArrowLeft size={18} />Go back</button>
       <div className="titleDiv">
         <h3 className="titleOnNav">{projectName}</h3>
       </div>
@@ -99,11 +149,13 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
          windows={windows}
          setWindow={setWindows}
          activeWindowId={activeWindowId}
-         setActiveWindowId={setActiveWindowId}/>)}
+         setActiveWindowId={setActiveWindowId}
+         modifiedNotesIds={modifiedNotesId}
+         />)}
       </div>
       <p className="mainNoteLabel">secondary note/s:</p>
       <div className="newSnoteForm">
-         <button className="addNoteBtn" onClick={() => {isCreating === false ? setIsCreating(true) : setIsCreating(false)}}>{isCreating === true ? "-" : "+"}</button>
+         <button className="addNoteBtn" onClick={() => {isCreating === false ? setIsCreating(true) : setIsCreating(false)}}>{isCreating === true ? <Minus size={18}/> : <Plus size={18}/>}</button>
       </div>
       <div className={isCreating === true ? "newNoteFormDiv" : "hide"} >
           <p className="labelOnNewNote">Secondary note name:</p>
@@ -136,7 +188,9 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
          windows={windows}
          setWindow={setWindows}
          activeWindowId={activeWindowId}
-         setActiveWindowId={setActiveWindowId}/>)}
+         setActiveWindowId={setActiveWindowId}
+         modifiedNotesIds={modifiedNotesId}
+         />)}
         <p className="mainNoteLabel">created</p>
         <div className={isDeleting === true ? "overlayDlt" : "hide"}>
           <h3>Are you sure?</h3>
@@ -155,6 +209,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
          activeWindowId={activeWindowId}
          setActiveWindowId={setActiveWindowId}
          setDeleting={setIsDeleting}
+         modifiedNotesIds={modifiedNotesId}
          />)}
       </div>
     </nav>
@@ -171,6 +226,11 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
       />)}
      </div>
      <div className="currentWindowContentDiv">
+      <CounterToSave 
+      seconds={seconds}
+      modifiedNotesId={modifiedNotesId}
+      mySecNotesRef={mySecNotesRef}
+      />
       <div className={activeSnoteId ? "toolBarDiv" : "hide"}>
           <Toolbar editor={editor} activeSnote={activeSnote ? activeSnote.id : null} currentContent={currentNoteContent}/>
       </div>

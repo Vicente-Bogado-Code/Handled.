@@ -2,11 +2,12 @@ import './css/onProject.css'
 import './css/notesBtn.css'
 import { Trash2 } from 'lucide-react';
 
-export default function SecondaryProjectComp({importance,name,noteId,content,windows,setWindow,activeWindowId,setActiveWindowId,setDeleting}){
+export default function SecondaryProjectComp({importance,name,noteId,content,windows,setWindow,activeWindowId,setActiveWindowId,setDeleting,modifiedNotesIds}){
+    const inIt = modifiedNotesIds.find(id => id === noteId);
     return(
     <div className="secNoteOnNavDiv">
         <button
-        className={activeWindowId === noteId ? "activeSnote" : "secondaryNote"} onClick={
+        className={activeWindowId === noteId ? "activeSnote" : (inIt ? "secondaryNoteUnsaved" : "secondaryNote")} onClick={
         () => {
             {const alreadyExists = windows.find(window => window.id === noteId)
                 if (!alreadyExists){

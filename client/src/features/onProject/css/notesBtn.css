@@ -110,6 +110,20 @@
     padding: 5px 5px;
     border-left: 2px solid green;
 }
+.secondaryNoteUnsaved{
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    text-align: center;
+    width: 100%;
+    height: 30px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    padding: 5px 5px;
+    border-left: 2px solid red;
+
+}
 .secondaryNote:hover{
     background-color: var(--bg-primary);
 }

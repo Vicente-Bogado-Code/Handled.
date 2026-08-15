@@ -138,6 +138,37 @@ def add_project():
         "atDate": row[5]
     }}),200
 
+@handled_server.route("/deleteProject",methods=["POST"])
+def delete_project():
+    user_id = session.get("user_id")
+    if not user_id:
+        return jsonify({"Status": "Not logged"}),401
+    data = request.get_json()
+    if not data or "id" not in data:
+        return jsonify({"Status": "Missing fields"}),400
+    project_id = data.get("id")
+    conn = get_conn()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT user_id FROM users_projects WHERE project_id = %s",(project_id,))
+        r = cursor.fetchone()
+        if r is None:
+            return jsonify({"Status": "Project doesn't exists"}),401
+        if user_id == r[0]:
+            cursor.execute("DELETE FROM users_projects WHERE project_id = %s", (project_id,))
+            conn.commit()
+            return jsonify({"Status": "Project deleted"}),200
+        else:
+            return jsonify({"Status": "Project doesn't belong to you"}), 401
+    finally:
+        cursor.close()
+        conn.close()
+        
+
+
+
+
+
 @handled_server.route("/getMyProjects",methods=["POST"])
 def get_projects():
     user_id = session.get("user_id")
@@ -189,6 +220,35 @@ def change_status():
         cursor.close()
         conn.close()
         return jsonify({"Status": "Project doesn't belong to you"}),401
+
+@handled_server.route("/changeRepo",methods=["POST"])
+def change_repoLink():
+    current_user_id = session.get("user_id")
+    if not current_user_id:
+        return jsonify({"Status": "Not logged"}),401
+    data = request.get_json()
+    if not data or "id" not in data or "newLink" not in data:
+        return jsonify({"Status": "Missing fields"}),400
+    project_id = data.get("id")
+    new_repo_link = data.get("newLink")
+    if not new_repo_link.startswith("https://github.com/"):
+        return jsonify({"Status": "Invalid GitHub link"}),400
+    conn = get_conn()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT user_id FROM users_projects WHERE project_id = %s", (project_id,))
+        row = cursor.fetchone()
+        if row is None:
+            return jsonify({"Status": "Project not found"}), 404
+        if row[0] != current_user_id:
+            return jsonify({"Status": "Project doesn't belong to you"}), 403
+        cursor.execute("UPDATE users_projects SET gh_repo = %s WHERE project_id = %s", (new_repo_link,project_id))
+        conn.commit()
+        return jsonify({"Status": "Link changed"}),200
+    finally:
+        cursor.close()       
+        conn.close()
+        
 
 
 @handled_server.route("/setCurrentProject", methods=["POST"])
