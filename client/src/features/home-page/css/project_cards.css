@@ -1,20 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 .projectCard {
     background-color: rgb(216, 216, 216);
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 16px;
-    height: 100px;
+    height: 160px;
     width: 280px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
     cursor: pointer;
     transition: background-color 0.15s ease;
 }
 .projectCard:hover{
     transition: background-color 0.15s ease;
     background-color: rgb(205, 205, 205);
-    transform: scale(1.01);
+}
+.allDiv{
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
 }
 .projectCardHeader {
     display: flex;
@@ -43,7 +50,7 @@
 }
 
 .status-active {
-    background-color: rgba(88, 166, 255, 0.15);
+    background-color: var(--transparent-blue-btns);
     color: #3291fe;
 }
 
@@ -51,16 +58,19 @@
     background-color: rgba(63, 185, 80, 0.15);
     color: #3fb950;
 }
-
 .projectCardDesc {
-    min-height: 32px;
-    color: black;
+    max-height: 90px;
+    text-align: left;
+    color: var(--text-secondary);
     font-size: 0.9rem;
     margin: 0;
     flex: 1;
+    overflow-wrap: break-word;
+    overflow: hidden;
 }
 
 .footerOnCards{
+    margin-top: 5px;
     display: flex;
     align-content: center;
     align-items: center;
@@ -109,7 +119,7 @@
     border: 1px solid black;
     background-color: rgb(216, 216, 216);
     padding: 3px 3px;
-    width: 100px;
+    width: 180px;
 }
 .inputChangeRepo:focus{
     outline: none;
@@ -118,14 +128,17 @@
 }
 
 .repoLink {
-    color: #3291fe;
+    cursor: pointer;
+    color: var(--accent);
     font-size: 0.85rem;
     text-decoration: none;
     background: none;
     border: none;
+    border-radius: 10px;
+    padding: 5px;
 }
 .repoLink:hover {
-    text-decoration: underline;
+    background-color: var(--transparent-blue-btns);
 }
 
 
@@ -134,18 +147,34 @@
     background:none;
     color: rgb(0, 162, 0);
     border: none;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    padding: 5px;
+    border-radius: 10px;
 }
 .statusText-done{
     cursor: pointer;
     background:none;
-    color: #3291fe;
+    color: var(--accent);
     border: none;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    padding: 5px;
+    border-radius: 10px;
 }
-.statusText-done:hover, .statusText-active:hover{
-    text-decoration: underline
+.statusText-active:hover{
+    background-color:  var(--transparent-green-btns)
+}
+.statusText-done:hover{
+    background-color: var(--transparent-blue-btns);
 }
 .dateOnCards{
     margin: 0;
     font-size: 12px;
-    color: gray;
+    color: var(--text-secondary);
+    font-weight: bold;
+    margin: 0;
 }
+

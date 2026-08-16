@@ -1,0 +1,171 @@
+.optionsBtn{
+    background: none;
+    border: none;
+    margin: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.optionsBtn:hover{
+    background-color: var(--transparent-blue-btns);
+    border-radius: 20px;
+}
+.exitOptions{
+    background: none;
+    border: none;
+}
+.exitOptions:hover{
+    transform: scale(1.10);
+    cursor: pointer;
+}
+.sntsIcon:hover{
+    transition: transform 1s ease;
+    transform: rotate(180deg);
+    cursor: pointer;
+}
+.sntsIcon{
+    background: none;
+    border: none;
+}
+.settingsDiv{
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    margin-top: 3px;
+    display: flex;
+    flex-direction: column;
+}
+.butnsOnSettings{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+}
+.butnsOnSettings button{
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    height: 33%;
+    cursor: pointer;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 10px;
+    margin-bottom: 5px;
+}
+.butnsOnSettings button:hover{
+    transform: scale(1.03);
+}
+.labelOnDelete{
+    text-align: center;
+    height: 10%;
+    font-size: 12px;
+    margin: 0;
+    margin-bottom: 5px;
+    width: 100%;
+}
+.deleteProjectBtn{
+    background-color: red;
+    color: var(--text-primary);
+}
+.modifyProjectBtn{
+    background-color: var(--accent);
+    color: var(--text-primary);
+}
+.labelOnStngs{
+    width: 100%;
+    margin: 0;
+    height: 10px;
+    font-size: 10px;
+    color: var(--text-secondary);
+}
+.askDeleteOrKeepDiv{
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.askDeleteOrKeepDiv button{
+    height: 40%;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    cursor: pointer;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 10px;
+}
+.askDeleteOrKeepDiv button:hover{
+    transform: scale(1.03);
+}
+
+.changingDescDiv{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.changingDescInput{
+    width: 90%;
+    height: 80%;
+    text-align: left;
+    border: none;
+    background: none;
+    resize: none;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) rgb(216, 216, 216);
+}
+.changingDescInput:focus{
+    outline: none;
+    border: none;
+    border-bottom:1px solid black;
+}
+
+.changingNameDiv{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.changinNameInput{
+    height: 20%;
+    width: 70%;
+    text-align: left;
+    border: 1px solid black;
+    background: none;
+    border-radius: 6px;
+    padding: 0 5px;
+}
+.changinNameInput:focus{
+    outline: none;
+}
+.btnsOKnGoBack{
+    display: flex;
+    gap: 15px;
+}
+.btnsOKnGoBack button{
+    cursor: pointer;
+    width: 100px;
+    padding: 5px;
+    margin-top: 5px;
+    color: var(--text-primary);
+    border: none;
+    border-radius: 10px;
+}
+.btnsOKnGoBack button:hover{
+    transform: scale(1.03);
+}
+.updateBtn{
+    background-color: var(--accent);
+}
+.goBackBtn{
+    background-color: red;
+}

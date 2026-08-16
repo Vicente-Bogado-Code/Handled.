@@ -8,7 +8,31 @@
     color: var(--text-secondary);
     font-weight: 550;
 }
-
+.DnotesBtn{
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    text-align: left;
+    padding: 10px 0;
+    font-size: 18px;
+}
+.CsetColor{
+    display: flex;
+    align-items: center;
+    color: var(--accent);
+}
+.CsetColorNonActive{
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+}
+.labelCrntNote{
+    margin: 0;
+    font-size:12px ;
+}
 .buttonOnNav{
     background: none;
     color: var(--text-primary);
@@ -90,7 +114,6 @@
 }
 
 .secondaryNotesDiv{
-    border-bottom: 1px solid var(--border);
     padding: 5px 0;
     margin-top: 5px;
     min-height: 80px;

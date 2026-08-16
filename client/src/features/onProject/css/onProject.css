@@ -46,6 +46,7 @@ html{
     padding:  0 0 5px 0;
 }
 
+
 .mainOnProject {
     flex: 1;
     overflow-x: hidden;
@@ -239,4 +240,8 @@ html{
 .namesOnSavingArray{
     color: var(--accent);
     font-weight: bold;
+}
+
+.hide{
+    display: none;
 }

@@ -6,9 +6,12 @@
   --text-secondary: #8b949e;
   --accent: #58a6ff;
   --accent-hover: #79c0ff;
+  --transparent-blue-btns: rgba(88, 166, 255, 0.15);
+  --transparent-green-btns: rgba(63, 185, 80, 0.15);
   font-family: sans-serif;
   cursor: default;
 }
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 body {
   margin: 0;

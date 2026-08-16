@@ -1,4 +1,4 @@
-import { registerUser } from '../api/auth';
+import { registerUser } from '../api/authRequests/auth';
 import { useState } from 'react';
 
 export default function RegisterPage({onSwitchMode, onLoginSuccess}){

@@ -1,4 +1,4 @@
-import { loginUser } from "../api/auth";
+import { loginUser } from "../api/authRequests/auth";
 import { useState } from "react";
 
 export default function LoginPage({onSwitchMode ,onLoginSuccess}){

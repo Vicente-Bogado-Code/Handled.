@@ -3,7 +3,7 @@ import HomePage from "./features/home-page/homePageMain";
 import AuthMainPortal from "./features/auth/authPortal";
 import CurrentProjectComp from "./features/onProject/onProject";
 import { useState } from "react";
-import { logout } from "./features/api/auth";
+import { logout } from "./features/api/authRequests/auth";
 
 export default function App(){
     const [user,setUser] = useState(null)

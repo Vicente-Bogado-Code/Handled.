@@ -1,12 +1,16 @@
 import '/src/features/home-page/css/homePageMain.css'
+//
 import ProjectCard from './project_cards';
+//
 import { useState,useEffect } from 'react';
-import { createProject } from '../api/createProject';
-import { getMyProjects } from '../api/getMyProjects';
+import { createProject } from '../api/createRequest/createProject';
+import { getMyProjects } from '../api/getDataRequests/getMyProjects';
 import { getDate } from '../otherJSfunctions/getExactTime';
-import { changeStatus } from '../api/changeStatus';
-import { changeGhRepo } from '../api/alterOther';
-import { deleteProject } from '../api/deleteProject';
+import { changeStatus } from '../api/alterRequests/changeStatus';
+import { changeGhRepo } from '../api/alterRequests/alterOther';
+import { deleteProject } from '../api/deleteRequests/deleteProject';
+import { changeProjectDesc } from '../api/alterRequests/changeDescName';
+import { changeProjectName } from '../api/alterRequests/changeDescName';
 
 export default function HomePage({ username, onLogout, handleProjectClick}) {
     const [projectName, setProjectName] = useState("")
@@ -32,6 +36,7 @@ export default function HomePage({ username, onLogout, handleProjectClick}) {
         else{setDescBorderColor("white")}
         return null
     }
+    //
     async function handleCreate() {
         const currentTime = getDate();
         console.log(currentTime)
@@ -45,38 +50,32 @@ export default function HomePage({ username, onLogout, handleProjectClick}) {
             setGh_repo("");
         }
     }
-
+    //
     async function handleStatus(project_id){
         const response = await changeStatus(project_id)
         if (response.Status === "Status changed"){
-            setMyProjects(prev =>
-                prev.map(project =>
-                    project.project_id === project_id
-                    ? {...project, status: response.new_status}
-                    : project
-                )
-            )
-        }
+            setMyProjects(prev => prev.map(project => project.project_id === project_id ? {...project, status:response.new_status} : project))}
     }
-
     async function handleChangeRepo(newLink, id){
         const request = await changeGhRepo(newLink,id)
-        if (request.Status === "Link changed"){
-            setMyProjects(prev => prev.map(p => p.project_id === id ? {...p, repoLink:newLink} : p))
-        }
-        else if (request.Status === "Invalid GitHub link"){
-            alert("Invalid GitHub link given")
-        }
-
+        if (request.Status === "Link changed"){ setMyProjects(prev => prev.map(p => p.project_id === id ? {...p, repoLink:newLink} : p)) }
+        else if (request.Status === "Invalid GitHub link"){alert("Invalid GitHub link given")}
     }
-
+    //
     async function handleDeleteProject(id) {
-        const request = await deleteProject(id)
-        if (request.response === "Project deleted"){
-            setMyProjects(prev => prev.filter(p => p.id === id))
-        }
-        
+    const request = await deleteProject(id)
+    if (request.Status === "Project deleted"){ setMyProjects(prev => prev.filter(p => p.project_id !== id))}
     }
+    //
+    async function handleChangeDesc(id,newDesc) {
+    const response = await changeProjectDesc(id,newDesc)
+    if (response.Status === "Description changed"){ setMyProjects(prev => prev.map(p => p.project_id === id ? {...p, description:newDesc} : p))}
+    }
+    async function handleChangeName(id,newName) {
+        const response = await changeProjectName(id,newName)
+        if (response.Status === "Name changed"){setMyProjects(prev => prev.map(p => p.project_id === id ? {...p, name:newName} : p))}
+    }
+
 
     const activeProjects = myProjects.filter(project => project.status === "active");
     const markedAsDone = myProjects.filter(project => project.status === "done")
@@ -109,7 +108,7 @@ export default function HomePage({ username, onLogout, handleProjectClick}) {
 
                             <input
                             style={{borderColor: descBorderColor}}
-                            type="text" placeholder="What will your project do? (Max 50 characters)" className="inputsOnHome" maxLength={50}
+                            type="text" placeholder="Tell us about your project (Max 150 characters)" className="inputsOnHome" maxLength={150}
                             value={description}
                             onChange={e => setDescription(e.target.value)}
                             />
@@ -128,16 +127,30 @@ export default function HomePage({ username, onLogout, handleProjectClick}) {
                     </div>
                 </div>
                 <div className='showMyProjects'>
-                    <h2 className="sectionTitle">Your <span className="activeSpan">active</span> projects cards</h2>
+                    <h2 className="sectionTitle">Your <span className="activeSpan">active</span> project/s</h2>
                     <div className="projectsGrid">
-                        {activeProjects.map(p => (<ProjectCard key={p.project_id} {...p} id={p.project_id} onClickHandle={handleStatus} onClickProject={handleProjectClick} changeRepo={handleChangeRepo}/>)
+                        {activeProjects.map(p => (<ProjectCard key={p.project_id} {...p} 
+                        id={p.project_id}
+                        onClickHandle={handleStatus}
+                        onClickProject={handleProjectClick}
+                        changeRepo={handleChangeRepo}
+                        deleteProject={handleDeleteProject}
+                        changeProjectDesc={handleChangeDesc}
+                        changeProjectName={handleChangeName}/>)
                     )}
                     </div>
                 </div>
                 <div className='showMyProjects'>
-                    <h2 className="sectionTitle">Marked as <span className='doneSpan'>done cards</span></h2>
+                    <h2 className="sectionTitle">Your marked as <span className='doneSpan'>done</span> project/s</h2>
                     <div className="projectsGrid">
-                        {markedAsDone.map(p => (<ProjectCard key={p.project_id} {...p} id={p.project_id} onClickHandle={handleStatus} onClickProject={handleProjectClick} changeRepo={handleChangeRepo}/>)
+                        {markedAsDone.map(p => (<ProjectCard key={p.project_id} {...p}
+                        id={p.project_id}
+                        onClickHandle={handleStatus}
+                        onClickProject={handleProjectClick}
+                        changeRepo={handleChangeRepo}
+                        deleteProject={handleDeleteProject}
+                        changeProjectDesc={handleChangeDesc}
+                        changeProjectName={handleChangeName}/>)
                     )}
                     </div>
                 </div>

@@ -39,7 +39,9 @@
     margin-bottom: 10px;
     padding: 5px 10px;
     border-radius: 4px;
-    border: none;
+    border:1px solid var(--text-primary);
+    background: none;
+    color: var(--text-primary);
 }
 #registerEmail{
     width: 55%;

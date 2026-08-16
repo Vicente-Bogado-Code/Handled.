@@ -9,7 +9,7 @@ export default function CounterToSave({seconds,modifiedNotesId,mySecNotesRef}){
         <div className="counterMainDiv">
             {arrayOfNames.length === 0 ? null : 
             <p className="autoSavingText">
-                Automaticly saving <span className="namesOnSavingArray">[{arrayOfNames}]</span> in {seconds}s</p>}
+                Automatically saving <span className="namesOnSavingArray">[{arrayOfNames}]</span> in {seconds}s</p>}
         </div>
     );
 }

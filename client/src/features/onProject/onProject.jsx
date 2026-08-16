@@ -1,19 +1,21 @@
-import { setCurrentProject } from "../api/setCurrentProject";
-import { useState, useEffect, useRef } from 'react';
-import { getSecondaryNotes } from "../api/getSecNotes"
-import { newSecondaryNote } from "../api/newSecNote"
-import { saveNoteContent } from "../api/saveNoteContent";
-import { deleteSecNote } from "../api/deleteSecNote";
+import { setCurrentProject } from "../api/createRequest/setCurrentProject";
+import { getSecondaryNotes } from "../api/getDataRequests/getSecNotes"
+import { newSecondaryNote } from "../api/createRequest/newSecNote"
+import { saveNoteContent } from "../api/alterRequests/saveNoteContent";
+import { deleteSecNote } from "../api/deleteRequests/deleteSecNote";
+import { useState, useEffect, useRef, use } from 'react';
+//
 import SecondaryProjectComp from "./ secNote";
 import Window from "./window";
 import TipTap from "./TipTap";
 import Toolbar from "./toolBar";
 import placeholder from "./placeholder";
 import CounterToSave from "./savingIn";
-import './css/onProject.css'
 import MainPlaceHolder from "./placeholder";
-import { ArrowLeft } from 'lucide-react';
-import { Plus,Minus } from 'lucide-react';
+//
+import './css/onProject.css'
+//
+import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight } from 'lucide-react';
 
 export default function CurrentProjectComp({ project_id , handleGoBack}) {
   const [editor,setEditor] = useState(null)
@@ -26,6 +28,8 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
   const activeSnote = mySecNotes.find(note => note.id === activeWindowId);
   const activeSnoteId = activeSnote ? activeSnote.id : null;
   const currentNoteContent = activeSnote ? activeSnote.content : "";
+  const currentNoteImportance = activeSnote ? activeSnote.importance : "";
+  const currentNoteName = activeSnote ? activeSnote.name : "";
   const Snotes = mySecNotes.filter(note => note.importance === "S")
   const Dnotes = mySecNotes.filter(note => note.importance === "D")
   const Mnote =  mySecNotes.filter(note => note.importance === "M")
@@ -38,6 +42,8 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
   const secondsRef = useRef(10)
   const [seconds, setSeconds] = useState(10)
   const [saving,setSaving] = useState(false)
+  const [visualDnotes, setVisualDnotes] = useState(true)
+  const [visualSnotes,setVisualSnotes] = useState(true)
   
   useEffect(() =>{
     mySecNotesRef.current = mySecNotes;
@@ -178,39 +184,43 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
       </div>
 
       <div className="secondaryNotesDiv">
-        <p className="mainNoteLabel">default</p>
-        {Dnotes.map(Dnote => <SecondaryProjectComp
-         key={Dnote.id}
-         importance={"D"}
-         name={Dnote.name}
-         noteId={Dnote.id}
-         content={Dnote.content}
-         windows={windows}
-         setWindow={setWindows}
-         activeWindowId={activeWindowId}
-         setActiveWindowId={setActiveWindowId}
-         modifiedNotesIds={modifiedNotesId}
+        <button className="DnotesBtn" onClick={() => { visualDnotes === false ? setVisualDnotes(true) : setVisualDnotes(false)}}>Default<span className={visualDnotes ? "CsetColor" : "CsetColorNonActive"}>{visualDnotes === true ? <ChevronDown size={22}/> : <ChevronRight size={22}/>}</span>{currentNoteImportance === "D" ? <p className="labelCrntNote">{currentNoteName}</p> : null}</button>
+        <div className={visualDnotes === true ? null : "hide"}>
+          {Dnotes.map(Dnote => <SecondaryProjectComp
+          key={Dnote.id}
+          importance={"D"}
+          name={Dnote.name}
+          noteId={Dnote.id}
+          content={Dnote.content}
+          windows={windows}
+          setWindow={setWindows}
+          activeWindowId={activeWindowId}
+          setActiveWindowId={setActiveWindowId}
+          modifiedNotesIds={modifiedNotesId}
          />)}
-        <p className="mainNoteLabel">created</p>
+        </div>
         <div className={isDeleting === true ? "overlayDlt" : "hide"}>
           <h3>Are you sure?</h3>
           <p>This action can't be undone.</p>
           <button className="permaDltNoteBtn" onClick={() => {handleDeleteSnote(activeSnoteId); setIsDeleting(false)}}>Yes, delete</button>
           <button className="dontDltBtn" onClick={() => setIsDeleting(false)}>No, go back</button>
         </div>
-        {Snotes.map(Snote => <SecondaryProjectComp
-         key={Snote.id}
-         importance={"S"}
-         name={Snote.name}
-         noteId={Snote.id}
-         content={Snote.content}
-         windows={windows}
-         setWindow={setWindows}
-         activeWindowId={activeWindowId}
-         setActiveWindowId={setActiveWindowId}
-         setDeleting={setIsDeleting}
-         modifiedNotesIds={modifiedNotesId}
+        <button className="DnotesBtn" onClick={() => { visualSnotes === false ? setVisualSnotes(true) : setVisualSnotes(false)}}>Created<span className={visualSnotes ? "CsetColor" : "CsetColorNonActive"}>{visualSnotes === true ? <ChevronDown size={22}/> : <ChevronRight size={22}/>}</span>{currentNoteImportance === "S" ? <p className="labelCrntNote">{currentNoteName}</p> : null}</button>
+        <div className={visualSnotes === true ? null : "hide"}>
+           {Snotes.map(Snote => <SecondaryProjectComp
+           key={Snote.id}
+           importance={"S"}
+           name={Snote.name}
+           noteId={Snote.id}
+           content={Snote.content}
+           windows={windows}
+           setWindow={setWindows}
+           activeWindowId={activeWindowId}
+           setActiveWindowId={setActiveWindowId}
+           setDeleting={setIsDeleting}
+           modifiedNotesIds={modifiedNotesId}
          />)}
+        </div>
       </div>
     </nav>
     <main className="mainOnProject">
