@@ -32,7 +32,6 @@
   flex: 1 1 auto;
 }
 
-/* hide native checkbox, draw a custom one */
 .tiptap.ProseMirror ul[data-type="taskList"] input[type="checkbox"] {
   appearance: none;
   -webkit-appearance: none;
@@ -68,7 +67,6 @@
   transform: rotate(45deg);
 }
 
-/* strike through completed task text, common convention */
 .tiptap.ProseMirror ul[data-type="taskList"] li[data-checked="true"] > div {
   color: var(--text-secondary);
   text-decoration: line-through;

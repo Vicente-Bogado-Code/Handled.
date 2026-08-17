@@ -1,0 +1,211 @@
+.createNewProjects {
+    background-color: rgba(0, 0, 0, 0.75);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+}
+
+.newProjectForm {
+    background-color: var(--bg-secondary);
+    padding: 20px 32px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    width: 40%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+
+.headerOnCreationProject {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 4px;
+}
+.labelANdNewProjectLabel{
+    display: flex;
+    flex-direction: column;
+    height: 90%;
+}
+.labelCanBeChanged{
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+.goBackOnCreating {
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border-radius: 8px;
+    border: none;
+    color: var(--text-secondary);
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.goBackOnCreating:hover {
+    background-color: rgba(255, 105, 105, 0.95);
+    color: var(--text-primary);
+}
+
+.newProjectLabel {
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    font-weight: 550;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    margin-bottom: -8px;
+}
+
+.nameInputCreate, .descInputCreate, .ghlinkInputCreate {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: border-color 0.15s ease;
+}
+
+.nameInputCreate:focus, .descInputCreate:focus, .ghlinkInputCreate:focus {
+    outline: none;
+    border-color: var(--accent);
+}
+
+.nameInputCreate {
+    width: 60%;
+    height: 40px;
+    padding: 0 12px;
+    font-size: 1rem;
+}
+
+.descInputCreate {
+    font-size: 0.9rem;
+    padding: 12px;
+    height: 140px;
+    resize: none;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) var(--bg-primary);
+    line-height: 1.5;
+}
+.gitLogonInput{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-primary);
+}
+.ghlinkInputCreate{
+    width: 100%;
+    height: 40px;
+    padding: 0 12px;
+    font-size: 1rem;
+}
+
+.advanceSetBtn, .advanceSetBtnActive{
+    cursor: pointer;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    color: var(--text-primary);
+    background: none;
+    padding: 5px;
+    border-radius: 10px;
+    border: none;
+}
+.advanceSetBtn:hover{
+    background-color: var(--transparent-blue-btns);
+}
+.advanceSetBtnActive{
+    color: var(--accent);
+}
+.advSettingsDiv{
+    padding: 5px 2px;
+    border-left: 1px solid var(--text-primary);
+    margin-left: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+.checkBoxOnAdvSettings, .checkBoxOnAdvSettingsYesRepo{
+    cursor: pointer;
+    color: var(--text-primary);
+    margin-left: 5px;
+    font-size: smaller;
+    width: fit-content;
+}
+.checkBoxOnAdvSettings:hover{
+    text-decoration: underline;
+}
+.checkBoxOnAdvSettingsYesRepo, .checkBoxOnAdvSettingsYesRepo:hover{
+    margin-left: 10px;
+}
+
+
+.settingRow {
+  position: relative;
+  cursor: pointer;
+}
+.infoTooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 0;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.8rem;
+  width: 220px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 0.15s ease, transform 0.15s ease, visibility 0.15s;
+  z-index: 20;
+  pointer-events: none; 
+}
+.settingRow:hover .infoTooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.labelOnHover{
+    font-size: smaller;
+    color: var(--accent);
+    margin: 0;
+    margin-top: 4px;
+}
+.labelOnHoverRed{
+    font-size: smaller;
+    color: red;
+    margin: 0;
+    margin-top: 4px;
+}
+#createProjectBtn {
+    cursor: pointer;
+    padding: 10px 40px;
+    border-radius: 10px;
+    background-color: var(--accent);
+    color: var(--bg-primary);
+    border: none;
+    font-weight: 500;
+    align-self: flex-end;
+    transition: opacity 0.15s ease;
+}
+
+#createProjectBtn:hover {
+    opacity: 0.85;
+}

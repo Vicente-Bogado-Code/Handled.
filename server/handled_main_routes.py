@@ -27,22 +27,23 @@ def get_user_data(request):
 """
 MAIN ROUTES IN THIS FILE (in order):
 @/register,
-@/login, 
-@/logout, 
-#
-@/addProject, 
+@/login,
+@/logout,
 @/getMyProjects,
-@/changeStatus 
+@/addProject,
+@/deleteProject,
+@/changeDescription,
+@/changeName,
+@/changeStatus,
+@/changeRepo,
 @/setCurrentProject,
-# 
-@/addMainNote, 
-@/getMainNotes, 
-@/setCurrentMainNote
-#
+@/addMainNote,
+@/getMainNotes,
 @/addSecondaryNote,
-@/getSecondaryNotes
+@/getSecondaryNotes,
+@/deleteSnote,
+@/saveSnoteContent
 """
-
 @handled_server.route("/register",methods=["POST"])
 def register_user():
     username, password, get_email = get_user_data(request)
