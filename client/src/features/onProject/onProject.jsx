@@ -47,11 +47,9 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
   
   useEffect(() =>{
     mySecNotesRef.current = mySecNotes;
-    console.log("Content of some note changed");
   }, [mySecNotes])
   useEffect(() =>{
     modifiedNotesIdRef.current = modifiedNotesId;
-    console.log("New note ID added");
   }, [modifiedNotesId])
 
   useEffect(() => {

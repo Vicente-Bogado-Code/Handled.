@@ -26,7 +26,7 @@
     margin: 0 16px 16px 16px;
 }
 
-.avatarCircle {
+.avatarCircle, .avatarCircleOnHomePage {
     font-family: sans-serif;
     width: 48px;
     height: 48px;
@@ -40,7 +40,7 @@
     font-size: 1.2rem;
 }
 
-.username {
+.username, .usernamenHomePage {
     color: var(--text-primary);
     font-weight: 600;
     margin: 0;
@@ -49,11 +49,17 @@
 .sidebarNav {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 20px;
     padding: 0 12px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-.sidebarNav button {
+.nonActiveW,.activeWindow, .sourceCodeBtn {
+    width: 100%;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     cursor: pointer;
     background: none;
     border: none;
@@ -65,9 +71,17 @@
     border-radius: 6px;
     transition: background-color 0.15s ease, color 0.15s ease;
 }
-.sidebarNav button:hover {
+.nonActiveW:hover {
     background-color: var(--bg-primary);
     color: var(--text-primary);
+}
+.activeWindow{
+    background-color: var(--accent);
+    color: var(--text-primary);
+}
+.sourceCodeBtn:hover{
+    color: blue;
+    text-decoration: underline;
 }
 
 .homePageMainDiv {
@@ -82,31 +96,120 @@
     font-size: 1.3rem;
     margin: 0 0 16px 0;
 }
-.allFoundedProjects{
-    width: 75%;
-}
 .projectCreation{
     display: flex;
+    flex-direction: column;
     padding: 32px;
     width: 25%;
 }
 .startCreatingProjctBtn{
-    background-color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    background-color: rgb(48, 144, 48);
+    font-weight: 550;
+    color: var(--text-primary);
+    width: fit-content;
+    height: 30px;
+    padding: 10px;
     border: none;
     border-radius: 10px;
+    transition: transform 0.2s ease ;
+}
+.startCreatingProjctBtn:hover{
+    background-color: rgb(46, 123, 46);
 }
 
-
-.showMyActiveProjects, .showMyDoneProjects {
-    padding: 32px;
-    max-height: 310px;
-    overflow-y: auto;
+.navProjectsDiv{
+    border-bottom: 1px solid var(--border);
+    width: 100%;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 10px;
+}
+.searchInputDiv{
+    width: fit-content;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.searchProjectInput{
+    width: 300px;
+    height: 25px;
+    border: solid 1px var(--border);
+    background: none;
+    padding: 8px;
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 15px;
+}
+.searchProjectInput:focus{
+    outline: none;
+    border: 1px solid var(--accent);
+}
+.searchIcon{
+    color: var(--text-primary);
+}
+.orLbl{
+    color: var(--text-secondary);
+}
+.showBtn{
+    display: flex;
+    gap: 10px;
     height: 50%;
 }
-
+.filterByBtn, .filterByBtnActive{
+    cursor: pointer;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    width: fit-content;
+    height: 100%;
+    border-radius: 8px;
+}
+.filterByBtn:hover{
+    color: var(--text-primary);
+}
+.filterByBtnActive{
+    transform: scale(1.02);
+    color: var(--accent);
+}
+.noProjectFoundLabel{
+    text-align: center;
+    color: rgb(230, 85, 85);
+}
+.showMyActiveProjects {
+    padding: 32px;
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) var(--bg-primary);
+}
 
 .projectsGrid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 45px;
+}
+
+.userInfoOnHomePageDiv{
+    display: flex;
+    margin: auto;
+}
+.avatarNNameDiv{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 50px;
+}
+.avatarCircleOnHomePage{
+    width: 128px;
+    height: 128px;
+}
+.usernamenHomePage{
+    font-size: 30px;
 }

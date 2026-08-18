@@ -53,9 +53,9 @@ function SettingsComp({makingChanges, isDeleting, setIsDeleting, isChangingName,
                 }}>Go back</button></div>
             </div> : 
             <div className='changingNameDiv'>
-                <input type="text" placeholder="Project name? (max 20 characters)"
+                <input type="text" placeholder="Project name? (max 25 characters)"
                     className="changinNameInput"  
-                    maxLength={20}
+                    maxLength={25}
                     onClick={(e) => e.stopPropagation()} 
                     value={newName}
                     onChange={e => setNewName(e.target.value)}/>

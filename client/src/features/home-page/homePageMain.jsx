@@ -1,9 +1,12 @@
 import './css/homePageMain.css'
 import './css/createProjectForm.css'
 //
-import ProjectCard from './project_cards';
+import MyProjects from './navComponents/myProjectsComp';
+import UserSettings from './navComponents/userComp';
+import SettingsComp from './navComponents/settingsComp';
+import Contact from './navComponents/contactComp';
 //
-import { useState,useEffect, use } from 'react';
+import { useState,useEffect } from 'react';
 import { createProject } from '../api/createRequest/createProject';
 import { getMyProjects } from '../api/getDataRequests/getMyProjects';
 import { getDate } from '../otherJSfunctions/getExactTime';
@@ -12,7 +15,7 @@ import { changeGhRepo } from '../api/alterRequests/alterOther';
 import { deleteProject } from '../api/deleteRequests/deleteProject';
 import { changeProjectDesc } from '../api/alterRequests/changeDescName';
 import { changeProjectName } from '../api/alterRequests/changeDescName';
-import { Plus, Settings, X } from 'lucide-react';
+import { Settings, X, User, FolderOpen, Mail, LogOut, HandHelping } from 'lucide-react';
 import { FaGithub } from "react-icons/fa"
 
 export default function HomePage({ username, onLogout, handleProjectClick}) {
@@ -23,13 +26,15 @@ export default function HomePage({ username, onLogout, handleProjectClick}) {
     const [myProjects,setMyProjects] = useState([])
     const [isCreating,setIsCreating] = useState(false)
     const [advanceSettings, setAdvanceSettings] = useState(false)
-    //advance stns
     const [choiceRepo, setChoiceRepo] = useState(true)
     const [choiceCommitHistory,setChoiceCommitHistory]= useState(true)
     const [choiceMainNote, setChoiceMainNote] = useState(true)
     const [choiceREADMEnote, setChoiceREADMEnote] = useState(true)
     const [choicePublic, setChoicePublic] = useState(false)
-
+    const [showActive, setShowActive] = useState(true)
+    const [showDone, setShowDone] = useState(true)
+    const [searchTerm, setSearchTerm] = useState("")
+    const [onWindow, setOnWindow] = useState(0) //0 Projects, 1 User, 2 settings, 3 contact
     useEffect(() => { getMyProjects().then(data => setMyProjects(data.projects)); }, [])
 
     function verifyInput(){
@@ -77,159 +82,78 @@ export default function HomePage({ username, onLogout, handleProjectClick}) {
         if (response.Status === "Name changed"){setMyProjects(prev => prev.map(p => p.project_id === id ? {...p, name:newName} : p))}
     }
 
+    const activeProjects = myProjects.filter(project => project.status === "active").filter(project => project.name.toLowerCase().includes(searchTerm.toLowerCase()))
 
-    const activeProjects = myProjects.filter(project => project.status === "active");
-    const markedAsDone = myProjects.filter(project => project.status === "done")
+    const markedAsDone = myProjects.filter(project => project.status === "done").filter(project => project.name.toLowerCase().includes(searchTerm.toLowerCase()))
+
+    let projectsFound;
+    if (markedAsDone.length + activeProjects.length === 0){projectsFound = false} else{projectsFound = true}
 
     return (
         <div className="homePageWrapper">
             <aside className="sidebar">
                 <div className="profileSection">
-                    <div className="avatarCircle">{username.charAt(0)}</div>
+                    <div className="avatarCircle"><User size={18}/></div>
                     <p className="username"> {username}</p>
                 </div>
                 <nav className="sidebarNav">
-                    <button>My projects</button>
-                    <button>Settings</button>
-                    <button onClick={onLogout}>Logout</button>
+                    <div>
+                        <button onClick={() => {setOnWindow(0)}} className={onWindow === 0 ? "activeWindow" : "nonActiveW"}> <FolderOpen size={18}/>My projects</button>
+                        <button onClick={() => {setOnWindow(1)}} className={onWindow === 1 ? "activeWindow" : "nonActiveW"}><User size={18}/> User</button>
+                        <button onClick={() => {setOnWindow(2)}} className={onWindow === 2 ? "activeWindow" : "nonActiveW"}><Settings size={18}/>Settings</button>
+                    </div>
+                    <div>
+                        <button onClick={() => {setOnWindow(3)}} className={onWindow === 3 ? "activeWindow" : "nonActiveW"}><Mail size={18}/>Contact</button>
+                        <button onClick={onLogout} className='nonActiveW'><LogOut size={18}/>Logout</button>
+                    </div>
+                    <div>
+                         <a className='sourceCodeBtn' href='https://github.com/Vicente-Bogado-Code/Handled.' target='_blank' ><FaGithub size={18}/>Handled source code</a>
+                         <button onClick={() => {setOnWindow(4)}} className={onWindow === 4 ? "activeWindow" : "nonActiveW"}> <HandHelping size={18}/>Contribute</button>
+                    </div>
                 </nav>
             </aside>
 
             <main className='homePageMainDiv'>
-                <div className='projectCreation'>
-                    <button className='startCreatingProjctBtn' onClick={() =>{{setIsCreating(true)}}}>
-                        Create new project
-                    </button>
-                    {isCreating ? (
-                        <div className='createNewProjects'>
-                            <div className="newProjectForm">
-                                <div className='headerOnCreationProject'>
-                                    <div className='labelANdNewProjectLabel'>
-                                        <h2 className="newProjectLabel">What are we <span style={{color:"var(--accent"}}>working</span> on?</h2>
-                                        <p className='labelCanBeChanged'>All input values can be changed later</p>
-                                    </div>
-                                    <button onClick={() => { setIsCreating(false)}}
-                                        className='goBackOnCreating'> <X size={16} />
-                                    </button>
-                               </div>
-                                <input 
-                                type="text" placeholder="Project name? (max 20 characters)" className="nameInputCreate" maxLength={20}
-                                value={projectName}
-                                onChange={e => setProjectName(e.target.value)}
-                                />
-
-                                <textarea
-                                type="text" placeholder="Tell us about your project (Max 150 characters)" className="descInputCreate" maxLength={150}
-                                value={description}
-                                onChange={e => setDescription(e.target.value)}
-                                />
-
-                               {choiceRepo ? <div className='gitLogonInput'>
-                                    <FaGithub size={28}/>
-                                    <input type="text" placeholder="https://github.com/username/repository" className="ghlinkInputCreate" value={gh_repo} onChange={e => setGh_repo(e.target.value)}/>
-                                </div> : null}
-
-                                <button className={advanceSettings ? 'advanceSetBtnActive' : "advanceSetBtn"} onClick={() =>{
-                                    {advanceSettings ? setAdvanceSettings(false) : setAdvanceSettings(true)}
-                                }}><Settings size={16}/>Advance settings</button>
-                                
-                               {advanceSettings ? 
-                               <div className='advSettingsDiv'>
-                                <label className='checkBoxOnAdvSettings settingRow'>
-                                    <input type="checkBox"
-                                    checked={choiceMainNote}
-                                    onChange={(e) => {choiceMainNote ? setChoiceMainNote(false) : setChoiceMainNote(true)}}
-                                    />
-                                     Include MAIN note
-                                     <div className='infoTooltip'>
-                                         If active, a main (M) note will be created by default on your project
-                                         <p className='labelOnHover'>You can change this option value anytime</p> 
-                                    </div>
-                                </label>
-                                <label className='checkBoxOnAdvSettings settingRow'>
-                                    <input type="checkBox"
-                                    checked={choiceREADMEnote}
-                                    onChange={(e) => {choiceREADMEnote ? setChoiceREADMEnote(false) : setChoiceREADMEnote(true)}}
-                                    />
-                                     Include README note
-                                     <div className='infoTooltip'>
-                                         If active, a README (D) note will be created by default on your project
-                                         <p className='labelOnHover'>You can change this option value anytime</p> 
-                                    </div>
-                                </label>
-                                <label className='checkBoxOnAdvSettings settingRow'>
-                                    <input type="checkBox"
-                                     checked={choiceRepo}
-                                     onChange={(e) => {choiceRepo ? setChoiceRepo(false) : setChoiceRepo(true)}}
-                                     />
-                                     Include GitHub repository link
-                                     <div className='infoTooltip'>
-                                         If active, you will be able to link a GitHub (only) repository to this project
-                                         <p className='labelOnHover'>You can change this option value anytime</p> 
-                                    </div>
-                                </label>
-                                {choiceRepo ? <label className='checkBoxOnAdvSettingsYesRepo settingRow'>
-                                    --
-                                    <input type="checkBox"
-                                    checked={choiceCommitHistory}
-                                    onChange={(e) => {choiceCommitHistory ? setChoiceCommitHistory(false) : setChoiceCommitHistory(true)}}
-                                    />
-                                     Include commit history on a note
-                                     <div className='infoTooltip'>
-                                         If active, a Commit history (D) note will be created by default to track the commits of the given repository
-                                         <p className='labelOnHoverRed'>This option value is PERMANENT (can't be changed later)</p> 
-                                    </div>
-                                </label> : null}
-                                <label className='checkBoxOnAdvSettings settingRow'>
-                                    <input type="checkBox"
-                                    checked={choicePublic}
-                                    onChange={(e) => {choicePublic ? setChoicePublic(false) : setChoicePublic(true)}}
-                                    />
-                                     Make this project public
-                                     <div className='infoTooltip'>
-                                         If active, anyone with a link can access your project and see it's content
-                                         <p className='labelOnHover'>You can change this option value anytime</p> 
-                                    </div>
-                                </label>
-                               </div> : null}
-                                <button type="submit" id="createProjectBtn" onClick={handleCreate}><Plus size={16}/></button>
-                           </div>
-                        </div>) :
-                        <div> 
-                            <h2>Is not creating</h2>
-                        </div>
-                        }
-                </div>
-                <div className='allFoundedProjects'>
-                <div className='showMyActiveProjects'>
-                    <h2 className="sectionTitle">Your <span className="activeSpan">active</span> project/s</h2>
-                    <div className="projectsGrid">
-                        {activeProjects.map(p => (<ProjectCard key={p.project_id} {...p} 
-                        id={p.project_id}
-                        onClickHandle={handleStatus}
-                        onClickProject={handleProjectClick}
-                        changeRepo={handleChangeRepo}
-                        deleteProject={handleDeleteProject}
-                        changeProjectDesc={handleChangeDesc}
-                        changeProjectName={handleChangeName}/>)
-                    )}
-                    </div>
-                </div>
-                <div className='showMyDoneProjects'>
-                    <h2 className="sectionTitle">Your marked as <span className='doneSpan'>done</span> project/s</h2>
-                    <div className="projectsGrid">
-                        {markedAsDone.map(p => (<ProjectCard key={p.project_id} {...p}
-                        id={p.project_id}
-                        onClickHandle={handleStatus}
-                        onClickProject={handleProjectClick}
-                        changeRepo={handleChangeRepo}
-                        deleteProject={handleDeleteProject}
-                        changeProjectDesc={handleChangeDesc}
-                        changeProjectName={handleChangeName}/>)
-                    )}
-                    </div>
-                </div>
-                </div>
+                {onWindow === 0 ? <MyProjects
+                    isCreating={isCreating}
+                    setIsCreating={setIsCreating}
+                    projectName={projectName}
+                    setProjectName={setProjectName}
+                    description={description}
+                    setDescription={setDescription}
+                    choiceRepo={choiceRepo}
+                    setChoiceRepo={setChoiceRepo}
+                    gh_repo={gh_repo}
+                    setGh_repo={setGh_repo}
+                    advanceSettings={advanceSettings}
+                    setAdvanceSettings={setAdvanceSettings}
+                    choiceMainNote={choiceMainNote}
+                    setChoiceMainNote={setChoiceMainNote}
+                    choiceREADMEnote={choiceREADMEnote}
+                    setChoiceREADMEnote={setChoiceREADMEnote}
+                    choiceCommitHistory={choiceCommitHistory}
+                    setChoiceCommitHistory={setChoiceCommitHistory}
+                    choicePublic={choicePublic}
+                    setChoicePublic={setChoicePublic}
+                    handleCreate={handleCreate}
+                    username={username}
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    showActive={showActive}
+                    setShowActive={setShowActive}
+                    showDone={showDone}
+                    setShowDone={setShowDone}
+                    projectsFound={projectsFound}
+                    activeProjects={activeProjects}
+                    markedAsDone={markedAsDone}
+                    handleStatus={handleStatus}
+                    handleProjectClick={handleProjectClick}
+                    handleChangeRepo={handleChangeRepo}
+                    handleDeleteProject={handleDeleteProject}
+                    handleChangeDesc={handleChangeDesc}
+                    handleChangeName={handleChangeName}
+                /> : onWindow === 1 ? <UserSettings/> : onWindow === 2 ? <SettingsComp/> : onWindow === 3 ? <Contact/> : null}
+               
             </main>
         </div>
     );
