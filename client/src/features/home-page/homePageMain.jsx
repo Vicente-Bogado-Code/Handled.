@@ -15,10 +15,11 @@ import { changeGhRepo } from '../api/alterRequests/alterOther';
 import { deleteProject } from '../api/deleteRequests/deleteProject';
 import { changeProjectDesc } from '../api/alterRequests/changeDescName';
 import { changeProjectName } from '../api/alterRequests/changeDescName';
-import { Settings, X, User, FolderOpen, Mail, LogOut, HandHelping } from 'lucide-react';
+import { Settings, X, User, FolderOpen, Mail, LogOut, GitPullRequest } from 'lucide-react';
 import { FaGithub } from "react-icons/fa"
+import { getMyData } from '../api/getDataRequests/getWhoAmI';
 
-export default function HomePage({ username, onLogout, handleProjectClick}) {
+export default function HomePage({ username,setUsername, email, onLogout, handleProjectClick}) {
     const [projectName, setProjectName] = useState("")
     const [description, setDescription] = useState("")
     const [gh_repo, setGh_repo] = useState("")
@@ -35,6 +36,7 @@ export default function HomePage({ username, onLogout, handleProjectClick}) {
     const [showDone, setShowDone] = useState(true)
     const [searchTerm, setSearchTerm] = useState("")
     const [onWindow, setOnWindow] = useState(0) //0 Projects, 1 User, 2 settings, 3 contact
+    const [desc,setDesc] = useState("")
     useEffect(() => { getMyProjects().then(data => setMyProjects(data.projects)); }, [])
 
     function verifyInput(){
@@ -42,6 +44,17 @@ export default function HomePage({ username, onLogout, handleProjectClick}) {
         if (description === ""){return "Project description can't be empty"}
         return null
     }
+    useEffect(() => {
+    async function getMe() {
+      const r = await getMyData();
+      if (r.Status === "Data retrieved") {
+        setDesc(r.Me.description)
+      } else {
+        alert("Server failed, try again later.");
+      }
+    }
+    getMe();
+  }, []);
     //
     async function handleCreate() {
         const currentTime = getDate();
@@ -99,7 +112,7 @@ export default function HomePage({ username, onLogout, handleProjectClick}) {
                 <nav className="sidebarNav">
                     <div>
                         <button onClick={() => {setOnWindow(0)}} className={onWindow === 0 ? "activeWindow" : "nonActiveW"}> <FolderOpen size={18}/>My projects</button>
-                        <button onClick={() => {setOnWindow(1)}} className={onWindow === 1 ? "activeWindow" : "nonActiveW"}><User size={18}/> User</button>
+                        <button onClick={() => {setOnWindow(1)}} className={onWindow === 1 ? "activeWindow" : "nonActiveW"}><User size={18}/> Account</button>
                         <button onClick={() => {setOnWindow(2)}} className={onWindow === 2 ? "activeWindow" : "nonActiveW"}><Settings size={18}/>Settings</button>
                     </div>
                     <div>
@@ -108,7 +121,7 @@ export default function HomePage({ username, onLogout, handleProjectClick}) {
                     </div>
                     <div>
                          <a className='sourceCodeBtn' href='https://github.com/Vicente-Bogado-Code/Handled.' target='_blank' ><FaGithub size={18}/>Handled source code</a>
-                         <button onClick={() => {setOnWindow(4)}} className={onWindow === 4 ? "activeWindow" : "nonActiveW"}> <HandHelping size={18}/>Contribute</button>
+                         <button onClick={() => {setOnWindow(4)}} className={onWindow === 4 ? "activeWindow" : "nonActiveW"}> <GitPullRequest size={18}/>Contribute</button>
                     </div>
                 </nav>
             </aside>
@@ -152,7 +165,8 @@ export default function HomePage({ username, onLogout, handleProjectClick}) {
                     handleDeleteProject={handleDeleteProject}
                     handleChangeDesc={handleChangeDesc}
                     handleChangeName={handleChangeName}
-                /> : onWindow === 1 ? <UserSettings/> : onWindow === 2 ? <SettingsComp/> : onWindow === 3 ? <Contact/> : null}
+                    fromDbUserDescription={desc}
+                /> : onWindow === 1 ? <UserSettings username={username} setUsername={setUsername} email={email} setDesc={setDesc} onLogout={onLogout}/> : onWindow === 2 ? <SettingsComp/> : onWindow === 3 ? <Contact/> : null}
                
             </main>
         </div>

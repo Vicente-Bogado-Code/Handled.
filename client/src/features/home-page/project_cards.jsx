@@ -26,7 +26,7 @@ function SettingsComp({makingChanges, isDeleting, setIsDeleting, isChangingName,
                 }}><SquarePen size={16}/>Change project description</button>
             </div> : 
             (isDeleting === true ? <div className='askDeleteOrKeepDiv'>
-                <p className='labelOnDelete'>This project will be <strong>PERMANENTLY</strong> deleted</p>
+                <p className='labelOnDelete'>This project will be <strong style={{color:"red"}}>PERMANENTLY</strong> deleted</p>
                 <button className='modifyProjectBtn' onClick={(e) => {
                     e.stopPropagation()
                     setIsDeleting(false)

@@ -34,7 +34,7 @@ export default function ProjectCreationForm({
                 />
 
                 <textarea
-                type="text" placeholder="Tell us about your project (Max 150 characters)" className="descInputCreate" maxLength={150}
+                type="text" placeholder="Tell us about your project (Max 150 characters)" className="descInputCreate" maxLength={350}
                 value={description}
                 onChange={e => setDescription(e.target.value)}
                 />

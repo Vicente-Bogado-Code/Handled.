@@ -15,7 +15,7 @@ export default function App(){
     return(
         <>
         <Header/>
-        {user ? (currentId ? <CurrentProjectComp project_id={currentId} handleGoBack={setCurrentId}/> : <HomePage username={user} onLogout={handleLogout} handleProjectClick={setCurrentId}/>)
+        {user ? (currentId ? <CurrentProjectComp project_id={currentId} handleGoBack={setCurrentId}/> : <HomePage username={user} setUsername={setUser} onLogout={handleLogout} handleProjectClick={setCurrentId}/>)
         : <AuthMainPortal onLoginSuccess={setUser}/>}
     </>
     );

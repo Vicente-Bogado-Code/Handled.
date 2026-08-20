@@ -1,6 +1,6 @@
 import { registerUser } from '../api/authRequests/auth';
 import { useState } from 'react';
-
+import { Info } from "lucide-react"
 export default function RegisterPage({onSwitchMode, onLoginSuccess}){
      const [username,setUsername] = useState("")
      const [password, setPassword] = useState("")
@@ -19,7 +19,7 @@ export default function RegisterPage({onSwitchMode, onLoginSuccess}){
      async function handleRegistration() {
      const check = validateRegister(username,password,email)
      if (check){
-        setError(`»${check}`);
+        setError(check);
         return
      }
      const response = await registerUser(username,password,email)
@@ -66,9 +66,9 @@ export default function RegisterPage({onSwitchMode, onLoginSuccess}){
             Handled is open source! You can check it out here: <a href="https://github.com/Vicente-Bogado-Code/Handled."> Source code</a>.
        </p>
        <div className='errorDiv'>
-         <p> 
-          {error}
-         </p>
+         {error ? <p> 
+          <Info size={16}/>{error}
+         </p> : null}
        </div>
     </div>
     );

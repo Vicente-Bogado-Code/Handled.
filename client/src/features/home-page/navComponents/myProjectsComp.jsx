@@ -46,7 +46,8 @@ export default function MyProjects({
     handleChangeRepo,
     handleDeleteProject,
     handleChangeDesc,
-    handleChangeName
+    handleChangeName,
+    fromDbUserDescription
 }){
     return (
         <>
@@ -80,10 +81,10 @@ export default function MyProjects({
                             <div className="avatarCircleOnHomePage">
                                 <User size={40} />
                             </div>
-
-                            <p className="usernamenHomePage">
-                                {username}
-                            </p>
+                            <div className="usernameNdesc">
+                                <p className="usernamenHomePage">{username}</p>
+                                <p className='descOnHomePage'>{fromDbUserDescription}</p>
+                            </div>
                         </div>
                     </div>
                 )}
@@ -127,7 +128,7 @@ export default function MyProjects({
                         <button
                             className={
                                 showDone
-                                    ? "filterByBtnActive"
+                                    ? "filterByBtnGreenActive"
                                     : "filterByBtn"
                             }
                             onClick={() => setShowDone(!showDone)}

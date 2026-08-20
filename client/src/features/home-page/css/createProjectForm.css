@@ -41,6 +41,7 @@
 .labelCanBeChanged{
     font-size: 12px;
     color: var(--text-secondary);
+    margin-top: 10px;
 }
 .goBackOnCreating {
     cursor: pointer;

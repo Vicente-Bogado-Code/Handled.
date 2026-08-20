@@ -1,5 +1,6 @@
 import { loginUser } from "../api/authRequests/auth";
 import { useState } from "react";
+import { Info } from "lucide-react"
 
 export default function LoginPage({onSwitchMode ,onLoginSuccess}){
     const [username,setUsername] = useState("")
@@ -17,9 +18,10 @@ export default function LoginPage({onSwitchMode ,onLoginSuccess}){
         }
         if (response.Status === "Valid credentials"){
             onLoginSuccess(response.username)
+            console.log(response.email)
         }
         else{
-            setError(`»${response.Status}`);
+            setError(response.Status);
         }
     }
 
@@ -52,9 +54,9 @@ export default function LoginPage({onSwitchMode ,onLoginSuccess}){
         Handled is open source! You can check it out here: <a href="https://github.com/Vicente-Bogado-Code/Handled."> Source code</a>.
        </p>
        <div className='errorDiv'>
-         <p> 
-          {error}
-         </p>
+         {error ? <p> 
+          <Info size={16}/>{error}
+         </p> : null}
        </div>
     </div>
     );
