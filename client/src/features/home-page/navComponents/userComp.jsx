@@ -104,7 +104,7 @@ export default function UserSettings({ username, setUsername, onLogout, setDesc 
                   onChange={(ev) => setInputedEmail(ev.target.value)}
                 />
               ) : (
-                <input type="text" className="inputPh" value={dbEmail} readOnly />
+                <input type="text" className="inputPh" value={dbEmail ? dbEmail : ""} readOnly />
               )}
             </div>
              <div className="settingsField">

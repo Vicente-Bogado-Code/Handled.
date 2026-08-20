@@ -1,14 +1,36 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './css/settingsComp.css';
 import { Save, Clock, FileText, Info } from 'lucide-react';
+import { getPreferences,savePreferences } from '../../api/getDataRequests/getUserPreferences';
 
 export default function SettingsComp() {
     const [theme, setTheme] = useState("system");
-    const [autosaveEnabled, setAutosaveEnabled] = useState(true);
-    const [autosaveInterval, setAutosaveInterval] = useState(10);
-    const [defaultMainNote, setDefaultMainNote] = useState(true);
-    const [defaultReadmeNote, setDefaultReadmeNote] = useState(true);
-    const [defaultPublic, setDefaultPublic] = useState(false);
+    const [autosaveEnabled, setAutosaveEnabled] = useState(null);
+    const [autosaveInterval, setAutosaveInterval] = useState(null);
+    const [defaultMainNote, setDefaultMainNote] = useState(null);
+    const [defaultReadmeNote, setDefaultReadmeNote] = useState(null);
+    const [defaultPublic, setDefaultPublic] = useState(null);
+    const [isSaved,setIsSaved] = useState(false)
+    useEffect(() =>{
+        async function getPref(){
+            const r = await getPreferences()
+            if (r.Status === "Data retrieved"){
+                setAutosaveEnabled(r.userPreferences.defaultAutoSave)
+                setAutosaveInterval(r.userPreferences.defaultTimeAutoSave)
+                setDefaultMainNote(r.userPreferences.defaultIncludeMnote)
+                setDefaultReadmeNote(r.userPreferences.defaultIncludeReadme)
+                setDefaultPublic(r.userPreferences.defaultBePublic)
+            }
+            else{
+                alert(r.Status)
+            }
+        }
+        getPref()
+    }, [])
+
+    async function handleSave(das,dtas,dimn,dirm,dbp) {
+        const r = await savePreferences(das,dtas,dimn,dirm,dbp)        
+    }
 
     return (
         <div className="appSettingsMain">
@@ -29,7 +51,7 @@ export default function SettingsComp() {
                     </div>
                     <button
                         className={autosaveEnabled ? "toggleSwitchOn" : "toggleSwitch"}
-                        onClick={() => setAutosaveEnabled(!autosaveEnabled)}
+                        onClick={() => {setAutosaveEnabled(!autosaveEnabled); setIsSaved(false)}}
                     >
                         <span className="toggleKnob" />
                     </button>
@@ -44,19 +66,19 @@ export default function SettingsComp() {
                         <div className="intervalOptionsRow">
                             <button
                                 className={autosaveInterval === 10 ? "intervalOptionActive" : "intervalOption"}
-                                onClick={() => setAutosaveInterval(10)}
+                                onClick={() => {setAutosaveInterval(10); setIsSaved(false)}}
                             >
                                 <Clock size={14} /> 10s
                             </button>
                             <button
                                 className={autosaveInterval === 30 ? "intervalOptionActive" : "intervalOption"}
-                                onClick={() => setAutosaveInterval(30)}
+                                onClick={() => {setAutosaveInterval(30); setIsSaved(false)}}
                             >
                                 <Clock size={14} /> 30s
                             </button>
                             <button
                                 className={autosaveInterval === 60 ? "intervalOptionActive" : "intervalOption"}
-                                onClick={() => setAutosaveInterval(60)}
+                                onClick={() => {setAutosaveInterval(60); setIsSaved(false)}}
                             >
                                 <Clock size={14} /> 1m
                             </button>
@@ -81,7 +103,7 @@ export default function SettingsComp() {
                     </div>
                     <button
                         className={defaultMainNote ? "toggleSwitchOn" : "toggleSwitch"}
-                        onClick={() => setDefaultMainNote(!defaultMainNote)}
+                        onClick={() => {setDefaultMainNote(!defaultMainNote); setIsSaved(false)}}
                     >
                         <span className="toggleKnob" />
                     </button>
@@ -94,7 +116,7 @@ export default function SettingsComp() {
                     </div>
                     <button
                         className={defaultReadmeNote ? "toggleSwitchOn" : "toggleSwitch"}
-                        onClick={() => setDefaultReadmeNote(!defaultReadmeNote)}
+                        onClick={() => {setDefaultReadmeNote(!defaultReadmeNote); setIsSaved(false)}}
                     >
                         <span className="toggleKnob" />
                     </button>
@@ -107,7 +129,7 @@ export default function SettingsComp() {
                     </div>
                     <button
                         className={defaultPublic ? "toggleSwitchOn" : "toggleSwitch"}
-                        onClick={() => setDefaultPublic(!defaultPublic)}
+                        onClick={() => {setDefaultPublic(!defaultPublic); setIsSaved(false)}}
                     >
                         <span className="toggleKnob" />
                     </button>
@@ -129,7 +151,10 @@ export default function SettingsComp() {
                 </div>
 
             </section>
-
+                <button className={isSaved ? 'saveBtnSaved' : 'saveBtn'}onClick={() => {
+                    handleSave(autosaveEnabled,autosaveInterval,defaultMainNote,defaultReadmeNote,defaultPublic);
+                    setIsSaved(true)
+                    }}><Save size={18}/>{isSaved ? "Saved" : "Save changes"}</button>
         </div>
     );
 }

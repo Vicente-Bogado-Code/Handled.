@@ -2,6 +2,7 @@ from flask import Blueprint,session,request, jsonify
 import bcrypt
 from db import get_conn, get_user_data
 
+
 auth_bp = Blueprint('auth', __name__)
 
 @auth_bp.route("/register",methods=["POST"])
@@ -16,11 +17,12 @@ def register_user():
     db_response = cursor.fetchone()
     if db_response is None:
         cursor.execute("INSERT INTO handled_users (username,hsd_password,email) VALUES (%s,%s,%s) RETURNING id", (username,hashed_pw,email))
+        user_id = cursor.fetchone()[0]
+        cursor.execute("INSERT INTO preferences(default_auto_save,default_time_auto_save,default_include_mnote,default_include_readme,default_be_public,user_id) VALUES (%s,%s,%s,%s,%s,%s)",(True,10,True,True,False,user_id))
     else: 
         cursor.close()
         conn.close()
         return jsonify({"Status": "Conflict"}),409
-    user_id = cursor.fetchone()[0]
     conn.commit()
     cursor.close()
     conn.close
@@ -119,6 +121,62 @@ def give_data():
             "description": row[2]
         }
         return jsonify({"Status": "Data retrieved", "Me": response}), 200
+    finally:
+        cursor.close()
+        conn.close()
+
+@auth_bp.route("/getPreferences", methods=["GET"])
+def give_preferences():
+    current_user_id = session.get("user_id")
+    if not current_user_id: return jsonify({"Status": "Not logged"}),401
+    conn = get_conn()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT * FROM preferences WHERE user_id = %s", (current_user_id,))
+        row = cursor.fetchone()
+        if row is None:
+            return jsonify({"Status": "User not found"}), 404
+        response = {
+            "defaultAutoSave": row[0],
+            "defaultTimeAutoSave": row[1],
+            "defaultIncludeMnote": row[2],
+            "defaultIncludeReadme": row[3],
+            "defaultBePublic":row[4],
+            "userId":row[5]
+        }
+        return jsonify({"Status": "Data retrieved", "userPreferences": response}), 200
+    finally:
+        cursor.close()
+        conn.close()
+
+@auth_bp.route("/savePreferences",methods=["POST"])
+def save_preferences():
+    current_user_id = session.get("user_id")
+    if not current_user_id:return jsonify({"Status": "Not logged"}),401
+    data = request.get_json()
+    required = ["defaultAutoSave","defaultTimeAutoSave", "defaultIncludeMnote", "defaultIncludeReadme", "defaultBePublic"]
+    if not data or not all(field in data for field in required):
+        return jsonify({"Status": "Missing fields"}),400
+    das = data.get(required[0])
+    dtas = data.get(required[1])
+    dimn = data.get(required[2])
+    dirm = data.get(required[3])
+    dbp = data.get(required[4])
+    conn = get_conn()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(
+        """
+        UPDATE preferences 
+        SET default_auto_save = %s, 
+        default_time_auto_save = %s, 
+        default_include_mnote = %s, 
+        default_include_readme = %s, 
+        default_be_public = %s
+        WHERE user_id = %s
+        """, (das,dtas,dimn,dirm,dbp,current_user_id))
+        conn.commit()
+        return jsonify({"Status": "Preferences updated"}),200
     finally:
         cursor.close()
         conn.close()
