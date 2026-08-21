@@ -124,7 +124,7 @@
     background: none;
     resize: none;
     scrollbar-width: thin;
-    scrollbar-color: var(--accent) rgb(216, 216, 216);
+    scrollbar-color: var(--accent) var(--bg-secondary);
 }
 .changingDescInput:focus{
     outline: none;

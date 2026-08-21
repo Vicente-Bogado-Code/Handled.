@@ -1,0 +1,210 @@
+.noteSettingsDiv{
+    background-color: var(--bg-secondary);
+    width: 600px;
+    height: fit-content;
+    padding: 25px;
+    justify-self: center;
+    margin-top: 10%;
+    border-radius: 14px;
+    box-sizing: border-box;
+}
+
+.labelOnNoteSettings{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 65px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+}
+
+.noteSettingsTitleDiv{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+.idLbl{
+    color: var(--text-secondary);
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    margin: 0;
+    opacity: 0.7;
+}
+
+.titleLlbl{
+    color: var(--text-primary);
+    font-size: 21px;
+    font-weight: 600;
+    margin: 0;
+    max-width: 270px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.noteTypeDiv{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 10px;
+    border-radius: 7px;
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.typeLbl{
+    color: var(--text-secondary);
+    font-size: 11px;
+    margin: 0;
+}
+
+.toAccentNoteSettings{
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.changeDataDiv{
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.inputDiv{
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.inputLabel{
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+.changeNameInput{
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-weight: 550;
+    font-size: 15px;
+    border-radius: 6px;
+    border: none;
+    padding: 5px;
+}
+.inputNicon{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.inputNicon svg{
+    color: var(--accent);
+}
+.saveNotebtn{
+    cursor: pointer;
+    width: 50px;
+    padding: 5px;
+    background-color: var(--accent);
+    border: none;
+    color: var(--text-primary);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.saveNotebtn:hover{
+    transform: translateY(-1px);
+}
+.saveNotebtn svg{
+    color: white;
+}
+.deleteNoteBtn,
+.exitBtn{
+    width: 100%;
+    height: 42px;
+    border-radius: 9px;
+    border: 1px solid transparent;
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+
+.deleteNoteBtn:hover,
+.exitBtn:hover{
+    transform: translateY(-1px);
+}
+
+.deleteNoteBtn{
+    background-color: #ff5555;
+    color: var(--text-primary);
+}
+
+.exitBtn{
+    background-color: transparent;
+    border-color: var(--border-color, rgba(255, 255, 255, 0.10));
+    color: var(--text-primary);
+    margin-top: 4px;
+}
+
+.exitBtn:hover{
+    color: var(--text-primary);
+}
+
+.deleteOrNotNoteSettings{
+    display: flex;
+    width: 100%;
+    gap: 10px;
+}
+.deleteOrNotNoteSettings button{
+    cursor: pointer;
+    width: 50%;
+    height: 42px;
+    border: none;
+    color: var(--text-primary);
+    border-radius: 9px;
+}
+.deleteOrNotNoteSettings button:hover{
+    transform: translateY(-1px);
+}
+.fireDeleteFuncBtn{
+    background-color: #ff5555;
+}
+.dontFireDeletebtn{
+    background-color: var(--accent);
+}
+
+.selectFiltersDiv{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.selectFiltersDiv button{
+    width: 100px;
+    border-radius: 6px;
+    border: none;
+    padding: 3px;
+    color: var(--text-primary);
+    background-color: rgb(71, 114, 58);
+    cursor: pointer;
+}
+.selectFiltersDiv button:hover{
+    transform: translateY(-1px);
+}
+.selectFiltersDiv button:active{
+    transform: scale(0.9);
+}
+.currentlyDeletingNumber{
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    font-size: 12px;
+    gap: 6px;
+    color: #ff5555;
+}

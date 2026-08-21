@@ -12,10 +12,11 @@ import Toolbar from "./toolBar";
 import placeholder from "./placeholder";
 import CounterToSave from "./savingIn";
 import MainPlaceHolder from "./placeholder";
+import NoteSettings from "./settings components/noteSettings";
 //
 import './css/onProject.css'
 //
-import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight } from 'lucide-react';
+import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon } from 'lucide-react';
 
 export default function CurrentProjectComp({ project_id , handleGoBack}) {
   const [editor,setEditor] = useState(null)
@@ -44,7 +45,11 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
   const [saving,setSaving] = useState(false)
   const [visualDnotes, setVisualDnotes] = useState(true)
   const [visualSnotes,setVisualSnotes] = useState(true)
-  
+  const [isOnNoteSettings, setIsOnNoteSettings] = useState(false)
+  const [isDeletingNotes, setIsDeletingNotes] = useState(false)
+  const [idsToBeDeleted, setIdsToBeDeleted] = useState([])
+  const allNotesIds = mySecNotes.map(note => note.id)
+
   useEffect(() =>{
     mySecNotesRef.current = mySecNotes;
   }, [mySecNotes])
@@ -64,6 +69,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
 
   //Content
   async function handleCreateSnote(name,content,imp){
+    if (name === ""){return}
     const response = await newSecondaryNote(name,content,imp)
     if (response.Status === "Secondary note created")
     {
@@ -118,31 +124,36 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
     setWindows(prev => prev.filter(window => window.id !== clickedWindowId));
   }
   //Delete Snote
-  async function handleDeleteSnote(Snote_id){
+  async function handleDeleteSnote(idsToBeDeletedArray){
     clearInterval(timerRef.current)
-    const response = await deleteSecNote(Snote_id)
-    if (response.Status === "Note deleted"){
-      setMySecNotes(prev => prev.filter(n => n.id !== Snote_id));
-      setModifiedNotesId(prev => prev.filter(id => id !== Snote_id))
-      setWindows(prev => prev.filter(w => w.id !== Snote_id));
-      setActiveWindowId(null);
-      startAutoSaveTimer(0)
+    for (let i = 0; i < idsToBeDeletedArray.length; i++){
+      const currentId = idsToBeDeletedArray[i]
+      const response = await deleteSecNote(currentId)
+      if (response.Status === "Note deleted"){
+            setMySecNotes(prev => prev.filter(n => n.id !== currentId));
+            setModifiedNotesId(prev => prev.filter(id => id !== currentId))
+            setWindows(prev => prev.filter(w => w.id !== currentId));
+            setActiveWindowId(null);
+            startAutoSaveTimer(0)
+    }
+
     }
   }
-  
   
 
   return (
   <div className="mainDiv">
     <nav className="onProjectNav">
-      <button className="backBtnOnNav" onClick={() => {
+      <div className="goBackDiv">
+        <button className="backBtnOnNav" onClick={() => {
         handleGoBack("");
         if (activeSnote){handleSaveContent(activeSnote.id,currentNoteContent);}
-        }}><ArrowLeft size={18} />Go back</button>
+        }}><Undo2Icon size={18} />Go back</button>
+      </div>
       <div className="titleDiv">
         <h3 className="titleOnNav">{projectName}</h3>
       </div>
-      <div className="mainNoteBtnDiv">
+      {Mnote.length > 0 ? <div className="mainNoteBtnDiv">
         <p className="mainNoteLabel">main note:</p>
         {Mnote.map(Mnote => <SecondaryProjectComp
          key={Mnote.id}
@@ -155,21 +166,26 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
          activeWindowId={activeWindowId}
          setActiveWindowId={setActiveWindowId}
          modifiedNotesIds={modifiedNotesId}
+         isOnSettings={isOnNoteSettings}
+         setIsOnSettings={setIsOnNoteSettings}
+         isDeletingNotes={isDeletingNotes}
+         idsToBeDeleted={idsToBeDeleted}
+         setIdsToBeDeleted={setIdsToBeDeleted}
          />)}
-      </div>
+      </div> : null}
       <p className="mainNoteLabel">secondary note/s:</p>
       <div className="newSnoteForm">
          <button className="addNoteBtn" onClick={() => {isCreating === false ? setIsCreating(true) : setIsCreating(false)}}>{isCreating === true ? <Minus size={18}/> : <Plus size={18}/>}</button>
       </div>
       <div className={isCreating === true ? "newNoteFormDiv" : "hide"} >
-          <p className="labelOnNewNote">Secondary note name:</p>
+          <p className="labelOnNewNote">Secondary note name</p> 
           <input type="text" placeholder="Note name? (max 20 characters)"
            maxLength={20} 
            value={nameOfNewSnote}
            onChange={e => setNameOfSnote(e.target.value)}
            className="noteNameInput"
            />
-           <p className="labelOnNewNote">Title (optional):</p>
+           <p className="labelOnNewNote">Title (optional)</p>
            <input type="text" placeholder={`${projectName}...`}
            value={title}
            onChange={e => setTitle(e.target.value)} 
@@ -178,11 +194,11 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
            <button 
            className="createSnoteBtn"
            onClick={() => {handleCreateSnote(nameOfNewSnote,title,"S"); setTitle(""); setNameOfSnote("")}}
-           >Create note</button>
+           >Add <Plus size={15}/></button>
       </div>
 
       <div className="secondaryNotesDiv">
-        <button className="DnotesBtn" onClick={() => { visualDnotes === false ? setVisualDnotes(true) : setVisualDnotes(false)}}>Default<span className={visualDnotes ? "CsetColor" : "CsetColorNonActive"}>{visualDnotes === true ? <ChevronDown size={22}/> : <ChevronRight size={22}/>}</span>{currentNoteImportance === "D" ? <p className="labelCrntNote">{currentNoteName}</p> : null}</button>
+        {Dnotes.length > 0 ? (<button className="DnotesBtn" onClick={() => { visualDnotes === false ? setVisualDnotes(true) : setVisualDnotes(false)}}>Default<span className={visualDnotes ? "CsetColor" : "CsetColorNonActive"}>{visualDnotes === true ? <ChevronDown size={22}/> : <ChevronRight size={22}/>}</span>{currentNoteImportance === "D" ? <p className="labelCrntNote">{currentNoteName}</p> : null}</button>) : null}
         <div className={visualDnotes === true ? null : "hide"}>
           {Dnotes.map(Dnote => <SecondaryProjectComp
           key={Dnote.id}
@@ -195,14 +211,14 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
           activeWindowId={activeWindowId}
           setActiveWindowId={setActiveWindowId}
           modifiedNotesIds={modifiedNotesId}
+          isOnSettings={isOnNoteSettings}
+          setIsOnSettings={setIsOnNoteSettings}
+          isDeletingNotes={isDeletingNotes}
+          idsToBeDeleted={idsToBeDeleted}
+          setIdsToBeDeleted={setIdsToBeDeleted}
          />)}
         </div>
-        <div className={isDeleting === true ? "overlayDlt" : "hide"}>
-          <h3>Are you sure?</h3>
-          <p>This action can't be undone.</p>
-          <button className="permaDltNoteBtn" onClick={() => {handleDeleteSnote(activeSnoteId); setIsDeleting(false)}}>Yes, delete</button>
-          <button className="dontDltBtn" onClick={() => setIsDeleting(false)}>No, go back</button>
-        </div>
+        <div className="snotesDiv">
         <button className="DnotesBtn" onClick={() => { visualSnotes === false ? setVisualSnotes(true) : setVisualSnotes(false)}}>Created<span className={visualSnotes ? "CsetColor" : "CsetColorNonActive"}>{visualSnotes === true ? <ChevronDown size={22}/> : <ChevronRight size={22}/>}</span>{currentNoteImportance === "S" ? <p className="labelCrntNote">{currentNoteName}</p> : null}</button>
         <div className={visualSnotes === true ? null : "hide"}>
            {Snotes.map(Snote => <SecondaryProjectComp
@@ -215,14 +231,31 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
            setWindow={setWindows}
            activeWindowId={activeWindowId}
            setActiveWindowId={setActiveWindowId}
-           setDeleting={setIsDeleting}
            modifiedNotesIds={modifiedNotesId}
+           isOnSettings={isOnNoteSettings}
+           setIsOnSettings={setIsOnNoteSettings}
+           isDeletingNotes={isDeletingNotes}
+           idsToBeDeleted={idsToBeDeleted}
+           setIdsToBeDeleted={setIdsToBeDeleted}
          />)}
         </div>
       </div>
+      </div>
     </nav>
     <main className="mainOnProject">
-     <div className={windows.length > 0 ? "navWindows" : "navWindowsOnPH"}>
+      {isOnNoteSettings ? <NoteSettings
+       name={currentNoteName}
+       id={activeSnoteId}
+       importance={currentNoteImportance}
+       setIsOnSettings={setIsOnNoteSettings}
+       handleDeleteNote={handleDeleteSnote}
+       setIsDeletingNotes={setIsDeletingNotes}
+       idsToBeDeleted={idsToBeDeleted}
+       setIdsToBeDeleted={setIdsToBeDeleted}
+       allIds={allNotesIds}
+       />
+       : null} 
+     <div className={isOnNoteSettings === true ? "hide" : (windows.length > 0 ? "navWindows" : "navWindowsOnPH")}>
       {windows.map(window => <Window 
       key={window.id}
       windowName={window.name}
@@ -233,7 +266,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
       importance={window.importance}
       />)}
      </div>
-     <div className="currentWindowContentDiv">
+     {!isOnNoteSettings ? <div className="currentWindowContentDiv">
       <CounterToSave 
       seconds={seconds}
       modifiedNotesId={modifiedNotesId}
@@ -252,7 +285,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
         /> : <MainPlaceHolder/> }
       </div>
 
-     </div>
+     </div> : null}
     </main>
   </div>
   );

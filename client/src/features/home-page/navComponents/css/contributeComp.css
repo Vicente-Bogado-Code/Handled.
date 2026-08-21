@@ -1,0 +1,58 @@
+.contributeMain {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 24px;
+    padding: 32px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.contributeHeader h2 {
+    color: var(--text-primary);
+    font-size: 1.4rem;
+    margin: 0 0 8px 0;
+}
+
+.contributeHeader p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin: 0;
+    max-width: 480px;
+}
+
+.contributeLinks {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.contributeLink {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 0.85rem;
+    text-decoration: none;
+    transition: border-color 0.15s ease, opacity 0.15s ease;
+}
+
+.contributeLink:hover {
+    border-color: var(--accent);
+    opacity: 0.9;
+}
+
+.myEmail{
+    margin: 0;
+    color: var(--text-primary);
+}
+.toAccent{
+    color: var(--accent);
+}

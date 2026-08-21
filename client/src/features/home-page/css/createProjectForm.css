@@ -210,3 +210,21 @@
 #createProjectBtn:hover {
     opacity: 0.85;
 }
+
+.projectsLblNfilters{
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    height: 20px;
+    margin: 5px 0 20px 0;
+    gap: 10px;
+}
+.projectsLbl{
+    color: var(--text-primary);
+}
+.filtersLbl{
+    display: flex;
+    gap: 3px;
+    font-size: 13px;
+    color: var(--text-secondary);
+}

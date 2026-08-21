@@ -230,3 +230,43 @@
     color: var(--text-secondary);
     font-size: 16px;
 }
+
+.emptyProjectsState {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 48px 24px;
+    gap: 10px;
+}
+
+.emptyStateIcon {
+    color: red;
+    opacity: 0.5;
+    margin-bottom: 6px;
+}
+
+.emptyStateTitle {
+    color: var(--text-primary);
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.emptyStateText {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    margin: 0;
+    max-width: 280px;
+}
+
+.hideAct{
+    color: var(--accent);
+}
+.hideDone{
+    color: green;
+}
+.noneClass{
+    color: red;
+    margin: 0;
+}

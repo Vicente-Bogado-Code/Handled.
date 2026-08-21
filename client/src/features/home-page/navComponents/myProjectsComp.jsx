@@ -1,4 +1,4 @@
-import { Plus, Search, User } from "lucide-react";
+import { Plus, Search, User,SearchX } from "lucide-react";
 import ProjectCreationForm from "../projectCreationForm";
 import ProjectCard from "../project_cards";
 
@@ -138,14 +138,23 @@ export default function MyProjects({
                     </div>
                 </div>
 
-                <h2 className="sectionTitle">Projects</h2>
+                <div className="projectsLblNfilters">
+                    <h2 className="projectsLbl">Projects</h2>
+                    <p className="filtersLbl">Hide: <span className="hideAct">{showActive ? null : "active"}</span> <span className="hideDone">{showDone ? null : "done"} {showActive ? (showDone ? <p className="noneClass">none</p> : null) : null}</span></p>
+                </div>
 
                 {searchTerm !== "" && !projectsFound ? (
                     <h2 className="noProjectFoundLabel">
                         No projects found searching "{searchTerm}"
                     </h2>
                 ) : null}
-
+                {activeProjects.length + markedAsDone.length === 0 ? 
+                <div className="emptyProjectsState">
+                    <SearchX size={40} className="emptyStateIcon" />
+                    <h3 className="emptyStateTitle">No projects yet</h3>
+                    <p className="emptyStateText">Create your first project to start tracking it here.</p>
+                </div> : null}
+                
                 <div className="projectsGrid">
                     {showActive &&
                         activeProjects.map((p) => (

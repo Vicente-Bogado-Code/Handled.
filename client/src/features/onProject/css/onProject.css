@@ -11,10 +11,25 @@ html{
     background-color: var(--bg-secondary);
     margin: 0;
     width:240px;
-    padding: 10px 20px;
-    min-width: 200px;
+    padding: 0 20px 10px 20px;
     height: 100vh;
     border-right:1px solid var(--border);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) var(--bg-secondary);
+}
+.goBackDiv{
+    position: sticky;
+    width: 100%;
+    top: 0;
+    background-color: var(--bg-secondary);
+    border:1px solid var(--border);
+    border-top: 0;
+    border-radius: 0 0 10px 10px;
+    display: flex;
+    justify-content: center;
+    height: 30px;
+    margin: 0;
 }
 .backBtnOnNav{
     display: flex;
@@ -25,13 +40,14 @@ html{
     background: none;
     border: none;
     text-align: left;
-    color: var(--accent);
+    color: var(--text-primary);
     transition: color 0.15s ease;
     padding: 5px 5px;
+    margin: 0;
 }
 .backBtnOnNav:hover{
     transition: color 0.15s ease;
-    color: var(--text-primary);
+    color: var(--accent);
 }
 
 .titleDiv{
@@ -180,15 +196,52 @@ html{
     width: 100%;
     height: 100%;
 }
-.placeHolderDiv{
-    color: var(--bg-secondary);
+.placeHolderDiv {
+    width: 100%;
+    height: 100%;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
-    font-size: 30px;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 40px;
 }
 
+.placeHolderContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    max-width: 350px;
+}
+
+.placeHolderIcon {
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 18px;
+    border-radius: 14px;
+    color: red;
+    opacity: 0.60;
+    background-color: var(--background-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.placeHolderTitle {
+    margin: 0 0 7px;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.placeHolderText {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+}
 .overlayDlt{
     position: fixed;
     top: 0;

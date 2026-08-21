@@ -4,7 +4,7 @@ import './css/createProjectForm.css'
 import MyProjects from './navComponents/myProjectsComp';
 import UserSettings from './navComponents/userComp';
 import SettingsComp from './navComponents/settingsComp';
-import Contact from './navComponents/contactComp';
+import Contribute from './navComponents/contributeComp';
 //
 import { useState,useEffect } from 'react';
 import { createProject } from '../api/createRequest/createProject';
@@ -35,7 +35,7 @@ export default function HomePage({ username,setUsername, email, onLogout, handle
     const [showActive, setShowActive] = useState(true)
     const [showDone, setShowDone] = useState(true)
     const [searchTerm, setSearchTerm] = useState("")
-    const [onWindow, setOnWindow] = useState(0) //0 Projects, 1 User, 2 settings, 3 contact
+    const [onWindow, setOnWindow] = useState(0) //0 Projects, 1 User, 2 settings, 3 contribute
     const [desc,setDesc] = useState("")
     useEffect(() => { getMyProjects().then(data => setMyProjects(data.projects)); }, [])
 
@@ -116,7 +116,6 @@ export default function HomePage({ username,setUsername, email, onLogout, handle
                         <button onClick={() => {setOnWindow(2)}} className={onWindow === 2 ? "activeWindow" : "nonActiveW"}><Settings size={18}/>Settings</button>
                     </div>
                     <div>
-                        <button onClick={() => {setOnWindow(3)}} className={onWindow === 3 ? "activeWindow" : "nonActiveW"}><Mail size={18}/>Contact</button>
                         <button onClick={onLogout} className='nonActiveW'><LogOut size={18}/>Logout</button>
                     </div>
                     <div>
@@ -166,7 +165,7 @@ export default function HomePage({ username,setUsername, email, onLogout, handle
                     handleChangeDesc={handleChangeDesc}
                     handleChangeName={handleChangeName}
                     fromDbUserDescription={desc}
-                /> : onWindow === 1 ? <UserSettings username={username} setUsername={setUsername} email={email} setDesc={setDesc} onLogout={onLogout}/> : onWindow === 2 ? <SettingsComp/> : onWindow === 3 ? <Contact/> : null}
+                /> : onWindow === 1 ? <UserSettings username={username} setUsername={setUsername} email={email} setDesc={setDesc} onLogout={onLogout}/> : onWindow === 2 ? <SettingsComp/> : <Contribute/>}
                
             </main>
         </div>

@@ -117,8 +117,10 @@
 }
 
 .inputChangeRepo{
-    border: 1px solid black;
-    background-color: rgb(216, 216, 216);
+    border: 1px solid var(--text-primary);
+    border-radius: 8px;
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
     padding: 3px 3px;
     width: 180px;
 }
