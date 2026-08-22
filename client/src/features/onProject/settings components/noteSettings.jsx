@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import './noteSettings.css'
-import { Trash, Edit2, Undo2, Check, Save, Info } from 'lucide-react';
+import { Trash, Edit2, Undo2, Check, Save, Info,ClockArrowDown } from 'lucide-react';
 import { deleteSecNote } from '../../api/deleteRequests/deleteSecNote';
 
-export default function NoteSettings({name,id,importance,setIsOnSettings, handleDeleteNote, setIsDeletingNotes, idsToBeDeleted, setIdsToBeDeleted, allIds}){
-    const [newName, setNewName] = useState(name)
+export default function NoteSettings({name,id,importance,setIsOnSettings, handleDeleteNote, setIsDeletingNotes, idsToBeDeleted, setIdsToBeDeleted, allIds, handleChangeNoteName,wantsAutoSave, handleChangeAutoSave}){
+    const [newName, setNewName] = useState("")
     const [isDeleting, setIsDeleting] = useState(false)
     const [savedName,setSavedName] = useState(false)
+    const [includeAutoS, setIncludeAutoS] = useState(wantsAutoSave)
     return(
         <div className="noteSettingsDiv">
             <div className="labelOnNoteSettings">
@@ -25,15 +26,30 @@ export default function NoteSettings({name,id,importance,setIsOnSettings, handle
                     <label className='inputLabel'>Change name</label>
                     <div className='inputNicon'>
                         <Edit2 size={16}/>
-                        <input type="text" maxLength={20} className='changeNameInput' value={newName}
+                        <input type="text" maxLength={25} className='changeNameInput' placeholder={name}
+                        value={newName}
                         onChange={(e) => {setNewName(e.target.value); setSavedName(false)}}
                         />
                         <button className='saveNotebtn'
                          onClick={() => {
-                         setSavedName(true);
+                         if (newName !== ""){handleChangeNoteName(newName,id);  setSavedName(true);;}
                         }}>
                             {savedName ? <Check size={16}/> : <Save size={16}/>}
                         </button>
+                        <div className='autoSaveAskDiv'>
+                            <ClockArrowDown size={18} style={{borderLeft:"1px solid var(--border)", paddingLeft:"10px"}}/>
+                            <p className='includeAutoSlbl'>Autosave?</p>
+                            <button onClick={() => 
+                                {
+                                 const newValue = !includeAutoS
+                                 setIncludeAutoS(newValue)
+                                 handleChangeAutoSave(newValue, id)
+                                }}
+                                className={includeAutoS ? 'includeAutoSBtn' : 'dontIncludeAutoSBtn'}
+                                
+                                >
+                                    {includeAutoS ? "True" : "False"} </button>
+                        </div>
                     </div>
                 </div>
                 {!isDeleting ? <button className="deleteNoteBtn" onClick={() => {setIsDeleting(true);
@@ -45,6 +61,7 @@ export default function NoteSettings({name,id,importance,setIsOnSettings, handle
                         handleDeleteNote(idsToBeDeleted);
                         setIsOnSettings(false)
                         setIsDeleting(false);
+                        setIsDeletingNotes(false)
                         setIdsToBeDeleted([])
                     }}>Yes, delete</button>
                     <button onClick={() => {setIsDeleting(false); setIsDeletingNotes(false); setIdsToBeDeleted([])}} className='dontFireDeletebtn'>No, go back</button>

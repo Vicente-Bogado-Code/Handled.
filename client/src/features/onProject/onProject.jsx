@@ -3,6 +3,8 @@ import { getSecondaryNotes } from "../api/getDataRequests/getSecNotes"
 import { newSecondaryNote } from "../api/createRequest/newSecNote"
 import { saveNoteContent } from "../api/alterRequests/saveNoteContent";
 import { deleteSecNote } from "../api/deleteRequests/deleteSecNote";
+import { changeNoteName } from "../api/alterRequests/changeNoteName";
+import { changeAutoSave } from "../api/alterRequests/changeSpecNoteAutoSave";
 import { useState, useEffect, useRef, use } from 'react';
 //
 import SecondaryProjectComp from "./ secNote";
@@ -102,7 +104,8 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
   
   function handleContentChange(newContent){
     const inIt = modifiedNotesId.find(id => id === activeSnoteId);
-    if (inIt === undefined){
+    const wantsSaving = activeSnote.auto_save
+    if (inIt === undefined && wantsSaving){
       setModifiedNotesId(prev => [...prev, activeSnoteId])
     }
     setMySecNotes(prev =>
@@ -139,16 +142,25 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
 
     }
   }
-  
 
+  async function handleChangeNoteName(newName,id){
+    const r = await changeNoteName(newName,id)
+    if (r.Status === "Name changed"){setMySecNotes(prev => prev.map(n => n.id === id ? {...n, name:newName} : n))}
+  }
+
+  async function handleChangeAutoSave(boolean, id) {
+    const r = await changeAutoSave(boolean,id)
+    if(r.Status === "Auto save changed"){
+      setMySecNotes(prev => prev.map(n => n.id === id ? {...n, auto_save:boolean} : n ))}
+  }
   return (
   <div className="mainDiv">
     <nav className="onProjectNav">
-      <div className="goBackDiv">
-        <button className="backBtnOnNav" onClick={() => {
+      <div className="goBackDiv"  onClick={() => {
         handleGoBack("");
         if (activeSnote){handleSaveContent(activeSnote.id,currentNoteContent);}
-        }}><Undo2Icon size={18} />Go back</button>
+        }}>
+        <Undo2Icon size={18} />
       </div>
       <div className="titleDiv">
         <h3 className="titleOnNav">{projectName}</h3>
@@ -171,6 +183,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
          isDeletingNotes={isDeletingNotes}
          idsToBeDeleted={idsToBeDeleted}
          setIdsToBeDeleted={setIdsToBeDeleted}
+         wantsAutoSave={Mnote.auto_save}
          />)}
       </div> : null}
       <p className="mainNoteLabel">secondary note/s:</p>
@@ -180,7 +193,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
       <div className={isCreating === true ? "newNoteFormDiv" : "hide"} >
           <p className="labelOnNewNote">Secondary note name</p> 
           <input type="text" placeholder="Note name? (max 20 characters)"
-           maxLength={20} 
+           maxLength={25} 
            value={nameOfNewSnote}
            onChange={e => setNameOfSnote(e.target.value)}
            className="noteNameInput"
@@ -216,6 +229,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
           isDeletingNotes={isDeletingNotes}
           idsToBeDeleted={idsToBeDeleted}
           setIdsToBeDeleted={setIdsToBeDeleted}
+          wantsAutoSave={Dnote.auto_save}
          />)}
         </div>
         <div className="snotesDiv">
@@ -237,6 +251,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
            isDeletingNotes={isDeletingNotes}
            idsToBeDeleted={idsToBeDeleted}
            setIdsToBeDeleted={setIdsToBeDeleted}
+           wantsAutoSave={Snote.auto_save}
          />)}
         </div>
       </div>
@@ -244,7 +259,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
     </nav>
     <main className="mainOnProject">
       {isOnNoteSettings ? <NoteSettings
-       name={currentNoteName}
+       name={activeSnote.name}
        id={activeSnoteId}
        importance={currentNoteImportance}
        setIsOnSettings={setIsOnNoteSettings}
@@ -253,6 +268,9 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
        idsToBeDeleted={idsToBeDeleted}
        setIdsToBeDeleted={setIdsToBeDeleted}
        allIds={allNotesIds}
+       handleChangeNoteName={handleChangeNoteName}
+       wantsAutoSave={activeSnote.auto_save}
+       handleChangeAutoSave={handleChangeAutoSave}
        />
        : null} 
      <div className={isOnNoteSettings === true ? "hide" : (windows.length > 0 ? "navWindows" : "navWindowsOnPH")}>

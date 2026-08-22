@@ -57,13 +57,14 @@ def add_secondary_note():
     imp = data.get("importance")
     conn = get_conn()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO secondary_notes(Snote_name,Snote_content,on_project_id,importance) VALUES (%s,%s,%s,%s) RETURNING Snote_id,Snote_name, Snote_content,importance", (Snote_name,Snote_content,current_project_id,imp))
+    cursor.execute("INSERT INTO secondary_notes(Snote_name,Snote_content,on_project_id,importance,auto_save) VALUES (%s,%s,%s,%s,%s) RETURNING Snote_id,Snote_name, Snote_content,importance,auto_save", (Snote_name,Snote_content,current_project_id,imp,True))
     db_response = cursor.fetchone()
     note = {
         "id": db_response[0],
         "name": db_response[1],
         "content": db_response[2],
-        "importance": db_response[3]
+        "importance": db_response[3],
+        "auto_save": db_response[4]
     }
     conn.commit()
     cursor.close()
@@ -78,14 +79,15 @@ def get_secondary_notes():
     if not current_project_id:return jsonify({"Status": "No project selected"}),400 
     conn = get_conn()
     cursor = conn.cursor()
-    cursor.execute("SELECT Snote_id,Snote_name,Snote_content,importance FROM secondary_notes WHERE on_project_id = %s", (current_project_id,))
+    cursor.execute("SELECT Snote_id,Snote_name,Snote_content,importance,auto_save FROM secondary_notes WHERE on_project_id = %s", (current_project_id,))
     db_response = cursor.fetchall()
     retrieved_notes = [
         {
             "id": row[0],
             "name": row[1],
             "content": row[2],
-            "importance": row[3]
+            "importance": row[3],
+            "auto_save": row[4]
         }
         for row in db_response
     ]
@@ -160,4 +162,70 @@ def save_content():
     cursor.close()
     conn.close()
     return jsonify({"Status": "Note content updated"}), 200
-    
+
+@notes_bp.route("/changeNoteName",methods=["POST"])
+def change_name():
+    current_user_id = session.get("user_id")
+    if not current_user_id:
+        return jsonify({"Status": "Not logged"}),401
+    conn = get_conn()
+    cursor = conn.cursor()
+    data = request.get_json()
+    if not data or "id" not in data or "newName" not in data:
+        return jsonify({"Status": "Missing fields"}),400
+    note_id = data.get("id")
+    new_name = data.get("newName")
+    try:
+        cursor.execute(
+            """
+            SELECT user_id
+            FROM secondary_notes
+            JOIN users_projects ON secondary_notes.on_project_id = users_projects.project_id
+            WHERE snote_id = %s
+            """, (note_id,))
+        r = cursor.fetchone()
+        if r is None:
+            return jsonify({"Status": "Note doesn't exists"}),401
+        if r[0] == current_user_id:
+            cursor.execute("UPDATE secondary_notes SET snote_name = %s WHERE snote_id = %s", (new_name,note_id))
+            conn.commit()
+            return jsonify({"Status": "Name changed"}),200
+        else:
+            return jsonify({"Status": "Note doesn't belong to you"}), 403
+    finally:
+        cursor.close()
+        conn.close()
+
+@notes_bp.route("/changeNoteAutoSave",methods=["POST"])
+def change_note_auto_save():
+    current_user_id = session.get("user_id")
+    if not current_user_id:
+        return jsonify({"Status": "Not logged"}),401
+    conn = get_conn()
+    cursor = conn.cursor()
+    data = request.get_json()
+    if not data or "id" not in data or "boolean" not in data:
+        return jsonify({"Status": "Missing fields"}),400
+    note_id = data.get("id")
+    boolean = data.get("boolean")
+    print(boolean)
+    try:
+        cursor.execute(
+            """
+            SELECT user_id
+            FROM secondary_notes
+            JOIN users_projects ON secondary_notes.on_project_id = users_projects.project_id
+            WHERE snote_id = %s
+            """, (note_id,))
+        r = cursor.fetchone()
+        if r is None:
+            return jsonify({"Status": "Note doesn't exists"}),401
+        if r[0] == current_user_id:
+            cursor.execute("UPDATE secondary_notes SET auto_save = %s WHERE snote_id = %s", (boolean,note_id))
+            conn.commit()
+            return jsonify({"Status": "Auto save changed"}),200
+        else:
+            return jsonify({"Status": "Note doesn't belong to you"}), 403
+    finally:
+        cursor.close()
+        conn.close()

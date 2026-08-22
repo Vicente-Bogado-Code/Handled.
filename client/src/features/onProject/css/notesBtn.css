@@ -145,16 +145,19 @@
     margin-bottom: 5px;
     padding: 5px 5px;
     border-radius: 5px;
+    font-weight: 550;
 }
 .secondaryNote svg{
     color: rgb(48, 144, 48);
 }
 .secondaryNote{
     background-color: rgb(48, 144, 48,0.080);
+    color: rgb(48, 144, 48,0.8);;
 }
 
 .secondaryNoteUnsaved{
     background-color: rgb(255, 123, 123,0.080);
+    color: rgb(255, 123, 123,0.8);
 }
 .secondaryNoteUnsaved svg{
     color: red;
@@ -169,6 +172,7 @@
 }
 .activeSnote{
     background-color: var(--bg-primary);
+    color: rgb(180, 117, 0.8);
 }
 .Slabel{
     color: var(--text-secondary);

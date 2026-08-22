@@ -52,11 +52,11 @@ def add_project():
         cursor.close()
         conn.close()
         return jsonify({"Status": "Project already exists"}),409
-    cursor.execute("INSERT INTO secondary_notes (Snote_name,Snote_content,on_project_id,importance) VALUES (%s,%s,%s,%s)",("Commit history","<p>This is a note created by default.</p><p>This default note will track your commit history (only if your project have a github repository linked) and log it here, you can modify this note by clicking the 'turn on modifications' button in the project settings.</p>"+f"<h2>{project_name} commit history:</h2>",row[0],"D"))
+    cursor.execute("INSERT INTO secondary_notes (Snote_name,Snote_content,on_project_id,importance,auto_save) VALUES (%s,%s,%s,%s,%s)",("Commit history","<p>This is a note created by default.</p><p>This default note will track your commit history (only if your project have a github repository linked) and log it here, you can modify this note by clicking the 'turn on modifications' button in the project settings.</p>"+f"<h2>{project_name} commit history:</h2>",row[0],"D",True))
     #
-    cursor.execute("INSERT INTO secondary_notes (Snote_name,Snote_content,on_project_id,importance) VALUES (%s,%s,%s,%s)",(f"{project_name} main","<p>This is a note created by default.</p><p>This default note is meant to be your 'main' note, where you track important events of your project.</p>",row[0],"M"))
+    cursor.execute("INSERT INTO secondary_notes (Snote_name,Snote_content,on_project_id,importance,auto_save) VALUES (%s,%s,%s,%s,%s)",(f"{project_name} main","<p>This is a note created by default.</p><p>This default note is meant to be your 'main' note, where you track important events of your project.</p>",row[0],"M",True))
     #
-    cursor.execute("INSERT INTO secondary_notes (Snote_name,Snote_content,on_project_id,importance) VALUES (%s,%s,%s,%s)",("README","<p>This is a note created by default.</p><h2 style='text-align: center;'><span style='color: rgb(153, 0, 255); font-size: 18px;'><strong>A README text acts as the front door and core guide to a software project</strong></span></h2><p>It tells visitors what the project <strong>does</strong>, why it is <strong>useful</strong> and how other people can help or contribute.</p>" f"<p>What is <strong>{project_name}</strong> about?",row[0],"D"))
+    cursor.execute("INSERT INTO secondary_notes (Snote_name,Snote_content,on_project_id,importance,auto_save) VALUES (%s,%s,%s,%s,%s)",("README","<p>This is a note created by default.</p><h2 style='text-align: center;'><span style='color: rgb(153, 0, 255); font-size: 18px;'><strong>A README text acts as the front door and core guide to a software project</strong></span></h2><p>It tells visitors what the project <strong>does</strong>, why it is <strong>useful</strong> and how other people can help or contribute.</p>" f"<p>What is <strong>{project_name}</strong> about?",row[0],"D",True))
     #
     conn.commit()
     cursor.close()

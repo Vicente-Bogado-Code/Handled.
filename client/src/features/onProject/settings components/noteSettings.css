@@ -208,3 +208,25 @@
     gap: 6px;
     color: #ff5555;
 }
+
+.autoSaveAskDiv{
+    display: flex;
+    align-items:center;
+    gap: 10px;
+    color: var(--text-primary);
+}
+.includeAutoSBtn, .dontIncludeAutoSBtn{
+    cursor: pointer;
+    background-color: rgb(71, 114, 58);
+    padding: 5px;
+    width: 50px;
+    color: var(--text-primary);
+    border: none;
+    border-radius: 6px
+}
+.includeAutoSBtn:hover, .dontIncludeAutoSBtn:hover{
+    transform: translateY(-1px);
+}
+.dontIncludeAutoSBtn{
+    background-color:#ff5555;
+}

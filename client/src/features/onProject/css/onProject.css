@@ -10,7 +10,7 @@ html{
 .onProjectNav{
     background-color: var(--bg-secondary);
     margin: 0;
-    width:240px;
+    width:300px;
     padding: 0 20px 10px 20px;
     height: 100vh;
     border-right:1px solid var(--border);
@@ -24,31 +24,21 @@ html{
     top: 0;
     background-color: var(--bg-secondary);
     border:1px solid var(--border);
-    border-top: 0;
+    border-top: none;
     border-radius: 0 0 10px 10px;
     display: flex;
     justify-content: center;
     height: 30px;
     margin: 0;
-}
-.backBtnOnNav{
     display: flex;
-    align-items: center;
+    align-items: center ;
     cursor: pointer;
-    margin: 10px 0 15px 0;
-    font-size: 15px;
-    background: none;
-    border: none;
-    text-align: left;
     color: var(--text-primary);
-    transition: color 0.15s ease;
-    padding: 5px 5px;
-    margin: 0;
 }
-.backBtnOnNav:hover{
-    transition: color 0.15s ease;
+.goBackDiv:hover{
     color: var(--accent);
 }
+
 
 .titleDiv{
     display: flex;
