@@ -1,4 +1,4 @@
-import { Plus, Search, User,SearchX } from "lucide-react";
+import { Plus, Search, User,SearchX,BookPlus } from "lucide-react";
 import ProjectCreationForm from "../projectCreationForm";
 import ProjectCard from "../project_cards";
 
@@ -98,7 +98,7 @@ export default function MyProjects({
                         onClick={() => setIsCreating(true)}
                     >
                         New
-                        <Plus size={16} />
+                        <BookPlus size={16} style={{marginLeft:"5px"}}/>
                     </button>
 
                     <div className="searchInputDiv">
@@ -140,7 +140,7 @@ export default function MyProjects({
 
                 <div className="projectsLblNfilters">
                     <h2 className="projectsLbl">Projects</h2>
-                    <p className="filtersLbl">Hide: <span className="hideAct">{showActive ? null : "active"}</span> <span className="hideDone">{showDone ? null : "done"} {showActive ? (showDone ? <p className="noneClass">none</p> : null) : null}</span></p>
+                    <p className="filtersLbl">Hide: <span className="hideAct">{showActive ? null : "active"}</span> <span className="hideDone">{showDone ? null : "done"} {showActive ? (showDone ? <label className="noneClass">none</label> : null) : null}</span></p>
                 </div>
 
                 {searchTerm !== "" && !projectsFound ? (

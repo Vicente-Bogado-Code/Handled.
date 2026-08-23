@@ -4,6 +4,13 @@
     display: flex;
     flex-direction: column;
     gap: 28px;
+    height: fit-content;
+}
+.rememberLabel{
+    color: var(--text-secondary);
+    margin: 0;
+    height: 10px;
+    font-size: 14px;
 }
 
 .settingsHeader h2 {

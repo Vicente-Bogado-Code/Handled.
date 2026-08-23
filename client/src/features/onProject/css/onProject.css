@@ -16,16 +16,14 @@ html{
     border-right:1px solid var(--border);
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: var(--accent) var(--bg-secondary);
+    scrollbar-color: var(--bg-primary) var(--bg-secondary);
 }
 .goBackDiv{
     position: sticky;
     width: 100%;
     top: 0;
     background-color: var(--bg-secondary);
-    border:1px solid var(--border);
     border-top: none;
-    border-radius: 0 0 10px 10px;
     display: flex;
     justify-content: center;
     height: 30px;
@@ -67,48 +65,33 @@ html{
     min-width: 100%;
     width: fit-content;
     min-height: 44px;
-    height: 20px;
     padding: 8px 8px 0 8px;
     display: flex;
     align-items: flex-end;
     position: sticky;
     top: 0;
     z-index: 6;
+    border-bottom: 1px solid var(--border);
 }
 
-.navWindowsOnPH {
-    display: none;
-}
-
-.navWindows button {
-    cursor: pointer;
-    transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.navWindows button:active {
-    transform: none;
+.windowCSS, .windowActive {
+    background: none;
+    border: none;
+    height: 40px;
+    margin: 0;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 10px;
+    border-radius: 8px 8px 0 0;
+    position: relative;
+    justify-content: space-between;
 }
 
 .windowCSS {
     cursor: pointer;
-    background: none;
-    border: none;
-    width: fit-content;
-    height: 100%;
     color: var(--text-secondary);
-    margin: 0;
-    font-size: 0.85rem;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    border-radius: 8px 8px 0 0;
-}
-.windowCSS button{
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    width: fit-content;
-    height: 100%;
 }
 
 .windowCSS:hover {
@@ -117,31 +100,49 @@ html{
 }
 
 .windowActive {
-    background-color: var(--bg-secondary);
-    border: none;
-    border-radius: 8px 8px 0 0;
-    width: fit-content;
-    height: 100%;
+    background-color: var(--bg-primary);
     color: var(--text-primary);
-    margin: 0;
-    font-size: 0.85rem;
     font-weight: 500;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    position: relative;
-}
-.windowActive button{
-    background: none;
-    border: none;
-    color: var(--text-primary);
-    width: fit-content;
-    height: 100%;
-}
-.dltWinBtn:hover{
-    color: red;
 }
 
+.windowLabelBtn {
+    background: none;
+    border: none;
+    padding: 8px 0;
+    min-width: 0;
+    color: inherit;
+    font: inherit;
+    font-weight: inherit;
+}
+
+.windowLabelText {
+    display: block;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.windowCloseBtn {
+    background: none;
+    border: none;
+    padding: 4px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    opacity: 0;
+}
+
+.windowCSS:hover .windowCloseBtn,
+.windowActive .windowCloseBtn {
+    opacity: 1;
+}
+
+.windowCloseBtn:hover {
+    background-color: color-mix(in srgb, var(--accent) 40%, transparent);
+}
 
 .windowActive::after {
     content: "";
@@ -150,9 +151,9 @@ html{
     right: 0;
     bottom: -1px;
     height: 2px;
-    background-color: var(--accent);
     border-radius: 2px;
 }
+
 .windowBtnDiv{
     display: flex;
 }
@@ -165,26 +166,50 @@ html{
     justify-content: center;
     background-color: var(--bg-primary);
 }
-.windowContent {
+.windowContent, .windowContentWhite {
     background-color: var(--bg-secondary);
-    width: 50%;
+    width: 50vw;
     border: 1px solid var(--border);
     border-radius: 12px;
     min-height: 80vh;
     height: fit-content;
     padding: 24px 32px;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-self: center;
     margin-top: 20px;
+    align-items: center;
+}
+.windowContent .tiptap.ProseMirror {
+    color: var(--text-primary);
+}
+.windowContent .toolbar{
+    background-color: var(--bg-secondary);
+}
+.windowContent .toolbar button{
+    color: var(--text-primary);
+
 }
 
-
+.windowContentWhite .tiptap.ProseMirror {
+    color: black;
+}
+.windowContentWhite{
+    background-color: rgb(234, 234, 234);
+}
+.windowContentWhite ~ .tiptap.ProseMirror{
+    background-color: rgb(234, 234, 234);
+    color: black;
+}
 
 .windowPH{
     background-color: var(--bg-primary);
     width: 100%;
-    height: 100%;
+    min-height: calc(100vh - 44px);
+    display: flex;
+    align-items: center;
+    justify-content:center ;
 }
 .placeHolderDiv {
     width: 100%;
@@ -213,10 +238,9 @@ html{
     justify-content: center;
     margin-bottom: 18px;
     border-radius: 14px;
-    color: red;
-    opacity: 0.60;
-    background-color: var(--background-secondary);
-    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border);
 }
 
 .placeHolderTitle {
@@ -274,17 +298,94 @@ html{
     background-color: var(--bg-secondary);
     color: var(--text-primary);
     width: fit-content;
-    min-width: 200px;
-    margin-left: 20px;
-    text-align: center;
-    padding: 0 10px;
-    border-radius: 0 0 10px 10px;
+    min-width: 220px;
+    min-height: 44px;
+    padding: 8px 16px;
+    border-radius: 10px 10px 0 0;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.25);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 50;
 }
+.allSavedAutoSonDivLbl{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+}
+.labelOnSavignIn{
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+    gap: 6px;
+    font-size: 13px;
+}
+.saveNowBtn{
+    cursor: pointer;
+    height: 30px;
+    width: 90px;
+    border-radius: 6px;
+    border: none;
+    font-size: 13px;
+    font-weight: 500;
+    background-color: rgb(71, 114, 58);
+    color: var(--text-primary);
+}
+
 .namesOnSavingArray{
     color: var(--accent);
     font-weight: bold;
+    font-size: 15px
 }
 
 .hide{
     display: none;
+}
+
+.goBackAndSettingsDiv{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: default;
+    color: var(--text-primary);
+    position: sticky;
+    top: 0;
+    border-radius:  0 0 10px 10px;
+    border: 5px solid var(--bg-primary);
+    padding: 10px;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    background-color: var(--bg-primary);
+}
+.goBackIcon{
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 15px;
+}
+.goBackIcon:hover{
+    background-color: rgb(71, 114, 58,0.5);
+}
+.settingsIcon{
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 15px;
+}
+.settingsIcon:hover{
+    background-color: var(--accent);
+}
+
+.indicatingActiveWindow{
+    color: rgb(180, 117, 0.8);;
 }

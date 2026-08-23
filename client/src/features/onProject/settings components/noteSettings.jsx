@@ -3,7 +3,7 @@ import './noteSettings.css'
 import { Trash, Edit2, Undo2, Check, Save, Info,ClockArrowDown } from 'lucide-react';
 import { deleteSecNote } from '../../api/deleteRequests/deleteSecNote';
 
-export default function NoteSettings({name,id,importance,setIsOnSettings, handleDeleteNote, setIsDeletingNotes, idsToBeDeleted, setIdsToBeDeleted, allIds, handleChangeNoteName,wantsAutoSave, handleChangeAutoSave}){
+export default function NoteSettings({name,id,importance,setIsOnSettings, handleDeleteNote, setIsDeletingNotes, idsToBeDeleted, setIdsToBeDeleted, allIds, handleChangeNoteName,wantsAutoSave, handleChangeAutoSave, projectWantsAutoSave}){
     const [newName, setNewName] = useState("")
     const [isDeleting, setIsDeleting] = useState(false)
     const [savedName,setSavedName] = useState(false)
@@ -37,9 +37,9 @@ export default function NoteSettings({name,id,importance,setIsOnSettings, handle
                             {savedName ? <Check size={16}/> : <Save size={16}/>}
                         </button>
                         <div className='autoSaveAskDiv'>
-                            <ClockArrowDown size={18} style={{borderLeft:"1px solid var(--border)", paddingLeft:"10px"}}/>
-                            <p className='includeAutoSlbl'>Autosave?</p>
-                            <button onClick={() => 
+                            {projectWantsAutoSave ? <ClockArrowDown size={18} style={{borderLeft:"1px solid var(--border)", paddingLeft:"10px"}}/> : <ClockArrowDown size={18} style={{borderLeft:"1px solid var(--border)", paddingLeft:"10px", color:"red"}}/>}
+                            {projectWantsAutoSave ? <p className='includeAutoSlbl'>Autosave?</p> : null}
+                            {projectWantsAutoSave ? <button onClick={() => 
                                 {
                                  const newValue = !includeAutoS
                                  setIncludeAutoS(newValue)
@@ -48,7 +48,7 @@ export default function NoteSettings({name,id,importance,setIsOnSettings, handle
                                 className={includeAutoS ? 'includeAutoSBtn' : 'dontIncludeAutoSBtn'}
                                 
                                 >
-                                    {includeAutoS ? "True" : "False"} </button>
+                                    {includeAutoS ? "True" : "False"} </button> : null}
                         </div>
                     </div>
                 </div>

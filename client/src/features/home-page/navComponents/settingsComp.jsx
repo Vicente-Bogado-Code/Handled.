@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './css/settingsComp.css';
-import { Save, Clock, FileText, Info } from 'lucide-react';
+import { Save, Clock, FileText, Info, Check } from 'lucide-react';
 import { getPreferences,savePreferences } from '../../api/getDataRequests/getUserPreferences';
 
 export default function SettingsComp() {
@@ -34,7 +34,7 @@ export default function SettingsComp() {
 
     return (
         <div className="appSettingsMain">
-
+            <label className='rememberLabel'>Remember to save changes by clicking "Save" at the end of the page</label>
             <section className="settingsSection">
                 <div className="settingsSectionHeader">
                     <Save size={20} />
@@ -154,7 +154,7 @@ export default function SettingsComp() {
                 <button className={isSaved ? 'saveBtnSaved' : 'saveBtn'}onClick={() => {
                     handleSave(autosaveEnabled,autosaveInterval,defaultMainNote,defaultReadmeNote,defaultPublic);
                     setIsSaved(true)
-                    }}><Save size={18}/>{isSaved ? "Saved" : "Save changes"}</button>
+                    }}>{isSaved ? <Check size={18}/> : null}{isSaved ? "" : "Save changes"}</button>
         </div>
     );
 }

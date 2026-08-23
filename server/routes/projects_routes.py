@@ -38,6 +38,13 @@ def add_project():
     get_project_ghrepo = data.get("gh_repo")
     project_ghrepo = "not given"  if get_project_ghrepo is None else get_project_ghrepo
     project_atDate = data.get("atDate")
+    project_preferences = data.get("projectPreferences")
+    prefers_mnote = project_preferences[0]
+    prefers_rmnote = project_preferences[1]
+    prefers_Bpublic = project_preferences[2]
+    prefers_track_commitH = project_preferences[3]
+    project_auto_save = project_preferences[4]
+    project_auto_save_interval = project_preferences[5]
     conn = get_conn()
     cursor = conn.cursor()
     cursor.execute("SELECT project_name FROM users_projects WHERE project_name = %s AND user_id = %s", (project_name, user_id))
@@ -52,12 +59,16 @@ def add_project():
         cursor.close()
         conn.close()
         return jsonify({"Status": "Project already exists"}),409
-    cursor.execute("INSERT INTO secondary_notes (Snote_name,Snote_content,on_project_id,importance,auto_save) VALUES (%s,%s,%s,%s,%s)",("Commit history","<p>This is a note created by default.</p><p>This default note will track your commit history (only if your project have a github repository linked) and log it here, you can modify this note by clicking the 'turn on modifications' button in the project settings.</p>"+f"<h2>{project_name} commit history:</h2>",row[0],"D",True))
+    if prefers_track_commitH:
+        cursor.execute("INSERT INTO secondary_notes (Snote_name,Snote_content,on_project_id,importance,auto_save) VALUES (%s,%s,%s,%s,%s)",("Commit history","<p>This is a note created by default.</p><p>This default note will track your commit history (only if your project have a github repository linked) and log it here, you can modify this note by clicking the 'turn on modifications' button in the project settings.</p>"+f"<h2>{project_name} commit history:</h2>",row[0],"D",True))
     #
-    cursor.execute("INSERT INTO secondary_notes (Snote_name,Snote_content,on_project_id,importance,auto_save) VALUES (%s,%s,%s,%s,%s)",(f"{project_name} main","<p>This is a note created by default.</p><p>This default note is meant to be your 'main' note, where you track important events of your project.</p>",row[0],"M",True))
+    if prefers_mnote:
+        cursor.execute("INSERT INTO secondary_notes (Snote_name,Snote_content,on_project_id,importance,auto_save) VALUES (%s,%s,%s,%s,%s)",(f"{project_name} main","<p>This is a note created by default.</p><p>This default note is meant to be your 'main' note, where you track important events of your project.</p>",row[0],"M",True))
     #
-    cursor.execute("INSERT INTO secondary_notes (Snote_name,Snote_content,on_project_id,importance,auto_save) VALUES (%s,%s,%s,%s,%s)",("README","<p>This is a note created by default.</p><h2 style='text-align: center;'><span style='color: rgb(153, 0, 255); font-size: 18px;'><strong>A README text acts as the front door and core guide to a software project</strong></span></h2><p>It tells visitors what the project <strong>does</strong>, why it is <strong>useful</strong> and how other people can help or contribute.</p>" f"<p>What is <strong>{project_name}</strong> about?",row[0],"D",True))
+    if prefers_rmnote:
+        cursor.execute("INSERT INTO secondary_notes (Snote_name,Snote_content,on_project_id,importance,auto_save) VALUES (%s,%s,%s,%s,%s)",("README","<p>This is a note created by default.</p><h2 style='text-align: center;'><span style='color: rgb(153, 0, 255); font-size: 18px;'><strong>A README text acts as the front door and core guide to a software project</strong></span></h2><p>It tells visitors what the project <strong>does</strong>, why it is <strong>useful</strong> and how other people can help or contribute.</p>" f"<p>What is <strong>{project_name}</strong> about?",row[0],"D",True))
     #
+    cursor.execute("INSERT INTO project_preferences VALUES(%s,%s,%s,%s,%s,%s,%s,%s)", (row[0],prefers_mnote,prefers_rmnote,prefers_track_commitH,prefers_Bpublic,project_auto_save,project_auto_save_interval,0))
     conn.commit()
     cursor.close()
     conn.close()
@@ -89,6 +100,7 @@ def delete_project():
             return jsonify({"Status": "Project doesn't exists"}),401
         if user_id == r[0]:
             cursor.execute("DELETE FROM secondary_notes WHERE on_project_id = %s", (project_id,))
+            cursor.execute("DELETE FROM project_preferences WHERE project_id = %s", (project_id,))
             cursor.execute("DELETE FROM users_projects WHERE project_id = %s", (project_id,))
             conn.commit()
             return jsonify({"Status": "Project deleted"}),200
@@ -237,3 +249,66 @@ def set_current_project():
     cursor.close()
     conn.close()
     return jsonify({"Status": "Current project set", "projectName": project_name}),200
+
+@projects_bp.route("/getProjectPreferences",methods=["GET"])
+def give_Ppreferences():
+    current_user_id = session.get("user_id")
+    if not current_user_id:return jsonify({"Status": "Not logged"}),401
+    current_project_id = session.get("current_project_id")
+    if not current_project_id:return jsonify({"Status": "No project selected"}),400 
+    conn = get_conn()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT * FROM project_preferences WHERE project_id = %s", (current_project_id,))
+        row = cursor.fetchone()
+        current_project_preferences = [{
+            "projectId": row[0],
+            "includeMnote": row[1],
+            "includeReadmeNote": row[2],
+            "trackCommitHistory": row[3],
+            "isPublic": row[4],
+            "hasAutoSave": row[5],
+            "autoSaveInterval": row[6],
+            "theme": row[7]
+        }]
+        return jsonify({"Status": "Data retrieved", "projectPreferences": current_project_preferences}), 200
+    finally:
+            cursor.close()
+            conn.close()
+
+@projects_bp.route("/changeProjectPreferences", methods=["POST"])
+def change_p_preferences():
+    current_user_id = session.get("user_id")
+    if not current_user_id:
+        return jsonify({"Status": "Not logged"}), 401
+    current_project_id = session.get("current_project_id")
+    if not current_project_id:
+        return jsonify({"Status": "No project selected"}), 400
+    data = request.get_json()
+    new_mn = data.get("newMN")
+    new_rm = data.get("newRM")
+    new_commit_h = data.get("newCommitH")
+    new_public = data.get("newPublic")
+    new_auto_s = data.get("newAutoS")
+    new_auto_s_interval = data.get("newAutoSInterval")
+    new_theme = data.get("newTheme")
+    conn = get_conn()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("""
+            UPDATE project_preferences
+            SET
+                include_main_note = %s,
+                include_readme_note = %s,
+                track_commit_history = %s,
+                public = %s,
+                auto_save = %s,
+                auto_save_interval = %s,
+                theme = %s
+            WHERE project_id = %s
+        """, (new_mn,new_rm,new_commit_h,new_public,new_auto_s,new_auto_s_interval,new_theme,current_project_id))
+        conn.commit()
+        return jsonify({"Status": "Preferences updated"}), 200
+    finally:
+        cursor.close()
+        conn.close()

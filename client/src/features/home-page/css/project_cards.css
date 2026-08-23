@@ -28,12 +28,20 @@
     justify-content: space-between;
     align-items: center;
     margin: 0;
+    gap: 8px;
+    min-width: 0;
+    height: 50px;
 }
-
 .projectCardName {
     color: var(--text-primary);
     font-size: 1.05rem;
     margin: 0;
+    flex: 1;
+    min-width: 0;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .activeSpan{
     color: var(--accent);
@@ -47,6 +55,7 @@
     padding: 2px 8px;
     border-radius: 10px;
     text-transform: capitalize;
+    flex-shrink: 0;
 }
 
 .status-active {

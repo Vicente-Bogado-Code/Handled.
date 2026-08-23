@@ -29,9 +29,9 @@ export default function HomePage({ username,setUsername, email, onLogout, handle
     const [advanceSettings, setAdvanceSettings] = useState(false)
     const [choiceRepo, setChoiceRepo] = useState(true)
     const [choiceCommitHistory,setChoiceCommitHistory]= useState(true)
-    const [choiceMainNote, setChoiceMainNote] = useState(true)
-    const [choiceREADMEnote, setChoiceREADMEnote] = useState(true)
-    const [choicePublic, setChoicePublic] = useState(false)
+    const [choiceMainNote, setChoiceMainNote] = useState(null)
+    const [choiceREADMEnote, setChoiceREADMEnote] = useState(null)
+    const [choicePublic, setChoicePublic] = useState(null)
     const [showActive, setShowActive] = useState(true)
     const [showDone, setShowDone] = useState(true)
     const [searchTerm, setSearchTerm] = useState("")
@@ -56,12 +56,11 @@ export default function HomePage({ username,setUsername, email, onLogout, handle
     getMe();
   }, []);
     //
-    async function handleCreate() {
+    async function handleCreate(preferencesArray) {
         const currentTime = getDate();
-        console.log(currentTime)
         const error = verifyInput()
         if (error){return}
-        const response = await createProject(projectName,description,gh_repo,currentTime)
+        const response = await createProject(projectName,description,gh_repo,currentTime,preferencesArray)
         if (response.Status === "Project created"){
             setMyProjects(previous => [...previous, response.projects])
             setProjectName("");
@@ -77,8 +76,14 @@ export default function HomePage({ username,setUsername, email, onLogout, handle
     }
     async function handleChangeRepo(newLink, id){
         const request = await changeGhRepo(newLink,id)
-        if (request.Status === "Link changed"){ setMyProjects(prev => prev.map(p => p.project_id === id ? {...p, repoLink:newLink} : p)) }
-        else if (request.Status === "Invalid GitHub link"){alert("Invalid GitHub link given")}
+        if (request.Status === "Link changed"){ 
+            setMyProjects(prev => prev.map(p => p.project_id === id ? {...p, repoLink:newLink} : p))
+            return true 
+        }
+        else if (request.Status === "Invalid GitHub link"){
+            alert("Invalid GitHub link given")
+            return false
+        }
     }
     //
     async function handleDeleteProject(id) {

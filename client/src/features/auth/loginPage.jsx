@@ -18,7 +18,6 @@ export default function LoginPage({onSwitchMode ,onLoginSuccess}){
         }
         if (response.Status === "Valid credentials"){
             onLoginSuccess(response.username)
-            console.log(response.email)
         }
         else{
             setError(response.Status);

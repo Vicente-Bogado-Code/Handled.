@@ -8,6 +8,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 .optionsBtn:hover{
     background-color: var(--transparent-blue-btns);

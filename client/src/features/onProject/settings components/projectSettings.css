@@ -1,0 +1,397 @@
+.projectSettingsDiv{
+    height: fit-content;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0 100px 0;
+    margin: auto;
+}
+
+.settingsCategorySeparator{
+    padding-bottom: 18px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+}
+.labelOnProjectSettings{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 65px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.08));
+}
+
+.projectSettingsTitleDiv{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+.projectIdLbl{
+    color: var(--text-secondary);
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    margin: 0;
+    opacity: 0.7;
+}
+
+.projectTitleLbl{
+    color: var(--text-primary);
+    font-size: 21px;
+    font-weight: 600;
+    margin: 0;
+    max-width: 270px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.projectDateLbl{
+    color: var(--text-secondary);
+    font-size: 12px;
+    margin: 0;
+    font-weight: bold;
+}
+
+.projectStatusDiv{
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 10px;
+    border-radius: 7px;
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+.projectTypeLbl{
+    color: var(--text-secondary);
+    font-size: 11px;
+    margin: 0;
+}
+
+.toAccentProjectSettings{
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.changeProjectDataDiv{
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.projectInputDiv{
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+.projectInputLabel{
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+.repoIcon{
+    color: var(--text-primary);
+}
+.changeProjectNameInput{
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-weight: 550;
+    font-size: 15px;
+    border-radius: 2px;
+    border: none;
+    border-bottom: 1px solid var(--text-primary);
+    padding: 5px;
+    width: 50%;
+}
+.projectInputNicon{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding-bottom: 10px;
+}
+
+.saveProjectbtn{
+    cursor: pointer;
+    width: 50px;
+    padding: 5px;
+    background-color: var(--accent);
+    border: none;
+    color: var(--text-primary);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.saveProjectbtn:hover{
+    transform: translateY(-1px);
+}
+.saveProjectbtn svg{
+    color: white;
+}
+.deleteProjectSettingsBtn,
+.exitProjectSettingsBtn{
+    width: 30%;
+    height: 42px;
+    border-radius: 9px;
+    border: 1px solid transparent;
+    color: var(--text-primary);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease, opacity 0.15s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+
+.deleteProjectSettingsBtn:hover,
+.exitProjectSettingsBtn:hover{
+    transform: translateY(-1px);
+}
+
+.deleteProjectSettingsBtn{
+    background-color: #ff5555;
+    color: var(--text-primary);
+}
+
+.exitProjectSettingsBtn{
+    background-color: transparent;
+    border-color: var(--border-color, rgba(255, 255, 255, 0.10));
+    color: var(--text-primary);
+    margin-top: 4px;
+}
+
+.exitProjectSettingsBtn:hover{
+    color: var(--text-primary);
+}
+
+.deleteConfirmCard{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px;
+    border-radius: 10px;
+    background-color: rgba(255, 85, 85, 0.08);
+    border: 1px solid rgba(255, 85, 85, 0.25);
+}
+
+.deleteConfirmHeader{
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #ff5555;
+}
+
+.deleteConfirmLbl{
+    margin: 0;
+    font-size: 12.5px;
+    color: var(--text-primary);
+}
+
+.deleteConfirmActions{
+    display: flex;
+    gap: 8px;
+}
+
+.deleteConfirmActions button{
+    cursor: pointer;
+    flex: 1;
+    height: 36px;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.deleteConfirmActions button:hover{
+    transform: translateY(-1px);
+}
+
+.cancelDeleteBtn{
+    background-color: rgba(255, 255, 255, 0.06);
+    color: var(--text-primary);
+}
+
+.confirmDeleteBtn{
+    background-color: #ff5555;
+    color: white;
+}
+
+.projectStatusAskDiv{
+    display: flex;
+    align-items:center;
+    gap: 10px;
+    color: var(--text-primary);
+}
+.includeStatusLbl{
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+.projectStatusActiveBtn, .projectStatusDoneBtn{
+    cursor: pointer;
+    background-color: rgb(71, 114, 58);
+    padding: 5px;
+    color: var(--text-primary);
+    border: none;
+    border-radius: 6px
+}
+.projectStatusActiveBtn:hover, .projectStatusDoneBtn:hover{
+    transform: translateY(-1px);
+}
+.projectStatusDoneBtn{
+    background-color: var(--accent);
+}
+.generalSettingsDiv{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-bottom: 18px;
+}
+
+.settingsToggleRow{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.settingsToggleLabel{
+    color: var(--text-secondary);
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.settingsToggleSwitch{
+    cursor: pointer;
+    width: 38px;
+    height: 20px;
+    border-radius: 10px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.12);
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    transition: background-color 0.15s ease;
+}
+
+.settingsToggleSwitch.toggleOn{
+    background-color: var(--accent);
+    justify-content: flex-end;
+}
+
+.settingsToggleKnob{
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: white;
+}
+
+.editorThemeRow{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.editorThemeSwatches{
+    display: flex;
+    gap: 8px;
+}
+
+.editorThemeSwatch{
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 13px;
+    border: 2px solid transparent;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.editorThemeSwatch:hover{
+    transform: translateY(-1px);
+}
+
+.editorThemeWhite{
+    background-color: #ffffff;
+    color: #000000;
+}
+
+.editorThemeBlack{
+    background-color: #000000;
+    color: #ffffff;
+}
+
+.swatchSelected{
+    border-color: var(--accent);
+}
+.autoSaveIntervalRow{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 10px;
+}
+
+.autoSaveIntervalOptions{
+    display: flex;
+    gap: 6px;
+}
+
+.intervalOptionBtn{
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.10));
+    background-color: transparent;
+    color: var(--text-secondary);
+    font-size: 12px;
+    transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
+}
+
+.intervalOptionBtn:hover{
+    color: var(--text-primary);
+}
+
+.intervalOptionBtn.intervalSelected{
+    background-color: rgb(71, 114, 58);
+    color: white;
+}
+
+.trackingCommitsLblHelp{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--text-secondary);
+    font-weight: 550;
+    font-size: 15px;
+}
+
+.toRed{
+    color: #ff5555;
+}
+
+.saveSettingsBtn, .saveSettingsSavedBtn{
+    cursor: pointer;
+    background-color: var(--accent);
+    width: 20%;
+    border: none;
+    color: var(--text-primary);
+    padding: 8px;
+    border-radius: 8px;
+}
+.saveSettingsBtn:hover{
+    transform: translateY(-1px);
+}
+.saveSettingsSavedBtn{
+    background-color: rgb(71, 114, 58);
+}

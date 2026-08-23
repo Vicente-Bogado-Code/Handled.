@@ -5,7 +5,15 @@ import { saveNoteContent } from "../api/alterRequests/saveNoteContent";
 import { deleteSecNote } from "../api/deleteRequests/deleteSecNote";
 import { changeNoteName } from "../api/alterRequests/changeNoteName";
 import { changeAutoSave } from "../api/alterRequests/changeSpecNoteAutoSave";
+import { getMyProjects } from "../api/getDataRequests/getMyProjects";
+import { changeStatus } from "../api/alterRequests/changeStatus";
+import { changeGhRepo } from "../api/alterRequests/alterOther";
+import { deleteProject } from "../api/deleteRequests/deleteProject";
+import { changeProjectDesc } from "../api/alterRequests/changeDescName";
+import { changeProjectName } from "../api/alterRequests/changeDescName";
 import { useState, useEffect, useRef, use } from 'react';
+import { getProjectPreferences } from "../api/getDataRequests/getProjectPreferences";
+import { changeProjectPreferences } from "../api/alterRequests/changeProjectPreferences";
 //
 import SecondaryProjectComp from "./ secNote";
 import Window from "./window";
@@ -15,10 +23,11 @@ import placeholder from "./placeholder";
 import CounterToSave from "./savingIn";
 import MainPlaceHolder from "./placeholder";
 import NoteSettings from "./settings components/noteSettings";
+import ProjectSettings from "./settings components/projectSettings";
 //
 import './css/onProject.css'
 //
-import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon } from 'lucide-react';
+import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon, ClockArrowDown,FilePlus } from 'lucide-react';
 
 export default function CurrentProjectComp({ project_id , handleGoBack}) {
   const [editor,setEditor] = useState(null)
@@ -33,6 +42,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
   const currentNoteContent = activeSnote ? activeSnote.content : "";
   const currentNoteImportance = activeSnote ? activeSnote.importance : "";
   const currentNoteName = activeSnote ? activeSnote.name : "";
+  const currentSnoteWantsSave = activeSnote ? activeSnote.auto_save : "";
   const Snotes = mySecNotes.filter(note => note.importance === "S")
   const Dnotes = mySecNotes.filter(note => note.importance === "D")
   const Mnote =  mySecNotes.filter(note => note.importance === "M")
@@ -51,6 +61,21 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
   const [isDeletingNotes, setIsDeletingNotes] = useState(false)
   const [idsToBeDeleted, setIdsToBeDeleted] = useState([])
   const allNotesIds = mySecNotes.map(note => note.id)
+  const [isOnProjectSettings, setIsOnProjectSettings] = useState(false)
+  const [projectDesc, setProjectDesc] = useState("")
+  const [projectRepo, setProjectRepo] = useState("")
+  const [projectStatus, setProjectStatus] = useState("")
+  const [projectDate, setProjectDate] = useState("")
+
+  const [hasMainNote, setHasMainNote] = useState(null)
+  const [hasReadmeNote, setHasReadmeNote] = useState(null)
+  const [hasTrackCommitHistory, setHasTrackCommitHistory] = useState(null)
+  const [hasIsPublic,setHasIsPublic] = useState(null)
+  const [hasAutoSave, setHasAutoSave] = useState(null)
+  const [autoSaveInterval, setAutoSaveInterval] = useState(null)
+  const [hasTheme, setHasTheme] = useState(null)
+
+  const [someCntChanged, setSomeContentChanged] = useState(false)
 
   useEffect(() =>{
     mySecNotesRef.current = mySecNotes;
@@ -64,10 +89,30 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
       if (response.Status === "Current project set") {
         setProjectName(response.projectName);
 
-        getSecondaryNotes().then(response => setMySecNotes(response.Snotes)); 
+        getSecondaryNotes().then(response => setMySecNotes(response.Snotes));
+        getMyProjects().then(data => {
+          const p = data.projects.find(pr => pr.project_id === project_id)
+          if (p){
+            setProjectDesc(p.description)
+            setProjectRepo(p.repoLink)
+            setProjectStatus(p.status)
+            setProjectDate(p.atDate)
+          }
+        }) 
+        getProjectPreferences().then(r => {
+              if (r.Status === "Data retrieved"){
+                    setHasMainNote(r.projectPreferences[0].includeMnote)
+                    setHasReadmeNote(r.projectPreferences[0].includeReadmeNote)
+                    setHasTrackCommitHistory(r.projectPreferences[0].trackCommitHistory)
+                    setHasIsPublic(r.projectPreferences[0].isPublic)
+                    setHasAutoSave(r.projectPreferences[0].hasAutoSave)
+                    setAutoSaveInterval(r.projectPreferences[0].autoSaveInterval)
+                    setHasTheme(r.projectPreferences[0].theme)}
+          })
       }
     });
-  }, [project_id]);
+  }, [project_id,isOnProjectSettings]);
+
 
   //Content
   async function handleCreateSnote(name,content,imp){
@@ -77,12 +122,14 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
     {
       setMySecNotes(prev => [...prev, response.Snote])
     }
+    setActiveWindowId(response.Snote.id)
+    setWindows(prev => [...prev, {"id":response.Snote.id,"name":name}]);
   }
   //
   function startAutoSaveTimer(EveryXseconds){
     clearInterval(timerRef.current)
-    secondsRef.current = 10;
-    setSeconds(10)
+    secondsRef.current = autoSaveInterval;
+    setSeconds(autoSaveInterval)
 
     timerRef.current = setInterval(() =>{
       setSaving(true)
@@ -90,7 +137,6 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
       setSeconds(secondsRef.current)
       if (secondsRef.current === EveryXseconds){
         clearInterval(timerRef.current)
-        console.log("Saved after ",EveryXseconds," seconds!")
         for (let i = 0; i < modifiedNotesIdRef.current.length; i++){
           const note = mySecNotesRef.current.find(n => n.id === modifiedNotesIdRef.current[i]);
           const noteC = note ? note.content : null
@@ -105,7 +151,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
   function handleContentChange(newContent){
     const inIt = modifiedNotesId.find(id => id === activeSnoteId);
     const wantsSaving = activeSnote.auto_save
-    if (inIt === undefined && wantsSaving){
+    if (inIt === undefined){
       setModifiedNotesId(prev => [...prev, activeSnoteId])
     }
     setMySecNotes(prev =>
@@ -113,10 +159,11 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
         note.id === activeSnoteId ? {...note, content: newContent} : note
       )
     )
-    startAutoSaveTimer(0)
+    if (wantsSaving && hasAutoSave){startAutoSaveTimer(0)}
   }
   async function handleSaveContent(Snote_id,content) {
     const response = await saveNoteContent(Snote_id,content)
+    setModifiedNotesId(prev => prev.filter(id => id !== activeSnoteId))
   }
 
   //Close window
@@ -153,17 +200,58 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
     if(r.Status === "Auto save changed"){
       setMySecNotes(prev => prev.map(n => n.id === id ? {...n, auto_save:boolean} : n ))}
   }
+  async function handleChangeProjectName(newName,id) {
+        const response = await changeProjectName(id,newName)
+        if (response.Status === "Name changed"){setProjectName(newName)}
+    }
+  async function handleChangeProjectDesc(id,newDesc) {
+    const response = await changeProjectDesc(id,newDesc)
+    if (response.Status === "Description changed"){ setProjectDesc(newDesc)}
+    }
+  async function handleChangeRepo(newLink, id){
+        const request = await changeGhRepo(newLink,id)
+        if (request.Status === "Link changed"){ setProjectRepo(newLink); return true }
+        else if (request.Status === "Invalid GitHub link"){alert("Invalid GitHub link given"); return false}
+    }
+  async function handleChangeStatus(project_id){
+        const response = await changeStatus(project_id)
+        if (response.Status === "Status changed"){setProjectStatus(response.new_status)}
+    }
+  async function handleDeleteThisProject(id) {
+    const request = await deleteProject(id)
+    if (request.Status === "Project deleted"){ handleGoBack("")}
+    }
+  async function handleChangeProjectPreferences(mnote,RMnote,commitH,ispublic,autoS,autoSinterval,theme) {
+    const r = await changeProjectPreferences(mnote,RMnote,commitH,ispublic,autoS,autoSinterval,theme);
+    if (r.Status === "Preferences updated"){
+      return true
+    }
+    return false
+  }
+
+  async function handleSaveNow() {
+     for (let i = 0; i < modifiedNotesIdRef.current.length; i++){
+          const note = mySecNotesRef.current.find(n => n.id === modifiedNotesIdRef.current[i]);
+          if (!note.auto_save) continue;
+          const noteC = note ? note.content : null
+          handleSaveContent(note.id,noteC)
+          setModifiedNotesId(prev => prev.filter(id => id !== note.id))
+        }
+  }
   return (
   <div className="mainDiv">
     <nav className="onProjectNav">
-      <div className="goBackDiv"  onClick={() => {
-        handleGoBack("");
+      <div className="goBackAndSettingsDiv"  onClick={() => {
         if (activeSnote){handleSaveContent(activeSnote.id,currentNoteContent);}
         }}>
-        <Undo2Icon size={18} />
-      </div>
-      <div className="titleDiv">
-        <h3 className="titleOnNav">{projectName}</h3>
+        <Undo2Icon size={18} className="goBackIcon" onClick={() => {handleGoBack("")}}/>
+        <h3 className="titleOnNav" title={projectName}>{projectName}</h3>
+        
+        <SettingsIcon size={18} className="goBackIcon" 
+        onClick={() => {
+          setIsOnProjectSettings(!isOnProjectSettings);
+          setIsOnNoteSettings(false);
+        }}/>
       </div>
       {Mnote.length > 0 ? <div className="mainNoteBtnDiv">
         <p className="mainNoteLabel">main note:</p>
@@ -183,35 +271,32 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
          isDeletingNotes={isDeletingNotes}
          idsToBeDeleted={idsToBeDeleted}
          setIdsToBeDeleted={setIdsToBeDeleted}
+         projectWanstAutoSave={hasAutoSave}
          wantsAutoSave={Mnote.auto_save}
          />)}
       </div> : null}
       <p className="mainNoteLabel">secondary note/s:</p>
       <div className="newSnoteForm">
-         <button className="addNoteBtn" onClick={() => {isCreating === false ? setIsCreating(true) : setIsCreating(false)}}>{isCreating === true ? <Minus size={18}/> : <Plus size={18}/>}</button>
+         <button className="addNoteBtn" onClick={() => {isCreating === false ? setIsCreating(true) : setIsCreating(false)}}>{isCreating === true ? <Minus size={18}/> : <FilePlus size={18}/>}</button>
       </div>
       <div className={isCreating === true ? "newNoteFormDiv" : "hide"} >
-          <p className="labelOnNewNote">Secondary note name</p> 
-          <input type="text" placeholder="Note name? (max 20 characters)"
+        <div className="parentNewNoteForm">
+        <p className="Slabel">S</p>
+          <input type="text" placeholder="name?"
            maxLength={25} 
            value={nameOfNewSnote}
            onChange={e => setNameOfSnote(e.target.value)}
            className="noteNameInput"
            />
-           <p className="labelOnNewNote">Title (optional)</p>
-           <input type="text" placeholder={`${projectName}...`}
-           value={title}
-           onChange={e => setTitle(e.target.value)} 
-           className="noteNameInput"
-           />
            <button 
            className="createSnoteBtn"
            onClick={() => {handleCreateSnote(nameOfNewSnote,title,"S"); setTitle(""); setNameOfSnote("")}}
-           >Add <Plus size={15}/></button>
+           ><FilePlus size={15}/></button>
+        </div>
       </div>
 
       <div className="secondaryNotesDiv">
-        {Dnotes.length > 0 ? (<button className="DnotesBtn" onClick={() => { visualDnotes === false ? setVisualDnotes(true) : setVisualDnotes(false)}}>Default<span className={visualDnotes ? "CsetColor" : "CsetColorNonActive"}>{visualDnotes === true ? <ChevronDown size={22}/> : <ChevronRight size={22}/>}</span>{currentNoteImportance === "D" ? <p className="labelCrntNote">{currentNoteName}</p> : null}</button>) : null}
+        {Dnotes.length > 0 ? (<button className="DnotesBtn" onClick={() => { visualDnotes === false ? setVisualDnotes(true) : setVisualDnotes(false)}}>Default<span className={visualDnotes ? "CsetColor" : "CsetColorNonActive"}>{visualDnotes === true ? <ChevronDown size={22}/> : <ChevronRight size={22}/>}</span>{currentNoteImportance === "D" ? <p className="labelCrntNote" title={currentNoteName}>{currentNoteName}</p> : null}</button>) : null}
         <div className={visualDnotes === true ? null : "hide"}>
           {Dnotes.map(Dnote => <SecondaryProjectComp
           key={Dnote.id}
@@ -229,11 +314,12 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
           isDeletingNotes={isDeletingNotes}
           idsToBeDeleted={idsToBeDeleted}
           setIdsToBeDeleted={setIdsToBeDeleted}
+          projectWanstAutoSave={hasAutoSave}
           wantsAutoSave={Dnote.auto_save}
          />)}
         </div>
         <div className="snotesDiv">
-        <button className="DnotesBtn" onClick={() => { visualSnotes === false ? setVisualSnotes(true) : setVisualSnotes(false)}}>Created<span className={visualSnotes ? "CsetColor" : "CsetColorNonActive"}>{visualSnotes === true ? <ChevronDown size={22}/> : <ChevronRight size={22}/>}</span>{currentNoteImportance === "S" ? <p className="labelCrntNote">{currentNoteName}</p> : null}</button>
+        <button className="DnotesBtn" onClick={() => { visualSnotes === false ? setVisualSnotes(true) : setVisualSnotes(false)}}>Created<span className={visualSnotes ? "CsetColor" : "CsetColorNonActive"}>{visualSnotes === true ? <ChevronDown size={22}/> : <ChevronRight size={22}/>}</span>{currentNoteImportance === "S" ? <p className="labelCrntNote" title={currentNoteName}>{currentNoteName}</p> : null}</button>
         <div className={visualSnotes === true ? null : "hide"}>
            {Snotes.map(Snote => <SecondaryProjectComp
            key={Snote.id}
@@ -251,13 +337,25 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
            isDeletingNotes={isDeletingNotes}
            idsToBeDeleted={idsToBeDeleted}
            setIdsToBeDeleted={setIdsToBeDeleted}
+           projectWanstAutoSave={hasAutoSave}
            wantsAutoSave={Snote.auto_save}
+           setIsOnProjectSettings={setIsOnProjectSettings}
          />)}
         </div>
       </div>
       </div>
     </nav>
     <main className="mainOnProject">
+      <CounterToSave 
+      seconds={seconds}
+      modifiedNotesId={modifiedNotesId}
+      mySecNotesRef={mySecNotesRef}
+      autoSave={hasAutoSave}
+      handleSaveContent={handleSaveContent}
+      currentSnoteId={activeSnoteId}
+      currentSnoteContent={currentNoteContent}
+      handleSaveNow={handleSaveNow}
+      />
       {isOnNoteSettings ? <NoteSettings
        name={activeSnote.name}
        id={activeSnoteId}
@@ -271,9 +369,33 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
        handleChangeNoteName={handleChangeNoteName}
        wantsAutoSave={activeSnote.auto_save}
        handleChangeAutoSave={handleChangeAutoSave}
+       setIsOnProjectSettings={setIsOnProjectSettings}
+       projectWantsAutoSave={hasAutoSave}
        />
        : null} 
-     <div className={isOnNoteSettings === true ? "hide" : (windows.length > 0 ? "navWindows" : "navWindowsOnPH")}>
+     {isOnProjectSettings && !isOnNoteSettings ? (<ProjectSettings
+      name={projectName}
+      id={project_id}
+      description={projectDesc}
+      repoLink={projectRepo}
+      status={projectStatus}
+      atDate={projectDate}
+      setIsOnProjectSettings={setIsOnProjectSettings}
+      handleChangeProjectName={handleChangeProjectName}
+      handleChangeProjectDesc={handleChangeProjectDesc}
+      handleChangeRepo={handleChangeRepo}
+      handleChangeStatus={handleChangeStatus}
+      handleDeleteProject={handleDeleteThisProject}
+      hasAutoSave={hasAutoSave}
+      hasAutoSaveInterval={autoSaveInterval}
+      hasMnote={hasMainNote}
+      hasReadmeNote={hasReadmeNote}
+      hasIsPublic={hasIsPublic}
+      hasTheme={hasTheme}
+      hasTrackCommit={hasTrackCommitHistory}
+      handleChangeProjectPreferences={handleChangeProjectPreferences}
+     />) : null}
+     <div className={isOnNoteSettings === true || isOnProjectSettings === true ? "hide" : (windows.length > 0 ? "navWindows" : "navWindowsOnPH")}>
       {windows.map(window => <Window 
       key={window.id}
       windowName={window.name}
@@ -282,24 +404,21 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
       setActiveWindowId={setActiveWindowId}
       handleWindowClosing={handleWindowClosing}
       importance={window.importance}
+      modifiedWindowsid={modifiedNotesId}
       />)}
      </div>
-     {!isOnNoteSettings ? <div className="currentWindowContentDiv">
-      <CounterToSave 
-      seconds={seconds}
-      modifiedNotesId={modifiedNotesId}
-      mySecNotesRef={mySecNotesRef}
-      />
-      <div className={activeSnoteId ? "toolBarDiv" : "hide"}>
-          <Toolbar editor={editor} activeSnote={activeSnote ? activeSnote.id : null} currentContent={currentNoteContent}/>
-      </div>
-      <div className={activeSnoteId ? "windowContent" : "windowPH"}>
+     {!isOnNoteSettings && !isOnProjectSettings ? 
+     <div className="currentWindowContentDiv">
+      <div className={activeSnoteId ? (hasTheme === 1 ? "windowContent" : "windowContentWhite") : "windowPH"}>
+       {activeSnoteId ? <Toolbar editor={editor} activeSnote={activeSnote ? activeSnote.id : null} currentContent={currentNoteContent}/> : null}
         {activeSnoteId ?
         <TipTap 
         currentContent={currentNoteContent}
         onContentChange={handleContentChange}
         activeSnote={activeSnote ? activeSnote.id : null}
         setEditor={setEditor}
+        currentSnoteWantsSave={currentSnoteWantsSave}
+        projectWantsAutoSave={hasAutoSave}
         /> : <MainPlaceHolder/> }
       </div>
 

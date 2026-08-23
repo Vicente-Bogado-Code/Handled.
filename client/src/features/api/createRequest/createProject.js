@@ -1,6 +1,7 @@
-export async function createProject(name, desc, gh_repo,currentDate) {
+export async function createProject(name, desc, gh_repo,currentDate, projectPreferencesArray) {
     const gh_repository = gh_repo === "" ? null : gh_repo;
     const status = "active"
+    console.log(projectPreferencesArray)
     const request = await fetch("http://localhost:5000/addProject", {
         method:"POST",
         credentials:"include",
@@ -12,7 +13,8 @@ export async function createProject(name, desc, gh_repo,currentDate) {
             "desc": desc,
             "status":status,
             "gh_repo":gh_repository,
-            "atDate": currentDate
+            "atDate": currentDate,
+            "projectPreferences": projectPreferencesArray
         })
     });
     const response = await request.json()

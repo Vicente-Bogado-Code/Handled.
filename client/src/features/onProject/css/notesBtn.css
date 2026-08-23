@@ -1,12 +1,13 @@
 .mainNoteBtnDiv{
     margin-bottom: 20px;
-    border-bottom: 1px solid var(--border);
     height: 60px;
 }
 .mainNoteLabel{
     margin:10px 0 5px 0;
     color: var(--text-secondary);
     font-weight: 550;
+    text-transform: uppercase;
+    font-size: smaller;
 }
 .DnotesBtn{
     cursor: pointer;
@@ -18,6 +19,10 @@
     text-align: left;
     padding: 10px 0;
     font-size: 18px;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    gap: 4px;
 }
 .CsetColor{
     display: flex;
@@ -32,6 +37,11 @@
 .labelCrntNote{
     margin: 0;
     font-size:12px ;
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .buttonOnNav{
     background: none;
@@ -51,30 +61,57 @@
 
 .newSnoteForm{
     width: 100%;
+    height: 30px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
-.noteNameInput{
-    width: 80%;
-    height: 15px;
-    margin-bottom: 8px;
-    padding: 5px 10px;
+.newNoteFormDiv{
+    background-color: var(--bg-primary);
     border: none;
-    border-bottom: 1px solid var(--text-primary);
-    background: none;
+    width: 97%;
+    padding: 5px 5px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.parentNewNoteForm{
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
     color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 550;
+}
+
+.autoSaveOnNewNoteFormDiv{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.noteNameInput{
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 14px;
+    cursor: text;
+    font-weight: 550;
+    text-align: center;
+    width: 150px;
+    margin-left: 5px;
+    border-bottom: 1px solid var(--text-primary);
 }
 .noteNameInput:focus{
     outline: none;
-    border: none;
-    border-bottom: 1px solid var(--accent);
 }
+
 .addNoteBtn{
     cursor: pointer;
-    width: 100%;
-    height: 40px;
+    width: 50%;
+    height: 50px;
     font-size: 15px;
     background-color: var(--accent);
     border: none;
@@ -85,40 +122,27 @@
 .addNoteBtn:hover{
     transform: scale(1.01);
 }
-
-.newNoteFormDiv{
-    margin-top: 10px;
-    background-color: var(--bg-primary);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 150px;
-    padding: 8px 0;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-}
-.labelOnNewNote{
-    color: var(--text-primary);
-    font-size: 15px;
+.autoSaveOnNewNoteFormDiv{
     margin: 0;
-    text-align: left;
-    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+}
+.autoSaveOnNewNoteFormDiv svg{
+    color: greenyellow;
 }
 .createSnoteBtn{
     background-color: rgb(48, 144, 48);
     color: var(--text-primary);
-    width: 50%;
-    height: 17%;
     border-radius: 8px;
     border: none;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 50px;
+    height: 25px;
 }
 .createSnoteBtn:hover{
     transform: scale(1.02);
 }
+
 .snotesDiv{
     padding-bottom: 100px;
 }
@@ -139,7 +163,7 @@
     color: var(--text-primary);
     text-align: center;
     width: 100%;
-    height: 30px;
+    height: 40px;
     font-size: 14px;
     cursor: pointer;
     margin-bottom: 5px;
@@ -177,11 +201,21 @@
 .Slabel{
     color: var(--text-secondary);
     font-size: 15px;
+    flex-shrink: 0;
+}
+.noteNameOnNav{
+    min-width: 0;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    text-align: left;
 }
 .statusSettings{
     display: flex;
     align-items: center;
     gap: 5px;
+    flex-shrink: 0;
 }
 .settingsBtn{
     cursor: pointer;
@@ -205,9 +239,11 @@
 }
 .secNoteOnNavDiv{
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     gap: 8px;
+    min-width: 0;
+    width: 100%;
 }
 .deleteBtn{
     margin: 0;

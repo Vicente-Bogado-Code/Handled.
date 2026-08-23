@@ -1,6 +1,8 @@
 // ProjectCreationForm.jsx
 import { FaGithub } from "react-icons/fa";
 import { X, Settings, Plus } from "lucide-react";
+import { getPreferences } from "../api/getDataRequests/getUserPreferences";
+import { useEffect, useState } from "react";
 
 export default function ProjectCreationForm({
     setIsCreating,
@@ -15,12 +17,44 @@ export default function ProjectCreationForm({
     choicePublic, setChoicePublic,
     handleCreate
 }) {
+   
+    const [currentIncludeMainNote, setCurrentIncludeMainNote] = useState(null)
+    const [currentIncludeReadme, setCurrentIncludeReadme] = useState(null)
+    const [currentBePublic, setCurrentBePublic] = useState(null)
+    const [currentAutoSave, setCurrentAutoSave] = useState(null)
+    const [currentAutoSaveInterval, setCurrentAutoSaveInterval] = useState(null)
+
+    useEffect(() => {
+
+        async function getMyPreferences() {
+
+            const r = await getPreferences()
+
+            if (r.Status === "Data retrieved") {
+
+                console.log(r.userPreferences)
+
+                setChoiceMainNote(r.userPreferences.defaultIncludeMnote)
+                setChoiceREADMEnote(r.userPreferences.defaultIncludeReadme)
+                setChoicePublic(r.userPreferences.defaultBePublic)
+
+                setCurrentIncludeMainNote(r.userPreferences.defaultIncludeMnote)
+                setCurrentIncludeReadme(r.userPreferences.defaultIncludeReadme)
+                setCurrentBePublic(r.userPreferences.defaultBePublic)
+                setCurrentAutoSave(r.userPreferences.defaultAutoSave)
+                setCurrentAutoSaveInterval(r.userPreferences.defaultTimeAutoSave)
+            }
+        }
+
+        getMyPreferences();
+
+    }, [])
     return (
         <div className='createNewProjects'>
             <div className="newProjectForm">
                 <div className='headerOnCreationProject'>
                     <div className='labelANdNewProjectLabel'>
-                        <h2 className="newProjectLabel">What are we <span style={{color:"var(--accent"}}>working</span> on?</h2>
+                        <h2 className="newProjectLabel">What are you <span style={{color:"var(--accent"}}>working</span> on?</h2>
                         <p className='labelCanBeChanged'>All input values can be changed later</p>
                     </div>
                     <button onClick={() => { setIsCreating(false)}}
@@ -34,7 +68,7 @@ export default function ProjectCreationForm({
                 />
 
                 <textarea
-                type="text" placeholder="Tell us about your project (Max 150 characters)" className="descInputCreate" maxLength={350}
+                type="text" placeholder="Talk about your project (Max 150 characters)" className="descInputCreate" maxLength={350}
                 value={description}
                 onChange={e => setDescription(e.target.value)}
                 />
@@ -52,8 +86,8 @@ export default function ProjectCreationForm({
                <div className='advSettingsDiv'>
                 <label className='checkBoxOnAdvSettings settingRow'>
                     <input type="checkbox"
-                    checked={choiceMainNote}
-                    onChange={(e) => {choiceMainNote ? setChoiceMainNote(false) : setChoiceMainNote(true)}}
+                    checked={currentIncludeMainNote}
+                    onChange={(e) => {currentIncludeMainNote ? setCurrentIncludeMainNote(false) : setCurrentIncludeMainNote(true)}}
                     />
                      Include MAIN note
                      <div className='infoTooltip'>
@@ -63,8 +97,8 @@ export default function ProjectCreationForm({
                 </label>
                 <label className='checkBoxOnAdvSettings settingRow'>
                     <input type="checkbox"
-                    checked={choiceREADMEnote}
-                    onChange={(e) => {choiceREADMEnote ? setChoiceREADMEnote(false) : setChoiceREADMEnote(true)}}
+                    checked={currentIncludeReadme}
+                    onChange={(e) => {currentIncludeReadme ? setCurrentIncludeReadme(false) : setCurrentIncludeReadme(true)}}
                     />
                      Include README note
                      <div className='infoTooltip'>
@@ -84,7 +118,6 @@ export default function ProjectCreationForm({
                     </div>
                 </label>
                 {choiceRepo ? <label className='checkBoxOnAdvSettingsYesRepo settingRow'>
-                    --
                     <input type="checkbox"
                     checked={choiceCommitHistory}
                     onChange={(e) => {choiceCommitHistory ? setChoiceCommitHistory(false) : setChoiceCommitHistory(true)}}
@@ -97,8 +130,8 @@ export default function ProjectCreationForm({
                 </label> : null}
                 <label className='checkBoxOnAdvSettings settingRow'>
                     <input type="checkbox"
-                    checked={choicePublic}
-                    onChange={(e) => {choicePublic ? setChoicePublic(false) : setChoicePublic(true)}}
+                    checked={currentBePublic}
+                    onChange={(e) => {currentBePublic ? setCurrentBePublic(false) : setCurrentBePublic(true)}}
                     />
                      Make this project public
                      <div className='infoTooltip'>
@@ -107,7 +140,9 @@ export default function ProjectCreationForm({
                     </div>
                 </label>
                </div> : null}
-                <button type="submit" id="createProjectBtn" onClick={() => {handleCreate(); setIsCreating(false);}}><Plus size={16}/></button>
+                <button type="submit" id="createProjectBtn" onClick={() => {
+                    handleCreate([currentIncludeMainNote,currentIncludeReadme,currentBePublic, choiceRepo === true ? choiceCommitHistory : false,currentAutoSave,currentAutoSaveInterval]);
+                    setIsCreating(false);}}><Plus size={16}/></button>
            </div>
         </div>
     );

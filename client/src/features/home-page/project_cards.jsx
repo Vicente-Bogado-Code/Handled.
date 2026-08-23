@@ -98,7 +98,7 @@ export default function ProjectCard({
                     }}>
                     {onSettings === false ? <Settings className='sntsIcon' size={16}/> : <X size={16} className='exitOptions'/>}
                 </button>
-                <h3 className="projectCardName">{name}</h3>
+                <h3 className="projectCardName" title={name}>{name}</h3>
                 <span className={`statusBadge status-${status}`}>{status}</span>
             </div>
             {onSettings === true ? <SettingsComp

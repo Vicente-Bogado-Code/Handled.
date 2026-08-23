@@ -1,0 +1,21 @@
+export async function changeProjectPreferences(mnote,RMnote,commitH,ispublic,autoS,autoSinterval,theme) {
+    const request = await fetch("http://localhost:5000/changeProjectPreferences",{
+        method:"POST",
+        credentials:"include",
+        headers:{
+            "Content-Type":"application/json"
+        },
+        body: JSON.stringify({
+            "newMN":mnote,
+            "newRM":RMnote,
+            "newCommitH":commitH,
+            "newPublic":ispublic,
+            "newAutoS":autoS,
+            "newAutoSInterval":autoSinterval,
+            "newTheme":theme
+
+        })
+    });
+    const r = await request.json()
+    return r
+}

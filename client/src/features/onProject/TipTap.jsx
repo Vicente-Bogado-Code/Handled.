@@ -12,7 +12,7 @@ import { TextStyle, FontSize } from "@tiptap/extension-text-style";
 import './css/tipTap.css'
 import { useEffect,useState,useRef } from "react";
 
-const TipTap = ({currentContent, onContentChange,activeSnote,setEditor}) => {
+const TipTap = ({currentContent, onContentChange,activeSnote,setEditor,currentSnoteWantsSave, projectWantsAutoSave}) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
