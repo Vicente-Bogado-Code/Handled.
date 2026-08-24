@@ -1,3 +1,4 @@
+import { API_BASE } from "../../../../config";
 export async function setCurrentProject(project_id) {
     const request = await fetch(`${API_BASE}/setCurrentProject`, {
         method:"POST",
