@@ -1,5 +1,6 @@
+import { API_BASE } from "../../../../config";
 export async function changeProjectPreferences(mnote,RMnote,commitH,ispublic,autoS,autoSinterval,theme) {
-    const request = await fetch("http://localhost:5000/changeProjectPreferences",{
+    const request = await fetch(`${API_BASE}/changeProjectPreferences`,{
         method:"POST",
         credentials:"include",
         headers:{

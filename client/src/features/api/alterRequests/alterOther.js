@@ -1,5 +1,6 @@
+import { API_BASE } from "../../../../config";
 export async function changeGhRepo(newRepoLink,onId) {
-    const request = await fetch("http://localhost:5000/changeRepo", {
+    const request = await fetch(`${API_BASE}/changeRepo`, { 
         method:"POST",
         credentials:"include",
         headers:{

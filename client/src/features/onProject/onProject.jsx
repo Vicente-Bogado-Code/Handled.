@@ -139,10 +139,12 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
         clearInterval(timerRef.current)
         for (let i = 0; i < modifiedNotesIdRef.current.length; i++){
           const note = mySecNotesRef.current.find(n => n.id === modifiedNotesIdRef.current[i]);
+          console.log("Active note AS: ", note.auto_save)
+          if (!note || note.auto_save === false) continue;
           const noteC = note ? note.content : null
           handleSaveContent(note.id,noteC)
+          setModifiedNotesId(prev => prev.filter(obj => obj !== note.id))
         }
-        setModifiedNotesId([]);
         setSaving(false)
       }
     },1000)

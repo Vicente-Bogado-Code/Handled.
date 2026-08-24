@@ -1,5 +1,6 @@
+import { API_BASE } from "../../../../config";
 export async function getMyProjects() {
-    const request = await fetch("http://localhost:5000/getMyProjects", {
+    const request = await fetch(`${API_BASE}/getMyProjects`, {
         method:"POST",
         credentials:"include",
         headers:{

@@ -1,5 +1,6 @@
+import { API_BASE } from "../../../../config";
 export async function deleteSecNote(id) {
-    const request = await fetch("http://localhost:5000/deleteSnote", {
+    const request = await fetch(`${API_BASE}/deleteSnote`, {
         method:"POST",
         credentials:"include",
         headers:{

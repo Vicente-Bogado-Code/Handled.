@@ -1,5 +1,6 @@
+import { API_BASE } from "../../../../config";
 export async function deleteProject(id) {
-    const request = await fetch("http://localhost:5000/deleteProject",{
+    const request = await fetch(`${API_BASE}/deleteProject`,{
         method:"POST",
         credentials:"include",
         headers:{

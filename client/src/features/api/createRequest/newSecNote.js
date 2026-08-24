@@ -1,8 +1,8 @@
-
+import { API_BASE } from "../../../../config";
 export async function newSecondaryNote(noteName,content,imp) {
     if (content === ""){content = "not given"}
     else (content = `<h2 style="text-align:center;">${content}</h2>`)
-    const request = await fetch("http://localhost:5000/addSecondaryNote",{
+    const request = await fetch(`${API_BASE}/addSecondaryNote`,{
         method:"POST",
         credentials:"include",
         headers:{

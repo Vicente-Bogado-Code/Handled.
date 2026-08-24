@@ -1,5 +1,6 @@
+import { API_BASE } from "../../../../config"
 export async function getMyData() {
-    const r = await fetch("http://localhost:5000/whoAmI",{
+    const r = await fetch(`${API_BASE}/whoAmI`,{
         method:"GET",
         credentials:"include"
     })

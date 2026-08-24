@@ -1,5 +1,6 @@
+import { API_BASE } from "../../../../config";
 export async function registerUser(username, password, email) {
-    const request = await fetch(("http://localhost:5000/register"), {
+    const request = await fetch((`${API_BASE}/register`), {
         method:"POST",
         credentials:"include",
         headers:{
@@ -15,7 +16,7 @@ export async function registerUser(username, password, email) {
     return response
 }
 export async function loginUser(username, password) {
-    const request = await fetch("http://localhost:5000/login",{
+    const request = await fetch(`${API_BASE}/login`,{
     method:"POST",
     credentials:"include",
     headers:{
@@ -30,7 +31,7 @@ export async function loginUser(username, password) {
     return response
 }
 export async function logout() {
-    const request = await fetch("http://localhost:5000/logout",{
+    const request = await fetch(`${API_BASE}/logout`,{
         method:"POST",
         credentials:"include",
     })

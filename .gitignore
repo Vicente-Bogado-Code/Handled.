@@ -1,5 +1,3 @@
 handledVenv
-debug.py
-requestDebug.js
-sensible_data.env
-
+.env
+__pycache__

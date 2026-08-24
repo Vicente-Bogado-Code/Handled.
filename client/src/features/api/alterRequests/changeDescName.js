@@ -1,5 +1,6 @@
+import { API_BASE } from "../../../../config";
 export async function changeProjectDesc(id,newDesc){
-    const request = await fetch("http://localhost:5000/changeDescription", {
+    const request = await fetch(`${API_BASE}/changeDescription`, {
         method:"POST",
         credentials:"include",
         headers:{
@@ -14,7 +15,7 @@ export async function changeProjectDesc(id,newDesc){
     return response
 }
 export async function changeProjectName(id,newName) {
-    const request = await fetch("http://localhost:5000/changeName",{
+    const request = await fetch(`${API_BASE}changeName/`,{
         method:"POST",
         credentials:"include",
         headers:{

@@ -1,5 +1,6 @@
+import { API_BASE } from "../../../../config";
 export async function changeAutoSave(boolean,id) {
-    const request = await fetch("http://localhost:5000/changeNoteAutoSave",{
+    const request = await fetch(`${API_BASE}/changeNoteAutoSave`,{
         method:"POST",
         credentials:"include",
         headers:{

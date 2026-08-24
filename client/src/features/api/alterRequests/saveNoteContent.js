@@ -1,6 +1,6 @@
-
+import { API_BASE } from "../../../../config";
 export async function saveNoteContent(Snote_id,content) {
-    const request = await fetch("http://localhost:5000/saveSnoteContent",{
+    const request = await fetch(`${API_BASE}/saveSnoteContent`,{
         method:"POST",
         credentials:"include",
         headers:{

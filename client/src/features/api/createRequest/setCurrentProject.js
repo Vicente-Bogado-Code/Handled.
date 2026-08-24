@@ -1,5 +1,5 @@
 export async function setCurrentProject(project_id) {
-    const request = await fetch("http://localhost:5000/setCurrentProject", {
+    const request = await fetch(`${API_BASE}/setCurrentProject`, {
         method:"POST",
         credentials:"include",
         headers:{
@@ -11,7 +11,7 @@ export async function setCurrentProject(project_id) {
     return response
 }
 export async function clearSess() {
-    const request = await fetch("http://localhost:5000/setCurrentProject", {
+    const request = await fetch(`${API_BASE}/setCurrentProject`, {
         method:"POST",
         credentials:"include",
     });

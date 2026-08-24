@@ -1,3 +1,4 @@
 # Handled
  
-Still working on Handled. README file will be added when the first version releases
+Handled is now on production.
+Server running on Render and frotend on Vercel.

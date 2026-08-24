@@ -1,5 +1,6 @@
+import { API_BASE } from "../../../../config";
 export async function changeStatus(project_id) {
-    const request = await fetch("http://localhost:5000/changeStatus", {
+    const request = await fetch(`${API_BASE}/changeStatus`, {
         method:"POST",
         credentials:"include",
         headers:{

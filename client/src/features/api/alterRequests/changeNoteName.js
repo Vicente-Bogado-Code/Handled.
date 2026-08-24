@@ -1,5 +1,6 @@
+import { API_BASE } from "../../../../config";
 export async function changeNoteName(newName,id) {
-    const request = await fetch("http://localhost:5000/changeNoteName",{
+    const request = await fetch(`${API_BASE}/changeNoteName`,{
         method:"POST",
         credentials:"include",
         headers:{

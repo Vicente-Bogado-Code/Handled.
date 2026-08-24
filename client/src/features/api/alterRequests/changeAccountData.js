@@ -1,5 +1,6 @@
+import { API_BASE } from "../../../../config";
 export async function changeAccountData(newName, newEmail, newDesc) {
-    const request = await fetch("http://localhost:5000/changeAccData",{
+    const request = await fetch(`${API_BASE}/changeAccData`,{
         method:"POST",
         credentials:"include",
         headers:{
