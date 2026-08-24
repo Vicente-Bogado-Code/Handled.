@@ -10,7 +10,7 @@ from routes.projects_routes import projects_bp
 
 handled_server = Flask(__name__)
 CORS(handled_server,supports_credentials=True,origins=[
-    "http://localhost:5173", "https://handled-kappa.vercel.app/"
+    "http://localhost:5173", "https://handled-kappa.vercel.app"
     ])
 handled_server.secret_key = os.environ.get("SECRET_KEY")
 
