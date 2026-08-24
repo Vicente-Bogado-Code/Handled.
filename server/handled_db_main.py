@@ -8,7 +8,15 @@ from routes.auth_routes import auth_bp
 from routes.notes_routes import notes_bp
 from routes.projects_routes import projects_bp
 
+
 handled_server = Flask(__name__)
+
+handled_server.config.update(
+    SESSION_COOKIE_SECURE=True,
+    SESSION_COOKIE_HTTPONLY=True,
+    SESSION_COOKIE_SAMESITE="None"
+)
+
 CORS(handled_server,supports_credentials=True,origins=[
     "http://localhost:5173", "https://handled-kappa.vercel.app"
     ])
