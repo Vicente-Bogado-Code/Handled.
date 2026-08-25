@@ -67,7 +67,6 @@ export default function UserSettings({ username, setUsername, onLogout, setDesc 
 
       <section className="userSettingsSection">
         <div className="userSettingsSectionHeader">
-          <User size={20} />
           <div>
             <h2>Profile</h2>
             <p>Your account data.</p>

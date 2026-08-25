@@ -37,7 +37,6 @@ export default function SettingsComp() {
             <label className='rememberLabel'>Remember to save changes by clicking "Save" at the end of the page</label>
             <section className="settingsSection">
                 <div className="settingsSectionHeader">
-                    <Save size={20} />
                     <div>
                         <h2>Autosave</h2>
                         <p>Set a default waiting time for auto saving.</p>
@@ -89,7 +88,6 @@ export default function SettingsComp() {
 
             <section className="settingsSection">
                 <div className="settingsSectionHeader">
-                    <FileText size={20} />
                     <div>
                         <h2>New project defaults</h2>
                         <p>Pre-fill these options whenever you create a new project.</p>

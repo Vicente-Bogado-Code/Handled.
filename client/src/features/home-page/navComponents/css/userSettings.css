@@ -4,6 +4,7 @@
     display: flex;
     flex-direction: column;
     gap: 28px;
+    height: fit-content;
 }
 
 .userSettingsMain .settingsHeader h2 {

@@ -393,3 +393,18 @@ html{
 .indicatingActiveWindow{
     color: rgb(180, 117, 0.8);;
 }
+
+
+.suggestionNotesDiv{
+    background-color: var(--bg-secondary);
+    padding: 10px;
+    opacity: 0.5;
+}
+.sugtsnLbl{
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+.suggestionNotesDiv p{
+    color: var(--accent);
+    margin: 0;
+}

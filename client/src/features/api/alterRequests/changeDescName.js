@@ -15,7 +15,7 @@ export async function changeProjectDesc(id,newDesc){
     return response
 }
 export async function changeProjectName(id,newName) {
-    const request = await fetch(`${API_BASE}changeName/`,{
+    const request = await fetch(`${API_BASE}/changeName`,{
         method:"POST",
         credentials:"include",
         headers:{

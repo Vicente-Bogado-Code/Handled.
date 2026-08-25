@@ -11,7 +11,7 @@ import { changeGhRepo } from "../api/alterRequests/alterOther";
 import { deleteProject } from "../api/deleteRequests/deleteProject";
 import { changeProjectDesc } from "../api/alterRequests/changeDescName";
 import { changeProjectName } from "../api/alterRequests/changeDescName";
-import { useState, useEffect, useRef, use } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getProjectPreferences } from "../api/getDataRequests/getProjectPreferences";
 import { changeProjectPreferences } from "../api/alterRequests/changeProjectPreferences";
 //
@@ -27,7 +27,8 @@ import ProjectSettings from "./settings components/projectSettings";
 //
 import './css/onProject.css'
 //
-import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon, ClockArrowDown,FilePlus } from 'lucide-react';
+import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon, ClockArrowDown,FilePlus, Pause, CircleArrowDown,X } from 'lucide-react';
+import { Color } from "@tiptap/extension-text-style";
 
 export default function CurrentProjectComp({ project_id , handleGoBack}) {
   const [editor,setEditor] = useState(null)
@@ -61,12 +62,12 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
   const [isDeletingNotes, setIsDeletingNotes] = useState(false)
   const [idsToBeDeleted, setIdsToBeDeleted] = useState([])
   const allNotesIds = mySecNotes.map(note => note.id)
+  const allNotesNames = mySecNotes.map(note => note.name.toLowerCase())
   const [isOnProjectSettings, setIsOnProjectSettings] = useState(false)
   const [projectDesc, setProjectDesc] = useState("")
   const [projectRepo, setProjectRepo] = useState("")
   const [projectStatus, setProjectStatus] = useState("")
   const [projectDate, setProjectDate] = useState("")
-
   const [hasMainNote, setHasMainNote] = useState(null)
   const [hasReadmeNote, setHasReadmeNote] = useState(null)
   const [hasTrackCommitHistory, setHasTrackCommitHistory] = useState(null)
@@ -74,9 +75,18 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
   const [hasAutoSave, setHasAutoSave] = useState(null)
   const [autoSaveInterval, setAutoSaveInterval] = useState(null)
   const [hasTheme, setHasTheme] = useState(null)
-
   const [someCntChanged, setSomeContentChanged] = useState(false)
-
+  const [wantsCounterToSave, setWantsCounterToSave] = useState(true)
+  const [noteReferencer, setNoteReferencer] = useState(false)
+  const [noteReferecerString, setNoteReferecerString] = useState("")
+  const avChainMethods = [
+    "->",
+    "@>"
+  ]
+  const avChainUses = [
+    "ref",
+    "refLine"
+  ]
   useEffect(() =>{
     mySecNotesRef.current = mySecNotes;
   }, [mySecNotes])
@@ -139,7 +149,6 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
         clearInterval(timerRef.current)
         for (let i = 0; i < modifiedNotesIdRef.current.length; i++){
           const note = mySecNotesRef.current.find(n => n.id === modifiedNotesIdRef.current[i]);
-          console.log("Active note AS: ", note.auto_save)
           if (!note || note.auto_save === false) continue;
           const noteC = note ? note.content : null
           handleSaveContent(note.id,noteC)
@@ -240,12 +249,11 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
           setModifiedNotesId(prev => prev.filter(id => id !== note.id))
         }
   }
+
   return (
   <div className="mainDiv">
     <nav className="onProjectNav">
-      <div className="goBackAndSettingsDiv"  onClick={() => {
-        if (activeSnote){handleSaveContent(activeSnote.id,currentNoteContent);}
-        }}>
+      <div className="goBackAndSettingsDiv">
         <Undo2Icon size={18} className="goBackIcon" onClick={() => {handleGoBack("")}}/>
         <h3 className="titleOnNav" title={projectName}>{projectName}</h3>
         
@@ -412,7 +420,8 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
      {!isOnNoteSettings && !isOnProjectSettings ? 
      <div className="currentWindowContentDiv">
       <div className={activeSnoteId ? (hasTheme === 1 ? "windowContent" : "windowContentWhite") : "windowPH"}>
-       {activeSnoteId ? <Toolbar editor={editor} activeSnote={activeSnote ? activeSnote.id : null} currentContent={currentNoteContent}/> : null}
+       {activeSnoteId ? <Toolbar editor={editor} activeSnote={activeSnote ? activeSnote.id : null} currentContent={currentNoteContent}   avChainMethods={avChainMethods} avChainUses={avChainUses} mySecNotes={mySecNotes}
+        setActiveWindowId={setActiveWindowId}/> : null}
         {activeSnoteId ?
         <TipTap 
         currentContent={currentNoteContent}
@@ -421,6 +430,10 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
         setEditor={setEditor}
         currentSnoteWantsSave={currentSnoteWantsSave}
         projectWantsAutoSave={hasAutoSave}
+        setNoteReferencerString={setNoteReferecerString}
+        setActiveWindowId={setActiveWindowId}
+        windows={windows}
+        setWindows={setWindows}
         /> : <MainPlaceHolder/> }
       </div>
 

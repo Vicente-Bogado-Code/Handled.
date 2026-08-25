@@ -3,7 +3,7 @@
     display: flex;
     height: calc(100vh - 64px);
     scrollbar-width: thin;
-    scrollbar-color: var(--accent) var(--bg-primary);
+    scrollbar-color: var(--bg-secondary) var(--bg-primary);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
@@ -194,7 +194,7 @@
     flex: 1;
     overflow-y: auto;
     scrollbar-width: thin;
-    scrollbar-color: var(--accent) var(--bg-primary);
+    scrollbar-color: var(--bg-secondary) var(--bg-primary);
 }
 
 .projectsGrid {
