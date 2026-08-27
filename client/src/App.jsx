@@ -14,6 +14,7 @@ export default function App(){
         const r = await getMyData()
         if (r.Status === "Data retrieved"){
             setUser(r.Me.username)
+            setCurrentId(r.Me.current_project_id)
         }
     }
     getCookie();
