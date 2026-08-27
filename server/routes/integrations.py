@@ -1,4 +1,4 @@
-from flask import Blueprint,session,request, jsonify
+from flask import Blueprint,session,request, jsonify, redirect
 from db import get_conn
 import hmac
 import os
@@ -17,7 +17,7 @@ def get_queryPs():
     try:
         cursor.execute("UPDATE handled_users SET installation_id = %s WHERE id = %s", (installation_id,current_user_id))
         conn.commit()
-        return jsonify({"Status": "GitHub connected"}), 200
+        return redirect("https://handled-kappa.vercel.app/")
     finally:
         cursor.close()
         conn.close()
