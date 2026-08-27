@@ -1,11 +1,18 @@
 import { registerUser } from '../api/authRequests/auth';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Info } from "lucide-react"
 export default function RegisterPage({onSwitchMode, onLoginSuccess}){
      const [username,setUsername] = useState("")
      const [password, setPassword] = useState("")
      const [email, setEmail] = useState("")
      const [error,setError] = useState("")
+     useEffect(() => {
+       function onKeyDown(e){
+          if (e.key === "Enter") handleRegistration()
+        }
+        document.addEventListener("keydown",onKeyDown)
+        return () => document.removeEventListener("keydown",onKeyDown)
+     }, [username,password,email] )
 
      function validateRegister(username, password, email) {
      if (username.includes(" ")) { return "Username cannot contain spaces"; }
@@ -25,6 +32,9 @@ export default function RegisterPage({onSwitchMode, onLoginSuccess}){
      const response = await registerUser(username,password,email)
      if (response.Status === "Created"){
           onLoginSuccess(response.username)
+     }
+     else{
+          setError(response.Status)
      }
      }
 
@@ -53,16 +63,15 @@ export default function RegisterPage({onSwitchMode, onLoginSuccess}){
                  type="email" id="registerEmail" className='inputs'/>
 
 
-                 <button id="registerSubmitBtn" onClick={handleRegistration} >Register</button>
+                 <button id="registerSubmitBtn" onClick={handleRegistration}>Register</button>
                  <button type="button" className="btn" onClick={onSwitchMode}>
                   Already have an account? Log in
                  </button>
             </div>
        </div>
        <p id='handleDataDesc'>
-            Both inputs are CASE SENSITIVE. <br />
-            Just a username. That's it.
-            Handled only needs a username to give you your own space for your projects — no email required to sign up. Adding one is optional, mostly useful if you ever lose your password, but that's entirely up to you. <br /> <br />
+            Both inputs are CASE SENSITIVE. <br /> <br />
+            No email required to sign up. Adding one is optional, mostly useful if you ever lose your password <br /> <br />
             Handled is open source! You can check it out here: <a href="https://github.com/Vicente-Bogado-Code/Handled."> Source code</a>.
        </p>
        <div className='errorDiv'>

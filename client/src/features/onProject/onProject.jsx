@@ -87,6 +87,19 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
     "ref",
     "refLine"
   ]
+  useEffect(() => {
+    function onEnterDown(e){
+      if (e.key === "Enter" && isCreating){
+        console.log("Enter while creating")
+        handleCreateSnote(nameOfNewSnote,title,"S");
+        setTitle(""); 
+        setNameOfSnote("");
+      }
+    }
+     document.addEventListener("keydown",onEnterDown)
+     return () => document.removeEventListener('keydown',onEnterDown)
+  },[nameOfNewSnote])
+
   useEffect(() =>{
     mySecNotesRef.current = mySecNotes;
   }, [mySecNotes])
@@ -251,13 +264,13 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
   }
 
   return (
-  <div className="mainDiv">
+  <div className={hasTheme === 1 ? "mainDiv" : "mainDivWhite"}>
     <nav className="onProjectNav">
       <div className="goBackAndSettingsDiv">
         <Undo2Icon size={18} className="goBackIcon" onClick={() => {handleGoBack("")}}/>
         <h3 className="titleOnNav" title={projectName}>{projectName}</h3>
         
-        <SettingsIcon size={18} className="goBackIcon" 
+        <SettingsIcon size={18} className="settingsIcon" 
         onClick={() => {
           setIsOnProjectSettings(!isOnProjectSettings);
           setIsOnNoteSettings(false);
@@ -283,6 +296,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
          setIdsToBeDeleted={setIdsToBeDeleted}
          projectWanstAutoSave={hasAutoSave}
          wantsAutoSave={Mnote.auto_save}
+         setIsOnProjectSettings={setIsOnProjectSettings}
          />)}
       </div> : null}
       <p className="mainNoteLabel">secondary note/s:</p>
@@ -326,6 +340,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
           setIdsToBeDeleted={setIdsToBeDeleted}
           projectWanstAutoSave={hasAutoSave}
           wantsAutoSave={Dnote.auto_save}
+          setIsOnProjectSettings={setIsOnProjectSettings}
          />)}
         </div>
         <div className="snotesDiv">
@@ -420,7 +435,14 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
      {!isOnNoteSettings && !isOnProjectSettings ? 
      <div className="currentWindowContentDiv">
       <div className={activeSnoteId ? (hasTheme === 1 ? "windowContent" : "windowContentWhite") : "windowPH"}>
-       {activeSnoteId ? <Toolbar editor={editor} activeSnote={activeSnote ? activeSnote.id : null} currentContent={currentNoteContent}   avChainMethods={avChainMethods} avChainUses={avChainUses} mySecNotes={mySecNotes}
+       {activeSnoteId ? <Toolbar
+         editor={editor}
+         activeSnote={activeSnote ? activeSnote.id : null} 
+         currentContent={currentNoteContent}  
+         avChainMethods={avChainMethods}
+         avChainUses={avChainUses}
+         mySecNotes={mySecNotes}
+         theme={hasTheme}
         setActiveWindowId={setActiveWindowId}/> : null}
         {activeSnoteId ?
         <TipTap 

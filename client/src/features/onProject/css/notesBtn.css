@@ -8,6 +8,9 @@
     font-weight: 550;
     text-transform: uppercase;
     font-size: smaller;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 .DnotesBtn{
     cursor: pointer;
@@ -27,7 +30,7 @@
 .CsetColor{
     display: flex;
     align-items: center;
-    color: var(--accent);
+    color: var(--text-primary);
 }
 .CsetColorNonActive{
     display: flex;
@@ -195,8 +198,8 @@
     background-color: var(--bg-primary);
 }
 .activeSnote{
-    background-color: var(--bg-primary);
-    color: rgb(180, 117, 0.8);
+    border-radius: 0;
+    border-left: 1px solid orange;
 }
 .Slabel{
     color: var(--text-secondary);
@@ -274,3 +277,4 @@
 .addToBeDeletedbtn svg{
     color: var(--text-primary);
 }
+

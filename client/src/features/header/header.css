@@ -48,3 +48,8 @@ header {
 #navOnHeader button:hover {
     color: var(--text-primary);
 }
+
+.HandledNPath{
+    display: flex;
+    flex-direction: column;
+}

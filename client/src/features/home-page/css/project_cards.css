@@ -190,3 +190,8 @@
     margin-top: 10px;
 }
 
+.datesDiv{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

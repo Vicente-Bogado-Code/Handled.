@@ -111,7 +111,6 @@
     color: var(--accent);
 }
 
-/* Autosave interval picker */
 .intervalOptionsRow {
     display: flex;
     gap: 8px;
@@ -140,11 +139,10 @@
 
 .intervalOptionActive {
     background-color: var(--bg-primary);
-    border: 1px solid var(--accent);
-    color: var(--accent);
+    border: 1px solid var(--cool-green);
+    color: var(--text-primary);
 }
 
-/* Toggle switch */
 .toggleSwitch, .toggleSwitchOn {
     width: 42px;
     height: 24px;
@@ -159,12 +157,12 @@
 }
 
 .toggleSwitch {
-    background-color: var(--border);
+    background-color: var(--bg-primary);
     justify-content: flex-start;
 }
 
 .toggleSwitchOn {
-    background-color: var(--accent);
+    background-color: var(--bg-primary);
     justify-content: flex-end;
 }
 
@@ -172,7 +170,7 @@
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background-color: var(--bg-secondary);
+    background-color: var(--text-primary);
     display: block;
 }
 .trashCan{
@@ -193,10 +191,10 @@
     padding: 10px;
     border: none;
     border-radius: 10px;
-    background-color: var(--accent);
+    background-color: var(--cool-green);
     color: var(--text-primary);
     gap:8px;
 }
 .saveBtnSaved{
-    background-color: green;
+    background-color: var(--cool-green);
 }

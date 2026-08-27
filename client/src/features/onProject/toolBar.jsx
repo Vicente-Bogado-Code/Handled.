@@ -15,23 +15,34 @@ import {
   Link as LinkIcon,
   Parentheses,
   Info,
-  Smile,
+  Loader,
 } from "lucide-react";
 import { DynamicIcon } from "lucide-react/dynamic";
 const devIconNames = [
   "git-branch", "git-commit", "git-merge", "git-pull-request",
-  "terminal", "square-terminal", "code", "code-2", "braces", "brackets",
-  "bug", "bug-off", "database", "server", "cloud", "cloud-cog",
-  "package", "package-check", "box", "boxes",
-  "file-code", "file-json", "file-text", "folder-git", "folder-code",
-  "cpu", "hard-drive", "network", "wifi", "webhook",
+  "git-compare", "git-fork", "git-pull-request-closed", "git-pull-request-draft",
+  "folder-git", "folder-git-2", "merge", "split", "diff", "history",
+  "code", "code-2", "braces", "brackets", "terminal", "square-terminal",
+  "prompt-slash", "variable", "function-square", "clipboard-code", 
+  "scan-code", "binary", "blocks", "component", "layers", "workflow",
+  "file-code", "file-json", "file-text", "file-digit", "folder-code", 
+  "folder-open", "folder-kanban", "copy", "scissors",
+  "database", "database-backup", "database-zap", "table-properties",
+  "server", "server-cog", "server-crash", "server-off", 
+  "cloud", "cloud-cog", "cloud-lightning", "cloud-rain", "cloud-upload", "cloud-download",
+  "container", "cylinder", "network", "wifi", "cable", "radio-tower", "webhook", "api",
+  "cpu", "hard-drive",
+  "bug", "bug-off", "activity", "gauge", "gauge-circle", "heart-pulse", 
+  "inspection-panel", "scan", "microscope", "target", "list-tree", "tree-deciduous",
   "lock", "key", "shield", "shield-check", "shield-alert",
+  "package", "package-check", "box", "boxes", "rocket", "zap",
+  "settings", "sliders-horizontal", "wrench", "hammer",
+  "split-square-vertical", "columns-3", "panel-left",
   "flag", "flag-triangle-right", "bookmark", "star", "pin",
   "check", "check-check", "x", "circle-alert", "triangle-alert",
   "info", "clock", "timer", "hourglass",
   "link", "link-2", "external-link", "eye", "eye-off",
-  "settings", "sliders-horizontal", "wrench", "hammer",
-  "zap", "rocket", "layers", "component"
+  "rss", "share-2"
 ];
 
 
@@ -117,10 +128,12 @@ function LinkPopover({ editor, onClose }) {
     </div>
   );
 }
-function IconPopover({ editor, onClose }) {
+function IconPopover({ editor, onClose, whenUndefined }) {
+  const fontSizeRef = editor.getAttributes("textStyle").fontSize ? Number(String(editor.getAttributes("textStyle").fontSize).slice(0,2)) / 2 : 16
+  const currentColor = editor.getAttributes('textStyle').color || whenUndefined
   const [search, setSearch] = useState("");
-  const [color, setColor] = useState("#ffffff");
-  const [size, setSize] = useState(24);
+  const [color, setColor] = useState(currentColor);
+  const [size, setSize] = useState(fontSizeRef);
 
   const popoverRef = useRef(null);
 
@@ -153,10 +166,10 @@ function IconPopover({ editor, onClose }) {
     <div className="linkPopover iconPopover" ref={popoverRef}>
       <input
         type="text"
-        placeholder="search icon..."
+        placeholder="//"
         value={search}
         onChange={(e) => setSearch(e.target.value)}
-        className="linkPopoverInput"
+        className="iconPopoverInput"
       />
 
        <div className="iconPickerControls">
@@ -184,7 +197,7 @@ function IconPopover({ editor, onClose }) {
       <div className="iconGrid">
         {filteredIcons.slice(0, 60).map((n) => (
           <button key={n} className="iconGridItem" onClick={() => insertIcon(n)}>
-            <DynamicIcon name={n} size={18} />
+            <DynamicIcon name={n} size={18} className="iconOnPopover" />
           </button>
         ))}
       </div>
@@ -324,7 +337,8 @@ export default function Toolbar({
   avChainMethods,
   avChainUses,
   mySecNotes,
-  setActiveWindowId
+  setActiveWindowId,
+  theme
 }) {
   if (!editor) return null;
 
@@ -337,6 +351,7 @@ export default function Toolbar({
       avChainUses={avChainUses}
       mySecNotes={mySecNotes}
       setActiveWindowId={setActiveWindowId}
+      theme={theme}
     />
   );
 }
@@ -348,11 +363,13 @@ function ToolbarContent({
   avChainUses,
   avChainMethods,
   mySecNotes,
-  setActiveWindowId
+  setActiveWindowId,
+  theme
 }) {
   const [isLinkOpen, setIsLinkOpen] = useState(false);
   const [isReferenceOpen, setIsReferenceOpen] = useState(false);
   const [isIconOpen, setIsIconOpen] = useState(false);
+  const whenUndefined = theme === 0 ? "#000000" : "#ffffff"
 
   const editorState = useEditorState({
     editor,
@@ -386,7 +403,7 @@ function ToolbarContent({
 
       color:
         ctx.editor.getAttributes("textStyle").color ||
-        "#ffffff",
+        whenUndefined,
     }),
   });
 
@@ -614,10 +631,10 @@ function ToolbarContent({
     }}
     title="Insert Icon"
   >
-    <Smile size={18} /> 
+    <Loader size={18} /> 
   </button>
 
-  {isIconOpen && <IconPopover editor={editor} onClose={() => setIsIconOpen(false)} />}
+  {isIconOpen && <IconPopover editor={editor} onClose={() => setIsIconOpen(false)} whenUndefined={whenUndefined} />}
 </div>
 
       <div className="linkButtonWrapper">
@@ -676,6 +693,7 @@ function ToolbarContent({
             avChainUses={avChainUses}
             mySecNotes={mySecNotes}
             setActiveWindowId={setActiveWindowId}
+            theme={theme}
             onClose={() => setIsReferenceOpen(false)}
           />
         )}

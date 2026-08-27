@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './projectSettings.css'
-import { Trash, Undo2, Check, TriangleAlert, Info } from 'lucide-react';
+import { Trash, Undo2, Check, TriangleAlert, Info, Copy, Link, Pointer } from 'lucide-react';
 import { FaGithub } from "react-icons/fa"
 
 export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnProjectSettings, handleChangeRepo, handleDeleteProject, handleChangeProjectName,hasMnote,hasReadmeNote,hasTrackCommit,hasIsPublic,hasAutoSave,hasAutoSaveInterval, hasTheme, handleChangeProjectPreferences}){
@@ -11,8 +11,6 @@ export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnP
     const [savedName, setSavedName] = useState(false) 
     const [settingsAutoSaveValue, setSettingsAutoSaveValue] = useState(hasAutoSave)
     const [settingsAutoSaveInterval, setSettingsAutoSaveInterval] = useState(hasAutoSaveInterval)
-    const [settingsRestoreMainNote, setSettingsRestoreMainNote] = useState(hasMnote)
-    const [settingsRestoreReadmeNote, setSettingsRestoreReadmeNote] = useState(hasReadmeNote)
     const [settingsIsPublic, setSettingsIsPublic] = useState(hasIsPublic)
     const [settingsTheme, setSettingsTheme] = useState(hasTheme)
     const DB_trackCommits = hasTrackCommit;
@@ -60,24 +58,6 @@ export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnP
                     </div>
                 )}
                 <div className="settingsToggleRow">
-                    <span className="settingsToggleLabel">Main note (If deleted, it will be recreated)</span>
-                    <button
-                        className={`settingsToggleSwitch ${settingsRestoreMainNote ? "toggleOn" : ""}`}
-                        onClick={() => {setSettingsRestoreMainNote(!settingsRestoreMainNote); setIsSaved(false)}}
-                    >
-                        <div className="settingsToggleKnob"></div>
-                    </button>
-                </div>
-                <div className="settingsToggleRow">
-                    <span className="settingsToggleLabel">README note (If deleted, it will be recreated)</span>
-                    <button
-                        className={`settingsToggleSwitch ${settingsRestoreReadmeNote ? "toggleOn" : ""}`}
-                        onClick={() => {setSettingsRestoreReadmeNote(!settingsRestoreReadmeNote); setIsSaved(false)}}
-                    >
-                        <div className="settingsToggleKnob"></div>
-                    </button>
-                </div>
-                <div className="settingsToggleRow">
                     <span className="settingsToggleLabel">Make it public</span>
                     <button
                         className={`settingsToggleSwitch ${settingsIsPublic ? "toggleOn" : ""}`}
@@ -86,6 +66,15 @@ export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnP
                         <div className="settingsToggleKnob"></div>
                     </button>
                 </div>
+                {settingsIsPublic ? <div className="settingsToggleRow">
+                    <div className='shreURLdiv'>
+                        <div style={{display:"flex", alignItems:"center"}}>
+                        <Link size={18}/>
+                        <p className='shareURL'>URLtoShareProject/username/projectname</p>
+                        </div>
+                        <Copy size={16} style={{cursor:"pointer"}}/>
+                    </div>
+                </div> : null}
 
                 <div className="editorThemeRow">
                     <span className="settingsToggleLabel">Editor background</span>
@@ -114,7 +103,7 @@ export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnP
                         </button>
                 </div>) : null}
                 <button className={!isSaved ? 'saveSettingsBtn' : 'saveSettingsSavedBtn'} onClick={ async () => {
-                    const r = await handleChangeProjectPreferences(settingsRestoreMainNote,settingsRestoreReadmeNote,settingsTrackCommits,settingsIsPublic,settingsAutoSaveValue,settingsAutoSaveInterval === null ? 10 : settingsAutoSaveInterval,settingsTheme)
+                    const r = await handleChangeProjectPreferences(settingsTrackCommits,settingsIsPublic,settingsAutoSaveValue,settingsAutoSaveInterval === null ? 10 : settingsAutoSaveInterval,settingsTheme)
                     setIsSaved(r)
                 }}>{isSaved ? <Check size={16}/> : "Save"}</button>
             </div>
@@ -135,8 +124,8 @@ export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnP
                             {savedRepo ? <Check size={16}/> : "Save"}
                         </button>
                     </div>
-                    <label className='trackingCommitsLblHelp'><Info size={16}/>Handled will start track commits on the current given repository link</label>
-                    <label className='trackingCommitsLblHelp'><TriangleAlert size={16}/><span className='toRed'>we recommend not changing the link mid project</span></label>
+                    {hasTrackCommit ? <a className='trackingCommitsLblHelp' href='#'><Info size={16}/>How do we track your repository?</a> : null}
+                    <label className='trackingCommitsLblHelp'><TriangleAlert size={16}/><span className='toRed'>{hasTrackCommit ? "We recommend not changing repository mid project." : "You have commit tracking off. Handled will not track commits."}</span></label>
                 </div>
 
                 <div className='projectInputDiv settingsCategorySeparator'>

@@ -95,7 +95,7 @@
     align-items: center;
     gap: 14px;
     flex-wrap: wrap;
-    background-color: var(--text-primary);
+    background-color: rgb(234, 234, 234);
     padding: 8px 14px;
     width: 100%;
     justify-self: center;
@@ -165,14 +165,13 @@
 .colorPicker {
   position: relative;
   height: 35px;
-  padding: 0 8px;
+  padding: 0 12px;
   display: flex;
   align-items: center;
   gap: 6px;
   border-radius: 6px;
   cursor: pointer;
   color: var(--text-primary);
-  border: 1px solid var(--bg-primary);
   background-color: var(--transparent-blue-btns);
 }
 
@@ -189,13 +188,12 @@
   width: 12px;
   height: 12px;
   border-radius: 4px;
-  border: 1px solid var(--border-color);
 }
 
 .colorPickerValue {
   font-family: monospace;
   font-size: 12px;
-  color: var(--text-secondary);
+  color: var(--accent);
 }
 
 .linkButtonWrapper {
@@ -207,7 +205,7 @@
   top: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  background-color: var(--text-primary);
+  background-color: rgb(234, 234, 234);
   border: 1px solid var(--border);
   border-radius: 10px;
   padding: 8px;
@@ -252,15 +250,15 @@
 
 .fontSizePicker {
   height: 35px;
-  padding: 0 8px;
+  padding: 0 12px;
   display: flex;
   align-items: center;
   gap: 5px;
-  border: 1px solid var(--bg-primary);
   border-radius: 6px;
   background-color: var(--transparent-blue-btns);
   color: var(--text-primary);
 }
+
 
 .fontSizeIcon {
   font-size: 16px;
@@ -272,7 +270,7 @@
   appearance: none;
   -webkit-appearance: none;
   background-color: transparent;
-  color: var(--bg-primary);
+  color: var(--accent);
   border: none;
   outline: none;
   padding: 0 16px 0 0;
@@ -286,12 +284,13 @@
     calc(100% - 3px) 50%;
   background-size: 4px 4px;
   background-repeat: no-repeat;
+  padding: 10px;
 }
 
 .fontSizeSelect option {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  padding: 0 10px;
+  background-color: rgb(234, 234, 234);
+  color: black;
+  padding: 0 30px;
 }
 
 .linkNapplyDiv{
@@ -356,9 +355,12 @@
   padding: 20px;
   display: flex;
   flex-direction: column;
-  background-color: var(--text-primary);
+  background-color:rgb(234, 234, 234);
   gap: 10px;
   border: none;
+}
+.iconOnPopover{
+  color: black;
 }
 
 .iconPickerControls {
@@ -382,8 +384,8 @@
   padding: 6px 8px;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: var(--bg-secondary);
-  color: var(--text-primary);
+  background: none;
+  color: black;
   font-size: 0.9em;
 }
 
@@ -405,7 +407,7 @@
   aspect-ratio: 1;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: var(--bg-secondary);
+  background: var(--text-primary);
   color: var(--accent);
   cursor: pointer;
 }
@@ -421,4 +423,16 @@
 .iconPickerControls input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+.iconPopoverInput{
+  border: none;
+  background: none;
+  color: black;
+  height: 20px;
+  border: 1px solid var(--bg-secondary);
+  padding: 5px
+}
+.iconPopoverInput:focus{
+  outline: none;
+  transform: scale(1.02);
 }

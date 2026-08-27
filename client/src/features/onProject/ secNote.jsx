@@ -12,6 +12,7 @@ export default function SecondaryProjectComp({importance,name,noteId,content,win
         <button
         className={!willBeDeleted ? (!isDeletingNotes ? (activeWindowId === noteId ? "activeSnote" : (inIt ? "secondaryNoteUnsaved" : "secondaryNote")) : "deletingNotes") : "willBeDeletedClass" } onClick={
         () => {
+            setIsOnProjectSettings(false)
             {if (!isOnSettings && !isDeletingNotes) {const alreadyExists = windows.find(window => window.id === noteId)
                 if (!alreadyExists){
                     setWindow(prev => [...prev, {"id":noteId,"name":name}]);

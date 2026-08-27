@@ -22,7 +22,7 @@ def register_user():
     else: 
         cursor.close()
         conn.close()
-        return jsonify({"Status": "Conflict"}),409
+        return jsonify({"Status": "Username already taken"}),409
     conn.commit()
     cursor.close()
     conn.close

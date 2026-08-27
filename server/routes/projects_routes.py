@@ -285,8 +285,6 @@ def change_p_preferences():
     if not current_project_id:
         return jsonify({"Status": "No project selected"}), 400
     data = request.get_json()
-    new_mn = data.get("newMN")
-    new_rm = data.get("newRM")
     new_commit_h = data.get("newCommitH")
     new_public = data.get("newPublic")
     new_auto_s = data.get("newAutoS")
@@ -298,15 +296,13 @@ def change_p_preferences():
         cursor.execute("""
             UPDATE project_preferences
             SET
-                include_main_note = %s,
-                include_readme_note = %s,
                 track_commit_history = %s,
                 public = %s,
                 auto_save = %s,
                 auto_save_interval = %s,
                 theme = %s
             WHERE project_id = %s
-        """, (new_mn,new_rm,new_commit_h,new_public,new_auto_s,new_auto_s_interval,new_theme,current_project_id))
+        """, (new_commit_h,new_public,new_auto_s,new_auto_s_interval,new_theme,current_project_id))
         conn.commit()
         return jsonify({"Status": "Preferences updated"}), 200
     finally:

@@ -8,6 +8,7 @@
   --accent-hover: #79c0ff;
   --transparent-blue-btns: rgba(88, 166, 255, 0.15);
   --transparent-green-btns: rgba(63, 185, 80, 0.15);
+  --cool-green: rgb(71, 114, 58);
   font-family: sans-serif;
   cursor: default;
 }

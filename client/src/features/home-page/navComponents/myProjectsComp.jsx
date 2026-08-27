@@ -148,7 +148,7 @@ export default function MyProjects({
                         No projects found searching "{searchTerm}"
                     </h2>
                 ) : null}
-                {activeProjects.length + markedAsDone.length === 0 ? 
+                {activeProjects.length + markedAsDone.length === 0 && !searchTerm ? 
                 <div className="emptyProjectsState">
                     <SearchX size={40} className="emptyStateIcon" />
                     <h3 className="emptyStateTitle">No projects yet</h3>

@@ -1,6 +1,6 @@
 // ProjectCreationForm.jsx
 import { FaGithub } from "react-icons/fa";
-import { X, Settings, Plus } from "lucide-react";
+import { X, Settings, Plus, Link, Info } from "lucide-react";
 import { getPreferences } from "../api/getDataRequests/getUserPreferences";
 import { useEffect, useState } from "react";
 
@@ -31,13 +31,9 @@ export default function ProjectCreationForm({
             const r = await getPreferences()
 
             if (r.Status === "Data retrieved") {
-
-                console.log(r.userPreferences)
-
                 setChoiceMainNote(r.userPreferences.defaultIncludeMnote)
                 setChoiceREADMEnote(r.userPreferences.defaultIncludeReadme)
                 setChoicePublic(r.userPreferences.defaultBePublic)
-
                 setCurrentIncludeMainNote(r.userPreferences.defaultIncludeMnote)
                 setCurrentIncludeReadme(r.userPreferences.defaultIncludeReadme)
                 setCurrentBePublic(r.userPreferences.defaultBePublic)
@@ -45,10 +41,7 @@ export default function ProjectCreationForm({
                 setCurrentAutoSaveInterval(r.userPreferences.defaultTimeAutoSave)
             }
         }
-
-        getMyPreferences();
-
-    }, [])
+        getMyPreferences();}, [])
     return (
         <div className='createNewProjects'>
             <div className="newProjectForm">
@@ -76,6 +69,13 @@ export default function ProjectCreationForm({
                {choiceRepo ? <div className='gitLogonInput'>
                     <FaGithub size={28}/>
                     <input type="text" placeholder="https://github.com/username/repository" className="ghlinkInputCreate" value={gh_repo} onChange={e => setGh_repo(e.target.value)}/>
+                </div> : null}
+                {choiceRepo && choiceCommitHistory ? <div className="linkRepoToHandled">
+                    <button className="connectRepoBtn" onClick={() => window.location.href = "https://github.com/apps/handled-integration"}>
+                        <Link size={18}/>
+                        <p>Connect github repository</p>
+                    </button>
+                    <a className="whyConnectLabel">How does handled tracks my commits?</a>
                 </div> : null}
 
                 <button className={advanceSettings ? 'advanceSetBtnActive' : "advanceSetBtn"} onClick={() =>{

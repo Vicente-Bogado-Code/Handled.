@@ -101,7 +101,7 @@
 }
 
 .settingsField input {
-    background-color: var(--bg-primary);
+    background-color: var(--bg-secondary);
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 8px 12px;
@@ -109,7 +109,7 @@
     font-size: 0.9rem;
 } 
 .descInput{
-    background-color: var(--bg-primary);
+    background-color: var(--bg-secondary);
     border: 1px solid var(--border);
     border-radius: 10px;
     padding: 8px 12px;

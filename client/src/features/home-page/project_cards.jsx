@@ -3,6 +3,7 @@ import './css/project_cards.css'
 import './css/alternate.css'
 import { FaGithub } from "react-icons/fa"
 import { X, Check, Settings, Trash2, Pencil, SquarePen, CircleCheck, RotateCcw } from "lucide-react"
+import { getDate } from '../otherJSfunctions/getExactTime';
 
 function SettingsComp({makingChanges, isDeleting, setIsDeleting, isChangingName, setIsChangingName, isChangingDesc, setIsChangingDesc, newDesc, setNewDesc, newName, setNewName, id, deleteProject, changeProjectDesc, changeProjectName}){
     return(
@@ -86,10 +87,16 @@ export default function ProjectCard({
     const [isChangingDesc,setIsChangingDesc] = useState(false)
     const [newName,setNewName] = useState(name)
     const [newDesc, setNewDesc] = useState(description)
+    const lastOpDate = localStorage.getItem(`lastOpDateOnId${id}`) ? localStorage.getItem(`lastOpDateOnId${id}`) : null;
     let makingChanges = false;
     if (isDeleting === true || isChangingDesc == true || isChangingName == true){ makingChanges = true}
     return (
-        <div className="projectCard" onClick={() => onClickProject(id)}>
+        <div className="projectCard" onClick={() =>{
+            const lastOpDate = getDate().slice(0,6) + getDate().slice(8)
+            const lk = `lastOpDateOnId${id}`
+            localStorage.setItem(lk,lastOpDate)
+            onClickProject(id);
+            }}>
             <div className="projectCardHeader">
                 <button className='optionsBtn'
                  onClick={(e) => {
@@ -120,7 +127,10 @@ export default function ProjectCard({
             /> : 
             <div className='allDiv'>
             <p className="projectCardDesc">{description}</p>
-            <p className="dateOnCards">Created on {atDate}</p>
+            <div className='datesDiv'>
+                <p className="dateOnCards">Created on {atDate}</p>
+                <p className='dateOnCards'>{lastOpDate ? `Last op.${lastOpDate}` : "Not opened yet"}</p>
+            </div>
             <div className='footerOnCards'>
                 <div className='repoLogoNLinkDiv'>
                     <span className='ghLogoOnRepoLink'><FaGithub size={16}/></span>

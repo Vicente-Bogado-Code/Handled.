@@ -199,8 +199,8 @@
     cursor: pointer;
     padding: 10px 40px;
     border-radius: 10px;
-    background-color: var(--accent);
-    color: var(--bg-primary);
+    background-color: var(--cool-green);
+    color: var(--text-primary);
     border: none;
     font-weight: 500;
     align-self: flex-end;
@@ -227,4 +227,42 @@
     gap: 3px;
     font-size: 13px;
     color: var(--text-secondary);
+}
+.linkRepoToHandled{
+    margin: 5px 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.connectRepoBtn{
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    width: 70%;
+    height: 45px;
+    background-color: var(--cool-green);
+    color: var(--text-primary);
+    justify-content: center;
+    border: none;
+    border-radius: 8px;
+    gap: 6px;
+    font-size: 18px;
+    font-weight: 550;
+}
+.connectRepoBtn:hover{
+    transform: translateY(-1px);
+}
+.whyConnectLabel{
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12px;
+    text-align: center;
+    margin-top: 5px;
+    cursor: pointer;
+}
+.whyConnectLabel:hover{
+    text-decoration: underline;
 }

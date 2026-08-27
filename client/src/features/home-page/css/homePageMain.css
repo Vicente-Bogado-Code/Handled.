@@ -6,7 +6,17 @@
     scrollbar-color: var(--bg-secondary) var(--bg-primary);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
-
+.homePageWrapper::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 36px 36px;
+    opacity: 0.070;
+    pointer-events: none;
+}
 
 .sidebar {
     width: 220px;
@@ -79,7 +89,6 @@
     color: var(--text-primary);
 }
 .activeWindow{
-    background-color: var(--accent);
     color: var(--text-primary);
 }
 .sourceCodeBtn:hover{

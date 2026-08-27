@@ -1,5 +1,5 @@
 import { API_BASE } from "../../../../config";
-export async function changeProjectPreferences(mnote,RMnote,commitH,ispublic,autoS,autoSinterval,theme) {
+export async function changeProjectPreferences(commitH,ispublic,autoS,autoSinterval,theme) {
     const request = await fetch(`${API_BASE}/changeProjectPreferences`,{
         method:"POST",
         credentials:"include",
@@ -7,8 +7,6 @@ export async function changeProjectPreferences(mnote,RMnote,commitH,ispublic,aut
             "Content-Type":"application/json"
         },
         body: JSON.stringify({
-            "newMN":mnote,
-            "newRM":RMnote,
             "newCommitH":commitH,
             "newPublic":ispublic,
             "newAutoS":autoS,

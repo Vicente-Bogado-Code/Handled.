@@ -1,11 +1,18 @@
 import { loginUser } from "../api/authRequests/auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Info } from "lucide-react"
 
 export default function LoginPage({onSwitchMode ,onLoginSuccess}){
     const [username,setUsername] = useState("")
     const [password,setPassword] = useState("")
     const [error,setError] = useState("")
+    useEffect(() => {
+        function onKeyDown(e){
+            if (e.key === 'Enter') handleLogin()
+        }
+        document.addEventListener("keydown", onKeyDown)
+        return () => document.removeEventListener("keydown",onKeyDown)
+    }, [username,password])
 
     async function handleLogin() {
         if (username == "" || password == "") {return}

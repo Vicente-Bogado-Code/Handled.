@@ -1,6 +1,6 @@
 import { useState, useEffect, use } from "react";
 import "./css/userSettings.css";
-import { User, Lock, Trash2, Info, Save, X, Edit } from "lucide-react";
+import { User, Lock, Trash2, Info, Save, X, Edit, Check } from "lucide-react";
 import { getMyData } from "../../api/getDataRequests/getWhoAmI";
 import { changeAccountData } from "../../api/alterRequests/changeAccountData";
 import { deleteMyAccount } from "../../api/deleteRequests/deleteAccount";
@@ -128,6 +128,7 @@ export default function UserSettings({ username, setUsername, onLogout, setDesc 
             <div className="changeDataBtnsDiv">
               <button
                 className="settingsButtonSave"
+                style={{backgroundColor:"var(--cool-green"}}
                 onClick={() => {
                   console.log(inputedUsername,inputedEmail)
                   const e = verifyInput(inputedUsername, inputedEmail);
@@ -143,7 +144,7 @@ export default function UserSettings({ username, setUsername, onLogout, setDesc 
                   setError(e);
                 }}
               >
-                <Save size={16} />
+                <Check size={16}/>
               </button>
               <button
                 className="settingsButtonCancel"

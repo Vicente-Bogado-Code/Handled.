@@ -7,6 +7,7 @@ load_dotenv()
 from routes.auth_routes import auth_bp
 from routes.notes_routes import notes_bp
 from routes.projects_routes import projects_bp
+from routes.integrations import integrations_bp
 
 
 handled_server = Flask(__name__)
@@ -25,6 +26,7 @@ handled_server.secret_key = os.environ.get("SECRET_KEY")
 handled_server.register_blueprint(auth_bp)
 handled_server.register_blueprint(projects_bp)
 handled_server.register_blueprint(notes_bp)
+handled_server.register_blueprint(integrations_bp)
 
 
 

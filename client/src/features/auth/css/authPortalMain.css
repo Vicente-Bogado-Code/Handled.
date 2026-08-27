@@ -1,26 +1,44 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+ 
 body {
     background-color: var(--bg-primary);
     margin: 0;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, 'SF Mono', Consolas, monospace;
 }
-
+ 
 .mainRegisterDiv {
     display: flex;
     min-height: calc(100vh - 65px);
 }
-
+ 
 .registerContextDiv {
     flex: 6;
     display: flex;
     align-items: center;
     padding: 0 6%;
+    position: relative;
+    overflow: hidden;
 }
-
+ 
+.registerContextDiv::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 36px 36px;
+    opacity: 0.1;
+    pointer-events: none;
+}
+ 
 .text {
-    max-width: 620px;
+    width: 800px;
+    position: relative;
 }
-
+ 
 .builtBcs {
     color: var(--text-primary);
     font-size: 2.75rem;
@@ -28,33 +46,102 @@ body {
     line-height: 1.2;
     margin: 0 0 16px 0;
 }
+ 
+.builtBcs::after {
+    content: "|";
+    color: var(--text-primary);
+    animation: caretBlink 1.1s steps(1) infinite;
+}
+ 
+@keyframes caretBlink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+}
+ 
+@media (prefers-reduced-motion: reduce) {
+    .builtBcs::after {
+        animation: none;
+    }
+}
+ 
+ 
 .littleDescription {
     color: var(--accent);
-    font-size: 1.15rem;
+    font-size: 1.05rem;
     font-weight: 500;
     margin: 0 0 20px 0;
+    font-family: var(--font-mono);
+    letter-spacing: 0.01em;
 }
+ 
+.littleDescription::before {
+    content: "// ";
+    color: var(--text-secondary);
+}
+ 
 .bigDescription {
     color: var(--text-secondary);
     font-size: 1.05rem;
     line-height: 1.7;
     margin: 0;
+    padding-left: 18px;
 }
-
-.changeStateBtn{
+ 
+.changeStateBtn {
     background: none;
-    border: none;
     border: 1px solid var(--accent);
-    border-radius: 15px;
+    border-radius: 2px;
     padding: 10px 0;
     width: 100%;
     height: 90%;
     color: var(--text-secondary);
     text-decoration: none;
-    font-size: 0.95rem;
-    transition: color 0.15s ease;
+    font-size: 0.8rem;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: color 0.15s ease, background-color 0.15s ease;
     cursor: pointer;
 }
-.changeStateBtn:hover{
-    color: var(--text-primary);
+.changeStateBtn::before {
+    content: "[ ";
+}
+.changeStateBtn::after {
+    content: " ]";
+}
+.changeStateBtn:hover {
+    color: var(--bg-primary);
+    background-color: var(--accent);
+}
+ 
+.termBar {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 16px;
+    background-color: var(--bg-primary);
+    border-bottom: 1px solid var(--border);
+    box-sizing: border-box;
+}
+ 
+.termDots {
+    display: flex;
+    gap: 6px;
+}
+ 
+.termDot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+ 
+.termDotRed { background-color: #ff5f56; }
+.termDotYellow { background-color: #ffbd2e; }
+.termDotGreen { background-color: #27c93f; }
+ 
+.termPath {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-secondary);
 }
