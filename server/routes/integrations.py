@@ -19,7 +19,6 @@ def get_gh_JWT():
     }
     with open ("/etc/secrets/private_key_pem", "r") as f:
         pem_key = f.read()
-    print(repr(pem_key))
     jwebt = jwt.encode(
         payload,
         pem_key,
@@ -71,8 +70,11 @@ def assing_repositories():
         cu_installation_id = row[0]
         if cu_installation_id is None:
             return jsonify({"Status": "This user doesn't an installation id"}), 401
-        jwebtoken = get_gh_JWT()
-        installation_token = get_installation_token(jwebtoken,cu_installation_id)
+        try: 
+            jwtoken = get_gh_JWT()
+            installation_token = get_installation_token(installation_id,jwtoken)
+        except Exception as _:
+                return jsonify({"Status": "Failed to authenticate with GitHub"}), 502
         response = requests.get(
             "https://api.github.com/installation/repositories",
             params={
@@ -106,7 +108,45 @@ def assing_repositories():
     finally:
         cursor.close()
         conn.close()
-        
+
+@integrations_bp.route("/getLinkedRepoData", methods=["GET"])
+def give_linked_repo_data():
+    current_user_id = session.get("user_id")
+    if not current_user_id: return jsonify({"Status": "Not logged"}),401
+    current_project_id = session.get("current_project_id")
+    if not current_project_id: return jsonify({"Status": "No project selected"}),401
+    conn = get_conn()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT github_repo_id FROM users_projects WHERE user_id = %s AND project_id = %s", (current_user_id,current_project_id))
+        r = cursor.fetchone()
+        if r is None:
+            return jsonify({"Status":"This project doesn't have a repository id"}), 400
+        cursor.execute("SELECT installation_id FROM handled_users WHERE id = %s", (current_user_id,))
+        row = cursor.fetchone()
+        if row is None:
+                return jsonify({"Status": "Installation id not found"}), 400
+        installation_id = row[0]
+        try: 
+            jwtoken = get_gh_JWT()
+            installation_token = get_installation_token(installation_id,jwtoken)
+        except Exception as _:
+            return jsonify({"Status": "Failed to authenticate with GitHub"}), 502
+        linked_repository_id = r[0]
+        resp = requests.get(
+                f"https://api.github.com/repositories/{linked_repository_id}",
+                headers={
+                    "Authorization": f"Bearer {installation_token}",
+                    "Accept": "application/vnd.github+json"
+                })
+        if resp.status_code != 200:
+                return jsonify({"Status": "Failed to fetch repository data", "GithubStatus": resp.status_code}), 502
+        repo_data = resp.json()
+        return jsonify({"Status":"Repository id retrieved", "RepoData":repo_data })
+    finally:
+        cursor.close()
+        conn.close()
+
         
 
         

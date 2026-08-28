@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './projectSettings.css'
-import { Trash, Undo2, Check, TriangleAlert, Info, Copy, Link, Pointer, GitBranch } from 'lucide-react';
+import { Trash, Undo2, Check, TriangleAlert, Info, Copy, Link, Pointer, GitBranch, GitCommit } from 'lucide-react';
 import { FaGithub } from "react-icons/fa"
+import { getLinkedRepositoryData } from '../../api/third-party-APIs/github_api';
 
 export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnProjectSettings, handleChangeRepo, handleDeleteProject, handleChangeProjectName,hasMnote,hasReadmeNote,hasTrackCommit,hasIsPublic,hasAutoSave,hasAutoSaveInterval, hasTheme, handleChangeProjectPreferences}){
     const [newRepo, setNewRepo] = useState("")
@@ -16,6 +17,23 @@ export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnP
     const DB_trackCommits = hasTrackCommit;
     const [settingsTrackCommits, setSettingsTrackCommits] = useState(hasTrackCommit)
     const [isSaved, setIsSaved] = useState(false)
+    const [hasRepoLinked,setHasRepoLinked] = useState(false)
+    const [lrName, setLrName] = useState(null) //lr = linked repository
+    const [fullLrName, setFullLrName] = useState(null)
+    const [defaultBranch, setDefaultBranc] = useState(null)
+    useEffect(() =>{
+        async function setRepoId(params) {
+           const r = await getLinkedRepositoryData();
+            if(r.Status === "Repository id retrieved"){
+                setHasRepoLinked(true)
+                repositoryData = r.repoData
+                setLrName(r.name)
+                setFullLrName(r.full_name)
+                 setDefaultBranc(r.default_branch)
+            }
+        }
+        setRepoId();
+   }, [])
     return(
         <div className="projectSettingsDiv">
             <div className="labelOnProjectSettings">
@@ -132,9 +150,16 @@ export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnP
                 <div className='projectInputDiv settingsCategorySeparator'>
                     <label className='projectInputLabel'>Repository and commits</label>
                     <div className='projectInputNicon'>
-                        <button className='connectGHrepoBtn' onClick={() => window.location.href = "https://github.com/apps/handled-integration"}><FaGithub size={20}/>Connect repository</button>
+                        {!hasRepoLinked ? <button className='connectGHrepoBtn' onClick={() => window.location.href = "https://github.com/apps/handled-integration"}><FaGithub size={20}/>Connect repository</button> :
+                        <div className='whenRepoConnected'>
+                            <div><Check size={18} style={{color:"var(--cool-green)"}}/><label className='correcltyCntcRepoLbl'>Repository connected</label></div>
+                            <div style={{margin:0}}><FaGithub size={30} color='white'/><h2 className='connectedToLbl'>Connected to {lrName}</h2></div>
+                            <p className='fullNameLbl'>{fullLrName}</p>
+                            <div><GitCommit size={20} style={{color:"var(--accent)"}}/><p className='defaultBrnchLbl'>{defaultBranch}</p></div>
+                        
+                        </div>
+                        }
                     </div>
-                    <a className='trackingCommitsLblHelp' href='#'><Info size={16}/>How does handled track my commits?</a> 
                      <div className="settingsToggleRow">
                         <span className="settingsToggleLabel"><GitBranch size={18}/>Track commits (if false, Handled will stop tracking commits, but the note "Commit history" will still have the old ones)</span>
                         <button
@@ -144,6 +169,7 @@ export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnP
                             <div className="settingsToggleKnob"></div>
                         </button>
                 </div>
+                <a className='trackingCommitsLblHelp' href='#'><Info size={16}/>How does handled track my commits?</a> 
                 </div>
 
                 <label className='projectInputLabel'>Other</label>

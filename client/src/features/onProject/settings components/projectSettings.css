@@ -458,3 +458,34 @@
 .hideNotifications:hover{
     color: #ff5555;
 }
+
+.whenRepoConnected{
+    margin-top: 8px;
+    width: 100%;
+    height: fit-content;
+}
+.whenRepoConnected div{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.correcltyCntcRepoLbl{
+    color: var(--cool-green);
+    font-size: 13px;
+    margin: 5px;
+    margin-left: 0;
+}
+.connectedToLbl{
+    color: var(--text-primary);
+    font-size: 30px;
+    margin: 0;
+}
+.fullNameLbl{
+    margin-top: 0;
+    color: var(--text-secondary);
+    margin-bottom: 0;
+}
+.defaultBrnchLbl{
+    color: var(--accent);
+    margin: 0;
+}
