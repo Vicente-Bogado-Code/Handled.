@@ -26,10 +26,10 @@ export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnP
            const r = await getLinkedRepositoryData();
             if(r.Status === "Repository id retrieved"){
                 setHasRepoLinked(true)
-                repositoryData = r.repoData
-                setLrName(r.name)
-                setFullLrName(r.full_name)
-                 setDefaultBranc(r.default_branch)
+                const repositoryData = r.repoData
+                setLrName(repositoryData.name)
+                setFullLrName(repositoryData.full_name)
+                 setDefaultBranc(repositoryData.default_branch)
             }
         }
         setRepoId();
