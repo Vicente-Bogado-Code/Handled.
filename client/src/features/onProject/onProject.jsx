@@ -14,6 +14,7 @@ import { changeProjectName } from "../api/alterRequests/changeDescName";
 import { useState, useEffect, useRef } from 'react';
 import { getProjectPreferences } from "../api/getDataRequests/getProjectPreferences";
 import { changeProjectPreferences } from "../api/alterRequests/changeProjectPreferences";
+import { getLinkedRepositoryData } from "../api/third-party-APIs/github_api";
 //
 import SecondaryProjectComp from "./ secNote";
 import Window from "./window";

@@ -17,19 +17,6 @@ export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnP
     const DB_trackCommits = hasTrackCommit;
     const [settingsTrackCommits, setSettingsTrackCommits] = useState(hasTrackCommit)
     const [isSaved, setIsSaved] = useState(false)
-    useEffect(() =>{
-        async function setRepoId(params) {
-           const r = await getLinkedRepositoryData();
-            if(r.Status === "Repository id retrieved"){
-                setHasRepoLinked(true)
-                const repositoryData = r.repoData
-                setLrName(repositoryData.name)
-                setFullLrName(repositoryData.full_name)
-                setDefaultBranc(repositoryData.default_branch)
-            }
-        }
-        setRepoId();
-   }, [])
     return(
         <div className="projectSettingsDiv">
             <div className="labelOnProjectSettings">
