@@ -81,14 +81,26 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
   const [noteReferencer, setNoteReferencer] = useState(false)
   const [noteReferecerString, setNoteReferecerString] = useState("")
   const [wantsNotifications,setWantsNotifications] = useState(true)
-  const avChainMethods = [
-    "->",
-    "@>"
-  ]
-  const avChainUses = [
-    "ref",
-    "refLine"
-  ]
+  const 
+  const avChainMethods = ["->","@>"]
+  const avChainUses = ["ref","refLine"]
+  const [hasRepoLinked,setHasRepoLinked] = useState(false)
+  const [lrName, setLrName] = useState(null) //lr = linked repository
+  const [fullLrName, setFullLrName] = useState(null)
+  const [defaultBranch, setDefaultBranc] = useState(null)
+    useEffect(() =>{
+        async function setRepoId(params) {
+           const r = await getLinkedRepositoryData();
+            if(r.Status === "Repository id retrieved"){
+                setHasRepoLinked(true)
+                const repositoryData = r.repoData
+                setLrName(repositoryData.name)
+                setFullLrName(repositoryData.full_name)
+                setDefaultBranc(repositoryData.default_branch)
+            }
+        }
+        setRepoId();
+   }, [])
   useEffect(() => {
     function onEnterDown(e){
       if (e.key === "Enter" && isCreating){
@@ -421,6 +433,10 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
       hasTheme={hasTheme}
       hasTrackCommit={hasTrackCommitHistory}
       handleChangeProjectPreferences={handleChangeProjectPreferences}
+      hasRepoLinked={hasRepoLinked}
+      lrName={lrName}
+      fullLrName={fullLrName}
+      defaultBranch={defaultBranch}
      />) : null}
      <div className={isOnNoteSettings === true || isOnProjectSettings === true ? "hide" : (windows.length > 0 ? "navWindows" : "navWindowsOnPH")}>
       {windows.map(window => <Window 
@@ -436,7 +452,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
      </div>
      {!isOnNoteSettings && !isOnProjectSettings ? 
      <div className="currentWindowContentDiv">
-      {hasTrackCommitHistory && wantsNotifications ?  <div className="notificationsDiv">
+      {hasTrackCommitHistory && hasRepoLinked === false ?  <div className="notificationsDiv">
         <label style={{margin:0}}><Bell size={18}/></label>
         <button className="hideNotifications" onClick={() => setWantsNotifications(false)}><X size={20}/></button>
         <p><TriangleAlert size={16} color="red"/>  You want handled to track your commits, but you haven't connected a repository to this project!</p>

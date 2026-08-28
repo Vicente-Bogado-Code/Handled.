@@ -4,7 +4,7 @@ import { Trash, Undo2, Check, TriangleAlert, Info, Copy, Link, Pointer, GitBranc
 import { FaGithub } from "react-icons/fa"
 import { getLinkedRepositoryData } from '../../api/third-party-APIs/github_api';
 
-export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnProjectSettings, handleChangeRepo, handleDeleteProject, handleChangeProjectName,hasMnote,hasReadmeNote,hasTrackCommit,hasIsPublic,hasAutoSave,hasAutoSaveInterval, hasTheme, handleChangeProjectPreferences}){
+export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnProjectSettings, handleChangeRepo, handleDeleteProject, handleChangeProjectName,hasMnote,hasReadmeNote,hasTrackCommit,hasIsPublic,hasAutoSave,hasAutoSaveInterval, hasTheme, handleChangeProjectPreferences,hasRepoLinked,lrName,fullLrName,defaultBranch}){
     const [newRepo, setNewRepo] = useState("")
     const [isDeleting, setIsDeleting] = useState(false)
     const [savedRepo,setSavedRepo] = useState(false)
@@ -17,10 +17,6 @@ export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnP
     const DB_trackCommits = hasTrackCommit;
     const [settingsTrackCommits, setSettingsTrackCommits] = useState(hasTrackCommit)
     const [isSaved, setIsSaved] = useState(false)
-    const [hasRepoLinked,setHasRepoLinked] = useState(false)
-    const [lrName, setLrName] = useState(null) //lr = linked repository
-    const [fullLrName, setFullLrName] = useState(null)
-    const [defaultBranch, setDefaultBranc] = useState(null)
     useEffect(() =>{
         async function setRepoId(params) {
            const r = await getLinkedRepositoryData();
@@ -29,7 +25,7 @@ export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnP
                 const repositoryData = r.repoData
                 setLrName(repositoryData.name)
                 setFullLrName(repositoryData.full_name)
-                 setDefaultBranc(repositoryData.default_branch)
+                setDefaultBranc(repositoryData.default_branch)
             }
         }
         setRepoId();
