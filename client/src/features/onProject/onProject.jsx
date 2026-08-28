@@ -27,7 +27,7 @@ import ProjectSettings from "./settings components/projectSettings";
 //
 import './css/onProject.css'
 //
-import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon, ClockArrowDown,FilePlus, Pause, CircleArrowDown,X } from 'lucide-react';
+import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon, ClockArrowDown,FilePlus, Pause, CircleArrowDown,X, TriangleAlert, Eye, Bell } from 'lucide-react';
 import { Color } from "@tiptap/extension-text-style";
 
 export default function CurrentProjectComp({ project_id , handleGoBack}) {
@@ -79,6 +79,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
   const [wantsCounterToSave, setWantsCounterToSave] = useState(true)
   const [noteReferencer, setNoteReferencer] = useState(false)
   const [noteReferecerString, setNoteReferecerString] = useState("")
+  const [wantsNotifications,setWantsNotifications] = useState(true)
   const avChainMethods = [
     "->",
     "@>"
@@ -434,6 +435,16 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
      </div>
      {!isOnNoteSettings && !isOnProjectSettings ? 
      <div className="currentWindowContentDiv">
+      {hasTrackCommitHistory && wantsNotifications ?  <div className="notificationsDiv">
+        <label style={{margin:0}}><Bell size={18}/></label>
+        <button className="hideNotifications" onClick={() => setWantsNotifications(false)}><X size={20}/></button>
+        <p><TriangleAlert size={16} color="red"/>  You want handled to track your commits, but you haven't connected a repository to this project!</p>
+        <label>You can connect a repository on 
+        <button className="goToPrjcSettingsBtn" onClick={() => {
+          setIsOnProjectSettings(!isOnProjectSettings);
+          setIsOnNoteSettings(false);
+        }}>Repository and commits</button></label>
+      </div> : null}
       <div className={activeSnoteId ? (hasTheme === 1 ? "windowContent" : "windowContentWhite") : "windowPH"}>
        {activeSnoteId ? <Toolbar
          editor={editor}

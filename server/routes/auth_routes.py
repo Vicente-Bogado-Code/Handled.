@@ -25,7 +25,7 @@ def register_user():
         return jsonify({"Status": "Username already taken"}),409
     conn.commit()
     cursor.close()
-    conn.close
+    conn.close()
     session["user_id"] = user_id
     return jsonify({"Status":"Created","username":username, "email":email}),201
 
@@ -107,6 +107,7 @@ def delete_account():
 def give_data():
     current_user_id = session.get("user_id")
     if not current_user_id:return jsonify({"Status": "Not logged"}),401
+    current_project_id = session.get("current_project_id") 
     conn = get_conn()
     cursor = conn.cursor()
     try:
@@ -116,6 +117,7 @@ def give_data():
             return jsonify({"Status": "User not found"}), 404
         response = {
             "id": current_user_id,
+            "current_project_id": current_project_id,
             "username": row[0],
             "email": row[1],
             "description": row[2]

@@ -114,7 +114,7 @@
 }
 
 .advanceSetBtn, .advanceSetBtnActive{
-    cursor: pointer;
+    cursor: default;
     width: fit-content;
     display: flex;
     align-items: center;
@@ -125,12 +125,6 @@
     padding: 5px;
     border-radius: 10px;
     border: none;
-}
-.advanceSetBtn:hover{
-    background-color: var(--transparent-blue-btns);
-}
-.advanceSetBtnActive{
-    color: var(--accent);
 }
 .advSettingsDiv{
     padding: 5px 2px;
@@ -195,7 +189,7 @@
     margin: 0;
     margin-top: 4px;
 }
-#createProjectBtn {
+#createProjectBtn, #createProjectBtnNot {
     cursor: pointer;
     padding: 10px 40px;
     border-radius: 10px;
@@ -209,6 +203,9 @@
 
 #createProjectBtn:hover {
     opacity: 0.85;
+}
+#createProjectBtnNot{
+    background-color: rgb(34, 53, 28);;
 }
 
 .projectsLblNfilters{
@@ -265,4 +262,76 @@
 }
 .whyConnectLabel:hover{
     text-decoration: underline;
+}
+.lblOnConnectRepo{
+    color: var(--text-secondary);
+    font-size: 13px;
+    text-align: left;
+    margin-bottom: 5px;
+}
+
+.linkNowDiv{
+    background-color: var(--bg-secondary);
+    padding: 20px 10px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    width: 40%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+.alsetlbl{
+    color: var(--text-primary);
+    text-align: center;
+    margin: 0;
+}
+.allsetlblconnect{
+    color: var(--text-secondary);
+    text-align: center;
+}
+.undoBtnGoBack{
+    cursor: pointer;
+    background: none;
+    width: 10%;
+    border: none;
+    color: var(--text-secondary);
+    margin: 0;
+}
+.undoBtnGoBack:hover{
+    color: var(--text-primary);
+}
+.connectGHrepoBtnallset{
+    width: 90%;
+    background-color: var(--cool-green);
+    height: 40px;
+    display: flex;
+    align-items: center;
+    color: var(--text-primary);
+    justify-content: center;
+    border: none;
+    border-radius: 8px;
+    gap: 6px;
+    font-size: 18px;
+    align-self: center;
+    cursor: pointer;
+}
+.notNowGoProject{
+    width: 90%;
+    background-color:#ff5555; ;
+    height: 40px;
+    align-self: center;
+    display: flex;
+    align-items: center;
+    color: var(--text-primary);
+    justify-content: center;
+    border: none;
+    border-radius: 8px;
+    gap: 6px;
+    font-size: 18px;
+    cursor: pointer;
+}
+.connectGHrepoBtnallset:hover, .notNowGoProject:hover{
+    transform: translateY(-2px);
 }

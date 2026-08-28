@@ -1,6 +1,6 @@
 // ProjectCreationForm.jsx
 import { FaGithub } from "react-icons/fa";
-import { X, Settings, Plus, Link, Info } from "lucide-react";
+import { X, Settings, Plus, Link, Info, Undo2 } from "lucide-react";
 import { getPreferences } from "../api/getDataRequests/getUserPreferences";
 import { useEffect, useState } from "react";
 
@@ -23,6 +23,7 @@ export default function ProjectCreationForm({
     const [currentBePublic, setCurrentBePublic] = useState(null)
     const [currentAutoSave, setCurrentAutoSave] = useState(null)
     const [currentAutoSaveInterval, setCurrentAutoSaveInterval] = useState(null)
+    const [allset,setallset] = useState(false)
 
     useEffect(() => {
 
@@ -42,9 +43,31 @@ export default function ProjectCreationForm({
             }
         }
         getMyPreferences();}, [])
+    function LinkNow(){
+        return(
+            <div className="linkNowDiv">
+                <button className="undoBtnGoBack" onClick={() => setallset(false)}><Undo2 size={20}/></button>
+                <h2 className="alsetlbl">Almost done...</h2>
+                <label className="allsetlblconnect">Connect your repository</label>
+                <button className="connectGHrepoBtnallset"><FaGithub size={20}/>Connect repository</button>
+                <label className="allsetlblconnect">or</label>
+                <button className="notNowGoProject" onClick={() =>{
+                    handleCreate(
+                    [
+                    currentIncludeMainNote,
+                    currentIncludeReadme,
+                    currentBePublic, choiceRepo === true ? choiceCommitHistory : false,
+                    currentAutoSave,
+                    currentAutoSaveInterval]);
+                    setIsCreating(false);
+                    setallset(false);
+                }}>Not now, later.</button>
+            </div>
+        );
+    }
     return (
         <div className='createNewProjects'>
-            <div className="newProjectForm">
+            {!allset ? <div className="newProjectForm">
                 <div className='headerOnCreationProject'>
                     <div className='labelANdNewProjectLabel'>
                         <h2 className="newProjectLabel">What are you <span style={{color:"var(--accent"}}>working</span> on?</h2>
@@ -55,7 +78,7 @@ export default function ProjectCreationForm({
                     </button>
                </div>
                 <input 
-                type="text" placeholder="Project name? (max 25 characters)" className="nameInputCreate" maxLength={25}
+                type="text" placeholder="Project name" className="nameInputCreate"
                 value={projectName}
                 onChange={e => setProjectName(e.target.value)}
                 />
@@ -68,21 +91,11 @@ export default function ProjectCreationForm({
 
                {choiceRepo ? <div className='gitLogonInput'>
                     <FaGithub size={28}/>
-                    <input type="text" placeholder="https://github.com/username/repository" className="ghlinkInputCreate" value={gh_repo} onChange={e => setGh_repo(e.target.value)}/>
-                </div> : null}
-                {choiceRepo && choiceCommitHistory ? <div className="linkRepoToHandled">
-                    <button className="connectRepoBtn" onClick={() => window.location.href = "https://github.com/apps/handled-integration"}>
-                        <Link size={18}/>
-                        <p>Connect github repository</p>
-                    </button>
-                    <a className="whyConnectLabel">How does handled tracks my commits?</a>
+                    <input type="text" placeholder="Does this project have a repository?" className="ghlinkInputCreate" value={gh_repo} onChange={e => setGh_repo(e.target.value)}/>
                 </div> : null}
 
-                <button className={advanceSettings ? 'advanceSetBtnActive' : "advanceSetBtn"} onClick={() =>{
-                    {advanceSettings ? setAdvanceSettings(false) : setAdvanceSettings(true)}
-                }}><Settings size={16}/>Advance settings</button>
+                <button className="advanceSetBtn"><Settings size={16}/>Project settings</button>
                 
-               {advanceSettings ? 
                <div className='advSettingsDiv'>
                 <label className='checkBoxOnAdvSettings settingRow'>
                     <input type="checkbox"
@@ -113,21 +126,21 @@ export default function ProjectCreationForm({
                      />
                      Include GitHub repository link
                      <div className='infoTooltip'>
-                         If active, you will be able to link a GitHub (only) repository to this project
+                         If active, you will be able to paste a link to GitHub (only) repository to this project
                          <p className='labelOnHover'>You can change this option value anytime</p> 
                     </div>
                 </label>
-                {choiceRepo ? <label className='checkBoxOnAdvSettingsYesRepo settingRow'>
+               <label className='checkBoxOnAdvSettingsYesRepo settingRow' style={{marginLeft:5}}>
                     <input type="checkbox"
                     checked={choiceCommitHistory}
                     onChange={(e) => {choiceCommitHistory ? setChoiceCommitHistory(false) : setChoiceCommitHistory(true)}}
                     />
-                     Include commit history on a note
+                     Let handled track my commit history.
                      <div className='infoTooltip'>
-                         If active, a Commit history (D) note will be created by default to track the commits of the given repository
-                         <p className='labelOnHoverRed'>This option value is PERMANENT (can't be changed later)</p> 
+                         If active, a Commit history (D) note will be created by default to track the commits of the CONNECTED repository, not linked.
+                         <p className='labelOnHover'>You can change this option value anytime</p> 
                     </div>
-                </label> : null}
+                </label>
                 <label className='checkBoxOnAdvSettings settingRow'>
                     <input type="checkbox"
                     checked={currentBePublic}
@@ -135,15 +148,27 @@ export default function ProjectCreationForm({
                     />
                      Make this project public
                      <div className='infoTooltip'>
-                         If active, anyone with a link can access your project and see it's content
+                         If active, anyone with you project's link can access it and see it's content but not modify it.
                          <p className='labelOnHover'>You can change this option value anytime</p> 
                     </div>
                 </label>
-               </div> : null}
-                <button type="submit" id="createProjectBtn" onClick={() => {
-                    handleCreate([currentIncludeMainNote,currentIncludeReadme,currentBePublic, choiceRepo === true ? choiceCommitHistory : false,currentAutoSave,currentAutoSaveInterval]);
-                    setIsCreating(false);}}><Plus size={16}/></button>
-           </div>
+               </div>
+                {projectName.length > 0 && description.length > 0 ? <button type="submit" id="createProjectBtn" onClick={() => {
+                   if (choiceCommitHistory === false){handleCreate(
+                    [
+                    currentIncludeMainNote,
+                    currentIncludeReadme,
+                    currentBePublic, choiceRepo === true ? choiceCommitHistory : false,
+                    currentAutoSave,
+                    currentAutoSaveInterval]);
+                    setIsCreating(false);}
+                    else{
+                        setallset(true)
+                    }
+                
+                }}
+                    ><Plus size={16}/></button> : <button id="createProjectBtnNot"><Plus size={16}/></button>}
+           </div> : <LinkNow/>}
         </div>
     );
 }

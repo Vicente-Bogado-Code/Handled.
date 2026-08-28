@@ -14,7 +14,7 @@ export default function MainPlaceHolder() {
                 </h3>
 
                 <p className="placeHolderText">
-                    Choose a note from the sidebar to start tracking.
+                    Choose a note from the sidebar to start.
                 </p>
             </div>
         </div>

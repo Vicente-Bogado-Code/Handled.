@@ -43,10 +43,10 @@
     font-size: 21px;
     font-weight: 600;
     margin: 0;
-    max-width: 270px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    width: 600px;
 }
 
 .projectDateLbl{
@@ -90,7 +90,7 @@
     gap: 3px;
 }
 .projectInputLabel{
-    color: var(--text-secondary);
+    color: var(--text-primary);
     font-size: 13px;
 }
 .repoIcon{
@@ -102,12 +102,16 @@
     font-weight: 550;
     font-size: 15px;
     border-radius: 2px;
-    border: none;
-    border-bottom: 1px solid var(--text-primary);
-    padding: 5px;
+    border: 1px solid var(--border);
+    padding: 10px;
+    margin-top: 8px;
     width: 50%;
 }
+.changeProjectNameInput:focus{
+    outline: none;
+}
 .projectInputNicon{
+    justify-content: space-between;
     display: flex;
     align-items: center;
     gap: 5px;
@@ -116,9 +120,10 @@
 
 .saveProjectbtn{
     cursor: pointer;
-    width: 50px;
+    width: 100px;
+    height: 30px;
     padding: 5px;
-    background-color: var(--accent);
+    background-color: var(--cool-green);
     border: none;
     color: var(--text-primary);
     border-radius: 5px;
@@ -274,7 +279,7 @@
 .settingsToggleSwitch{
     cursor: pointer;
     width: 38px;
-    height: 20px;
+    height: 30px;
     border-radius: 10px;
     border: none;
     background-color: rgba(255, 255, 255, 0.12);
@@ -286,7 +291,7 @@
 }
 
 .settingsToggleSwitch.toggleOn{
-    background-color: var(--bg-secondary);
+    background-color: rgba(255, 255, 255, 0.12);;
     justify-content: flex-end;
 }
 
@@ -373,8 +378,12 @@
     align-items: center;
     gap: 4px;
     color: var(--accent);
-    font-weight: 550;
-    font-size: 15px;
+    font-weight: 500;
+    font-size: 14px;
+    text-decoration: none;
+}
+.trackingCommitsLblHelp:hover{
+    text-decoration: underline;
 }
 .trackingCommitsLblHelp svg{
     color: var(--text-secondary);
@@ -386,8 +395,8 @@
 
 .saveSettingsBtn, .saveSettingsSavedBtn{
     cursor: pointer;
-    background-color: var(--accent);
-    width: 20%;
+    background-color: var(--cool-green);
+    width: 10%;
     border: none;
     color: var(--text-primary);
     padding: 8px;
@@ -413,4 +422,39 @@
 .shareURL{
     color: var(--accent);
     margin-left: 10px;
+}
+.notificationsDiv{
+    position: relative;
+    width: 800px;
+}
+.connectGHrepoBtn{
+    margin-top: 10px;
+    width: 40%;
+    background-color: var(--cool-green);
+    height: 40px;
+    display: flex;
+    align-items: center;
+    color: var(--text-primary);
+    justify-content: center;
+    border: none;
+    border-radius: 8px;
+    gap: 6px;
+    font-size: 18px;
+    cursor: pointer;
+    position: relative;
+}
+.connectGHrepoBtn:hover{
+    transform: translateY(-1px);
+}
+.hideNotifications {
+    position: absolute;
+    top: 8px;
+    right: 5px;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+}
+.hideNotifications:hover{
+    color: #ff5555;
 }

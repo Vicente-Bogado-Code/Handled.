@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './projectSettings.css'
-import { Trash, Undo2, Check, TriangleAlert, Info, Copy, Link, Pointer } from 'lucide-react';
+import { Trash, Undo2, Check, TriangleAlert, Info, Copy, Link, Pointer, GitBranch } from 'lucide-react';
 import { FaGithub } from "react-icons/fa"
 
 export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnProjectSettings, handleChangeRepo, handleDeleteProject, handleChangeProjectName,hasMnote,hasReadmeNote,hasTrackCommit,hasIsPublic,hasAutoSave,hasAutoSaveInterval, hasTheme, handleChangeProjectPreferences}){
@@ -28,9 +28,33 @@ export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnP
                     <span className="toAccentProjectSettings">{status}</span>
                 </div>
             </div>
+             <div className='projectInputDiv settingsCategorySeparator'>
+                    <label className='projectInputLabel'>Project name</label>
+                    <div className='projectInputNicon'>
+                        <input type="text" className='changeProjectNameInput' 
+                        value={newName}
+                        onChange={(e) => {setNewName(e.target.value); setSavedName(false)}}
+                        />
+                    </div>
+                    <label className='projectInputLabel'>Github repository link</label>
+                     <label className='projectInputLabel' style={{color:"var(--text-secondary)", marginLeft:10}}>--This is just a link to your repository webpage on GitHub. To connect a repository to handled, click "Connect repository" on <span style={{color:"var(--text-primary)"}}>Repository and commits</span></label>
+                     <div className='projectInputNicon'>
+                        <input type="text" className='changeProjectNameInput' placeholder={repoLink === "not given" ? "This project has no repository linked" : repoLink}
+                        value={newRepo}
+                        onChange={(e) => {setNewRepo(e.target.value); setSavedRepo(false)}}
+                        />
+                        <button className='saveProjectbtn'
+                         onClick={async () => {
+                         if (newName !== ""){await handleChangeProjectName(newName,id); setSavedName(true)}
+                         if (newRepo !== ""){const b = await handleChangeRepo(newRepo,id); setSavedRepo(b)}
+                        }}>
+                            {savedRepo || savedName ? <Check size={16}/> : "Save"}
+                        </button>
+                    </div>
+                </div>
 
             <div className="generalSettingsDiv settingsCategorySeparator">
-                <label className='projectInputLabel' style={{color:"var(--accent)"}}>Notes and preferences</label>
+                <label className='projectInputLabel'>Notes and preferences</label>
                 <div className="settingsToggleRow">
                     <span className="settingsToggleLabel">Autosave</span>
                     <button
@@ -93,58 +117,36 @@ export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnP
                         </button>
                     </div>
                 </div>
-                 { DB_trackCommits ? (<div className="settingsToggleRow">
-                        <span className="settingsToggleLabel">Keep tracking commits (if false, Handled will stop tracking commits, but the note will still have the old ones)</span>
-                        <button
-                            className={`settingsToggleSwitch ${settingsTrackCommits ? "toggleOn" : ""}`}
-                            onClick={() => {setSettingsTrackCommits(!settingsTrackCommits); setIsSaved(false)}}
-                        >
-                            <div className="settingsToggleKnob"></div>
-                        </button>
-                </div>) : null}
                 <button className={!isSaved ? 'saveSettingsBtn' : 'saveSettingsSavedBtn'} onClick={ async () => {
-                    const r = await handleChangeProjectPreferences(settingsTrackCommits,settingsIsPublic,settingsAutoSaveValue,settingsAutoSaveInterval === null ? 10 : settingsAutoSaveInterval,settingsTheme)
+                    const r = await handleChangeProjectPreferences(
+                        settingsTrackCommits,
+                        settingsIsPublic,
+                        settingsAutoSaveValue,
+                        settingsAutoSaveInterval === null ? 10 : settingsAutoSaveInterval,
+                        settingsTheme)
                     setIsSaved(r)
                 }}>{isSaved ? <Check size={16}/> : "Save"}</button>
             </div>
 
             <div className="changeProjectDataDiv">
                 <div className='projectInputDiv settingsCategorySeparator'>
-                    <label className='projectInputLabel' style={{color:"var(--accent)"}}>Repository and commits</label>
+                    <label className='projectInputLabel'>Repository and commits</label>
                     <div className='projectInputNicon'>
-                        <FaGithub size={20} className='repoIcon'/>
-                        <input type="text" className='changeProjectNameInput' placeholder={repoLink === "not given" ? "This project has no repository linked" : repoLink}
-                        value={newRepo}
-                        onChange={(e) => {setNewRepo(e.target.value); setSavedRepo(false)}}
-                        />
-                        <button className='saveProjectbtn'
-                         onClick={async () => {
-                         if (newRepo !== ""){const b = await handleChangeRepo(newRepo,id); setSavedRepo(b)}
-                        }}>
-                            {savedRepo ? <Check size={16}/> : "Save"}
-                        </button>
+                        <button className='connectGHrepoBtn' onClick={() => window.location.href = "https://github.com/apps/handled-integration"}><FaGithub size={20}/>Connect repository</button>
                     </div>
                     {hasTrackCommit ? <a className='trackingCommitsLblHelp' href='#'><Info size={16}/>How do we track your repository?</a> : null}
-                    <label className='trackingCommitsLblHelp'><TriangleAlert size={16}/><span className='toRed'>{hasTrackCommit ? "We recommend not changing repository mid project." : "You have commit tracking off. Handled will not track commits."}</span></label>
-                </div>
-
-                <div className='projectInputDiv settingsCategorySeparator'>
-                    <label className='projectInputLabel' style={{color:"var(--accent)"}}>Project name</label>
-                    <div className='projectInputNicon'>
-                        <input type="text" className='changeProjectNameInput' 
-                        value={newName}
-                        onChange={(e) => {setNewName(e.target.value); setSavedName(false)}}
-                        />
-                        <button className='saveProjectbtn'
-                         onClick={async () => {
-                         if (newName !== ""){await handleChangeProjectName(newName,id); setSavedName(true)}
-                        }}>
-                            {savedName ? <Check size={16}/> : "Save"}
+                     <div className="settingsToggleRow">
+                        <span className="settingsToggleLabel"><GitBranch size={18}/>Track commits (if false, Handled will stop tracking commits, but the "Commit history" will still have the old ones)</span>
+                        <button
+                            className={`settingsToggleSwitch ${settingsTrackCommits ? "toggleOn" : ""}`}
+                            onClick={() => {setSettingsTrackCommits(!settingsTrackCommits); setIsSaved(false)}}
+                        >
+                            <div className="settingsToggleKnob"></div>
                         </button>
-                    </div>
+                </div>
                 </div>
 
-                <label className='projectInputLabel' style={{color:"var(--accent)"}}>Other</label>
+                <label className='projectInputLabel'>Other</label>
                 {!isDeleting ? (
                     <button className="deleteProjectSettingsBtn" onClick={() => setIsDeleting(true)}>
                         <Trash size={15}/>Delete project
