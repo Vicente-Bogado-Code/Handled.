@@ -8,7 +8,7 @@ from routes.auth_routes import auth_bp
 from routes.notes_routes import notes_bp
 from routes.projects_routes import projects_bp
 from routes.integrations import integrations_bp
-
+print(repr(os.environ.get("GITHUB_APP_PRIVATE_KEY")))
 
 handled_server = Flask(__name__)
 

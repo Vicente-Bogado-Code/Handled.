@@ -17,10 +17,12 @@ def get_gh_JWT():
         "exp": now_to_int + (10 * 60),
         "iss": app_id
     }
-    app_private_key = os.environ.get("GITHUB_PRIVATE_KEY")
+    with open ("/etc/secrets/private_key_pem", "r") as f:
+        pem_key = f.read()
+    print(repr(pem_key))
     jwebt = jwt.encode(
         payload,
-        app_private_key,
+        pem_key,
         algorithm="RS256"
     )
     return jwebt
