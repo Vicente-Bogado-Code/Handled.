@@ -45,26 +45,21 @@ function SettingsComp({makingChanges, isDeleting, setIsDeleting, isChangingName,
                     onChange={e => setNewDesc(e.target.value)}/>
                 <div className='btnsOKnGoBack'> <button className='updateBtn' onClick={(e) => {
                     e.stopPropagation()
-                    changeProjectDesc(id,newDesc)
-                    setIsChangingDesc(false)
-                    setNewDesc("")
+                    if (newDesc !== ""){changeProjectDesc(id,newDesc); setNewDesc(""); setIsChangingDesc(false);}
                 }}>Update</button> <button className='goBackBtn' onClick={(e) => {
                     e.stopPropagation()
                     setIsChangingDesc(false)
                 }}>Go back</button></div>
             </div> : 
             <div className='changingNameDiv'>
-                <input type="text" placeholder="Project name? (max 25 characters)"
+                <input type="text" placeholder="New Project name?"
                     className="changinNameInput"  
-                    maxLength={25}
                     onClick={(e) => e.stopPropagation()} 
                     value={newName}
                     onChange={e => setNewName(e.target.value)}/>
                 <div className='btnsOKnGoBack'> <button className='updateBtn' onClick={(e) => {
                     e.stopPropagation()
-                    changeProjectName(id,newName)
-                    setIsChangingName(false)
-                    setNewName("")
+                    if (newName !== ""){changeProjectName(id,newName); setNewName(""); setIsChangingName(false);}
                 }}>Update</button><button className='goBackBtn' onClick={(e) => {
                     e.stopPropagation()
                     setIsChangingName(false)

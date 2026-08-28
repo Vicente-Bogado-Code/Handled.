@@ -23,7 +23,6 @@ export default function ProjectCreationForm({
     const [currentBePublic, setCurrentBePublic] = useState(null)
     const [currentAutoSave, setCurrentAutoSave] = useState(null)
     const [currentAutoSaveInterval, setCurrentAutoSaveInterval] = useState(null)
-    const [allset,setallset] = useState(false)
 
     useEffect(() => {
 
@@ -43,31 +42,9 @@ export default function ProjectCreationForm({
             }
         }
         getMyPreferences();}, [])
-    function LinkNow(){
-        return(
-            <div className="linkNowDiv">
-                <button className="undoBtnGoBack" onClick={() => setallset(false)}><Undo2 size={20}/></button>
-                <h2 className="alsetlbl">Almost done...</h2>
-                <label className="allsetlblconnect">Connect your repository</label>
-                <button className="connectGHrepoBtnallset"><FaGithub size={20}/>Connect repository</button>
-                <label className="allsetlblconnect">or</label>
-                <button className="notNowGoProject" onClick={() =>{
-                    handleCreate(
-                    [
-                    currentIncludeMainNote,
-                    currentIncludeReadme,
-                    currentBePublic, choiceRepo === true ? choiceCommitHistory : false,
-                    currentAutoSave,
-                    currentAutoSaveInterval]);
-                    setIsCreating(false);
-                    setallset(false);
-                }}>Not now, later.</button>
-            </div>
-        );
-    }
     return (
         <div className='createNewProjects'>
-            {!allset ? <div className="newProjectForm">
+           <div className="newProjectForm">
                 <div className='headerOnCreationProject'>
                     <div className='labelANdNewProjectLabel'>
                         <h2 className="newProjectLabel">What are you <span style={{color:"var(--accent"}}>working</span> on?</h2>
@@ -154,21 +131,17 @@ export default function ProjectCreationForm({
                 </label>
                </div>
                 {projectName.length > 0 && description.length > 0 ? <button type="submit" id="createProjectBtn" onClick={() => {
-                   if (choiceCommitHistory === false){handleCreate(
+                    handleCreate(
                     [
                     currentIncludeMainNote,
                     currentIncludeReadme,
                     currentBePublic, choiceRepo === true ? choiceCommitHistory : false,
                     currentAutoSave,
                     currentAutoSaveInterval]);
-                    setIsCreating(false);}
-                    else{
-                        setallset(true)
-                    }
-                
+                    setIsCreating(false)
                 }}
                     ><Plus size={16}/></button> : <button id="createProjectBtnNot"><Plus size={16}/></button>}
-           </div> : <LinkNow/>}
+           </div> 
         </div>
     );
 }

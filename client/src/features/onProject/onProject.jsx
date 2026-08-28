@@ -31,6 +31,7 @@ import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon
 import { Color } from "@tiptap/extension-text-style";
 
 export default function CurrentProjectComp({ project_id , handleGoBack}) {
+  const recievedAlmostDone = localStorage.getItem(`${project_id}recievedAlmostDone`) || localStorage.setItem(`${project_id}recievedAlmostDone`, false)
   const [editor,setEditor] = useState(null)
   const [projectName, setProjectName] = useState("");
   const [mySecNotes, setMySecNotes] = useState([]);
@@ -443,7 +444,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
         <button className="goToPrjcSettingsBtn" onClick={() => {
           setIsOnProjectSettings(!isOnProjectSettings);
           setIsOnNoteSettings(false);
-        }}>Repository and commits</button></label>
+        }}>Repository and commits</button></label>     
       </div> : null}
       <div className={activeSnoteId ? (hasTheme === 1 ? "windowContent" : "windowContentWhite") : "windowPH"}>
        {activeSnoteId ? <Toolbar

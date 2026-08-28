@@ -5,8 +5,21 @@ import CurrentProjectComp from "./features/onProject/onProject";
 import { useEffect, useState } from "react";
 import { logout } from "./features/api/authRequests/auth";
 import { getMyData } from "./features/api/getDataRequests/getWhoAmI";
+import { getRepositories } from "./features/api/third-party-APIs/github_api";
+
 
 export default function App(){
+    async function askForRepos() {
+        const params = new URLSearchParams(window.location.search)
+        if (params.get("github-status") === "connected"){
+            const r = await getRepositories()
+            console.log(r)
+            window.history.replaceState({},"",window.location.pathname);
+        }
+    }
+    useEffect(() => {
+        askForRepos()
+    }, [])
     const [user,setUser] = useState(null)
     const [currentId, setCurrentId] = useState("")
     useEffect(() => {

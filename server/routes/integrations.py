@@ -3,11 +3,44 @@ from db import get_conn
 import hmac
 import os
 import hashlib
+import time
+import jwt
+import requests
 
 integrations_bp = Blueprint("integrations",__name__)
 
+def get_gh_JWT():
+    now_to_int = int(time.time())
+    app_id = os.environ.get("GITHUB_APP_ID")
+    payload = {
+        "iat": now_to_int - 60,
+        "exp": now_to_int + (10 * 60),
+        "iss": app_id
+    }
+    app_private_key = os.environ.get("GITHUB_PRIVATE_KEY")
+    jwebt = jwt.encode(
+        payload,
+        app_private_key,
+        algorithm="RS256"
+    )
+    return jwebt
+
+def get_installation_token(jwebt,installation_id):
+    r = requests.post(
+    f"https://api.github.com/app/installations/{installation_id}/access_tokens", #gh endpoint
+    headers={
+        "Authorization": f"Bearer {jwebt}",
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2026-03-10"
+         }
+    )
+    r.raise_for_status()
+    i_token = r.json()["token"]
+    return i_token
+
+
 @integrations_bp.route("/github/setup", methods=["GET"])
-def get_queryPs():
+def github_setup():
     current_user_id = session.get("user_id")
     if not current_user_id: return jsonify({"Status": "Not logged"}),401
     installation_id = request.args.get("installation_id")
@@ -17,10 +50,65 @@ def get_queryPs():
     try:
         cursor.execute("UPDATE handled_users SET installation_id = %s WHERE id = %s", (installation_id,current_user_id))
         conn.commit()
-        return redirect("https://handled-kappa.vercel.app/")
+        return redirect("https://handled-kappa.vercel.app/?github-status=connected")
     finally:
         cursor.close()
         conn.close()
+
+@integrations_bp.route("/getConRepositories", methods=["POST"])
+def assing_repositories():
+    current_user_id = session.get("user_id")
+    if not current_user_id: return jsonify({"Status": "Not logged"}),401
+    current_project_id = session.get("current_project_id")
+    if not current_project_id: return jsonify({"Status": "No project selected"}),401
+    conn = get_conn()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT installation_id FROM handled_users WHERE id = %s", (current_user_id))
+        row = cursor.fetchone()
+        cu_installation_id = row[0]
+        if cu_installation_id is None:
+            return jsonify({"Status": "This user doesn't an installation id"}), 401
+        jwebtoken = get_gh_JWT()
+        installation_token = get_installation_token(jwebtoken,cu_installation_id)
+        response = requests.get(
+            "https://api.github.com/installation/repositories",
+            params={
+                "per_page": 100,
+                "page": 1
+            },
+            headers={
+                "Authorization": f"Bearer {installation_token}",
+                "Accept": "application/vnd.github+json",
+                "X-GitHub-Api-Version": "2026-03-10"
+            }
+        )
+        response.raise_for_status()
+        repositories = response.json()["repositories"]
+        if len(repositories) == 0:
+            return jsonify({"Status": "No repositories found"}),200
+        if len(repositories) > 1:
+            return jsonify({"Status":"Several repositories found", "Repositories":[
+                {
+                "id": repo["id"],
+                "name": repo["name"],
+                "full_name": repo["full_name"],
+                "html_url": repo["html_url"]
+                }
+                for repo in repositories
+            ]}),200
+        repository_id = repositories[0]["id"]
+        cursor.execute("UPDATE users_projects SET github_repo_id = %s WHERE user_id = %s AND project_id = %s", (repository_id,current_user_id,current_project_id))
+        conn.commit()
+        return jsonify({"Stauts": f"Project {current_project_id} is now linked to github repository {repository_id}"})
+    finally:
+        cursor.close()
+        conn.close()
+        
+        
+
+        
+
 
 @integrations_bp.route("/github/webhook", methods=["POST"])
 def webhook():
@@ -34,10 +122,7 @@ def webhook():
         return jsonify({"error": "Invalid signature"}), 401
     data = request.get_json()
     event = request.headers.get("X-Github-Event")
-    if event == "push":
-        repository = data["repository"]["full_name"]
-        for commit in data["commits"]:
-            print("Repository", repository)
-            print("SHA:", commit["id"])
-            print("Message", commit["message"])
-    return jsonify({"status": "received"}), 200
+    if event != "push":
+        return jsonify({"Ignored"}), 200
+    conn = get_conn()
+    cursor = conn.cursor()

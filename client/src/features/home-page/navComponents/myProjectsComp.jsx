@@ -152,7 +152,7 @@ export default function MyProjects({
                 <div className="emptyProjectsState">
                     <SearchX size={40} className="emptyStateIcon" />
                     <h3 className="emptyStateTitle">No projects yet</h3>
-                    <p className="emptyStateText">Create your first project to start tracking it here.</p>
+                    <p className="emptyStateText">Create your first project to start.</p>
                 </div> : null}
                 
                 <div className="projectsGrid">

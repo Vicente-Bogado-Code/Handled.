@@ -112,7 +112,7 @@ export default function UserSettings({ username, setUsername, onLogout, setDesc 
                 <textarea
                   className="descInput"
                   style={{color:"white"}}
-                  maxLength={100}
+                  maxLength={200}
                   type="text"
                   value={inputedDesc}
                   onChange={(ev) => setInputedDesc(ev.target.value)}

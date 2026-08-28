@@ -44,18 +44,19 @@
     flex-direction: column;
     height: 100%;
     width: 100%;
+    align-items: center;
 }
 .butnsOnSettings button{
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    height: 33%;
+    height: 30%;
     cursor: pointer;
     display: flex;
     gap: 5px;
     align-items: center;
     justify-content: center;
-    border: none;
     border-radius: 10px;
     margin-bottom: 5px;
+    width: 80%;
 }
 .butnsOnSettings button:hover{
     transform: scale(1.03);
@@ -70,11 +71,13 @@
     width: 100%;
 }
 .deleteProjectBtn{
-    background-color: red;
+    background: none;
+    border: 1px solid red;
     color: var(--text-primary);
 }
 .modifyProjectBtn{
-    background-color: var(--accent);
+    border: 1px solid var(--accent);
+    background: none;
     color: var(--text-primary);
 }
 .labelOnStngs{
@@ -170,7 +173,7 @@
     transform: scale(1.03);
 }
 .updateBtn{
-    background-color: var(--accent);
+    background-color: var(--cool-green);
 }
 .goBackBtn{
     background-color: red;

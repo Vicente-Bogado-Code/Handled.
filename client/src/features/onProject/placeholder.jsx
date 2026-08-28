@@ -1,3 +1,4 @@
+import { FaGithub } from 'react-icons/fa';
 import './css/onProject.css'
 import { SearchX } from "lucide-react"
 

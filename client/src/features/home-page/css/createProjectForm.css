@@ -275,21 +275,25 @@
     padding: 20px 10px;
     border-radius: 16px;
     border: 1px solid var(--border);
-    width: 40%;
-    max-width: 480px;
+    width: fit-content;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 10px 15px;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
 }
+.linkNowDiv a{
+    color: var(--accent);
+}
+
 .alsetlbl{
     color: var(--text-primary);
-    text-align: center;
+    margin: auto;
     margin: 0;
 }
 .allsetlblconnect{
     color: var(--text-secondary);
     text-align: center;
+    font-size: 15px;
 }
 .undoBtnGoBack{
     cursor: pointer;
@@ -318,13 +322,13 @@
     cursor: pointer;
 }
 .notNowGoProject{
-    width: 90%;
-    background-color:#ff5555; ;
-    height: 40px;
+    width: 10%;
+    background: none;
+    height: 20px;
     align-self: center;
     display: flex;
     align-items: center;
-    color: var(--text-primary);
+    color: var(--text-secondary);
     justify-content: center;
     border: none;
     border-radius: 8px;
@@ -332,6 +336,9 @@
     font-size: 18px;
     cursor: pointer;
 }
-.connectGHrepoBtnallset:hover, .notNowGoProject:hover{
+.connectGHrepoBtnallset:hover{
     transform: translateY(-2px);
+}
+.notNowGoProject:hover{
+    color: var(--text-primary);
 }

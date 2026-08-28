@@ -134,9 +134,9 @@ export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnP
                     <div className='projectInputNicon'>
                         <button className='connectGHrepoBtn' onClick={() => window.location.href = "https://github.com/apps/handled-integration"}><FaGithub size={20}/>Connect repository</button>
                     </div>
-                    {hasTrackCommit ? <a className='trackingCommitsLblHelp' href='#'><Info size={16}/>How do we track your repository?</a> : null}
+                    <a className='trackingCommitsLblHelp' href='#'><Info size={16}/>How does handled track my commits?</a> 
                      <div className="settingsToggleRow">
-                        <span className="settingsToggleLabel"><GitBranch size={18}/>Track commits (if false, Handled will stop tracking commits, but the "Commit history" will still have the old ones)</span>
+                        <span className="settingsToggleLabel"><GitBranch size={18}/>Track commits (if false, Handled will stop tracking commits, but the note "Commit history" will still have the old ones)</span>
                         <button
                             className={`settingsToggleSwitch ${settingsTrackCommits ? "toggleOn" : ""}`}
                             onClick={() => {setSettingsTrackCommits(!settingsTrackCommits); setIsSaved(false)}}
