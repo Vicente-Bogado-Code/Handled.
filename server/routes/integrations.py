@@ -71,7 +71,7 @@ def assing_repositories():
         if cu_installation_id is None:
             return jsonify({"Status": "This user doesn't an installation id"}), 401
         jwtoken = get_gh_JWT()
-        installation_token = get_installation_token(installation_id,jwtoken)
+        installation_token = get_installation_token(jwtoken,cu_installation_id)
         response = requests.get(
             "https://api.github.com/installation/repositories",
             params={
@@ -101,7 +101,7 @@ def assing_repositories():
         repository_id = repositories[0]["id"]
         cursor.execute("UPDATE users_projects SET github_repo_id = %s WHERE user_id = %s AND project_id = %s", (repository_id,current_user_id,current_project_id))
         conn.commit()
-        return jsonify({"Stauts": f"Project {current_project_id} is now linked to github repository {repository_id}"})
+        return jsonify({"Status": f"Project {current_project_id} is now linked to github repository {repository_id}"})
     finally:
         cursor.close()
         conn.close()
@@ -125,7 +125,7 @@ def give_linked_repo_data():
                 return jsonify({"Status": "Installation id not found"}), 400
         installation_id = row[0]
         jwtoken = get_gh_JWT()
-        installation_token = get_installation_token(installation_id,jwtoken)
+        installation_token = get_installation_token(jwtoken,installation_id)
         linked_repository_id = r[0]
         resp = requests.get(
                 f"https://api.github.com/repositories/{linked_repository_id}",
