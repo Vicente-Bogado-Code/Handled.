@@ -64,7 +64,7 @@ def assing_repositories():
     conn = get_conn()
     cursor = conn.cursor()
     try:
-        cursor.execute("SELECT installation_id FROM handled_users WHERE id = %s", (current_user_id))
+        cursor.execute("SELECT installation_id FROM handled_users WHERE id = %s", (current_user_id,))
         row = cursor.fetchone()
         cu_installation_id = row[0]
         if cu_installation_id is None:
