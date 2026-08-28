@@ -70,11 +70,8 @@ def assing_repositories():
         cu_installation_id = row[0]
         if cu_installation_id is None:
             return jsonify({"Status": "This user doesn't an installation id"}), 401
-        try: 
-            jwtoken = get_gh_JWT()
-            installation_token = get_installation_token(installation_id,jwtoken)
-        except Exception as _:
-                return jsonify({"Status": "Failed to authenticate with GitHub"}), 502
+        jwtoken = get_gh_JWT()
+        installation_token = get_installation_token(installation_id,jwtoken)
         response = requests.get(
             "https://api.github.com/installation/repositories",
             params={
@@ -127,11 +124,8 @@ def give_linked_repo_data():
         if row is None:
                 return jsonify({"Status": "Installation id not found"}), 400
         installation_id = row[0]
-        try: 
-            jwtoken = get_gh_JWT()
-            installation_token = get_installation_token(installation_id,jwtoken)
-        except Exception as _:
-            return jsonify({"Status": "Failed to authenticate with GitHub"}), 502
+        jwtoken = get_gh_JWT()
+        installation_token = get_installation_token(installation_id,jwtoken)
         linked_repository_id = r[0]
         resp = requests.get(
                 f"https://api.github.com/repositories/{linked_repository_id}",
