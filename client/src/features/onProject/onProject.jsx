@@ -81,7 +81,6 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
   const [noteReferencer, setNoteReferencer] = useState(false)
   const [noteReferecerString, setNoteReferecerString] = useState("")
   const [wantsNotifications,setWantsNotifications] = useState(true)
-  const 
   const avChainMethods = ["->","@>"]
   const avChainUses = ["ref","refLine"]
   const [hasRepoLinked,setHasRepoLinked] = useState(false)
