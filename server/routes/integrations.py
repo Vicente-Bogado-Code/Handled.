@@ -136,7 +136,7 @@ def give_linked_repo_data():
         if resp.status_code != 200:
                 return jsonify({"Status": "Failed to fetch repository data", "GithubStatus": resp.status_code}), 502
         repo_data = resp.json()
-        return jsonify({"Status":"Repository id retrieved", "RepoData":repo_data })
+        return jsonify({"Status":"Repository id retrieved", "repoData":repo_data })
     finally:
         cursor.close()
         conn.close()
