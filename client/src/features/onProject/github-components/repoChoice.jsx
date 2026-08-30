@@ -10,7 +10,7 @@ export default function ChooseRepository({repositoriesFound}){
                 <label className="onHeaderLbl">Specify which one would you like to connect to this handled project</label>
             </div>
             <div className='chooseRepositoryContent'>
-                {repositoriesFound.repositories.map(obj => <RepositoryAsOption
+                {repositoriesFound.map(obj => <RepositoryAsOption
                 key={obj.id}
                 name={obj.name}
                 fullName={obj.full_name}
