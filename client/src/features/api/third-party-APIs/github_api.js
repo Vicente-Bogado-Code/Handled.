@@ -9,16 +9,10 @@ export async function getRepositories() {
     return response
 }
 
-export async function getLinkedRepositoryData(project_id) {
+export async function getLinkedRepositoryData() {
     const r = await fetch(`${API_BASE}/getLinkedRepoData`,{
         method:"GET",
         credentials:"include",
-        headers:{
-            "Content-Type":"application/json"
-        },
-        body: JSON.stringify({
-            "projectId" : project_id
-        })
     });
     const response = await r.json()
     return response

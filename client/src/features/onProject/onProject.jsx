@@ -88,7 +88,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
   const [defaultBranch, setDefaultBranc] = useState(null)
   useEffect(() =>{
         async function setRepoId() {
-           const r = await getLinkedRepositoryData(project_id);
+           const r = await getLinkedRepositoryData();
             if(r.Status === "Repository id retrieved"){
                 setHasRepoLinked(true)
                 const repositoryData = r.repoData
