@@ -89,7 +89,7 @@ def assing_repositories():
         if len(repositories) == 0:
             return jsonify({"Status": "No repositories found"}),200
         if len(repositories) > 1:
-            return jsonify({"Status":"Several repositories found", "Repositories":[
+            return jsonify({"Status":"Several repositories found", "repositories":[
                 {
                 "id": repo["id"],
                 "name": repo["name"],
@@ -145,7 +145,7 @@ def give_linked_repo_data():
 
         
 
-
+"""
 @integrations_bp.route("/github/webhook", methods=["POST"])
 def webhook():
     signature = request.headers.get("X-Hub-Signature-256")
@@ -162,3 +162,4 @@ def webhook():
         return jsonify({"Ignored"}), 200
     conn = get_conn()
     cursor = conn.cursor()
+"""

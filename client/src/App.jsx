@@ -9,16 +9,17 @@ import { getRepositories } from "./features/api/third-party-APIs/github_api";
 
 
 export default function App(){
+    const [repositoriesFound, setRepositoriesFound] = useState([])
     async function askForRepos() {
         const params = new URLSearchParams(window.location.search)
         if (params.get("github-status") === "connected"){
             const r = await getRepositories()
-            console.log(r)
+            if (r.Status === "Several repositories found") setRepositoriesFound(r.repositories)
             window.history.replaceState({},"",window.location.pathname);
         }
     }
     useEffect(() => {
-        askForRepos()
+       askForRepos()
     }, [])
     const [user,setUser] = useState(null)
     const [currentId, setCurrentId] = useState("")
@@ -39,8 +40,8 @@ export default function App(){
     }
     return(
         <>
-        <Header/>
-        {user ? (currentId ? <CurrentProjectComp project_id={currentId} handleGoBack={setCurrentId}/> : <HomePage username={user} setUsername={setUser} onLogout={handleLogout} handleProjectClick={setCurrentId}/>)
+        {currentId ? null : <Header/>}
+        {user ? (currentId ? <CurrentProjectComp project_id={currentId} handleGoBack={setCurrentId} repositoriesFound={repositoriesFound}/> : <HomePage username={user} setUsername={setUser} onLogout={handleLogout} handleProjectClick={setCurrentId}/>)
         : <AuthMainPortal onLoginSuccess={setUser}/>}
     </>
     );

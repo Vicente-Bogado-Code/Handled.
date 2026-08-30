@@ -1,3 +1,4 @@
+import './css/onProject.css'
 import { setCurrentProject } from "../api/createRequest/setCurrentProject";
 import { getSecondaryNotes } from "../api/getDataRequests/getSecNotes"
 import { newSecondaryNote } from "../api/createRequest/newSecNote"
@@ -15,7 +16,6 @@ import { useState, useEffect, useRef } from 'react';
 import { getProjectPreferences } from "../api/getDataRequests/getProjectPreferences";
 import { changeProjectPreferences } from "../api/alterRequests/changeProjectPreferences";
 import { getLinkedRepositoryData } from "../api/third-party-APIs/github_api";
-//
 import SecondaryProjectComp from "./ secNote";
 import Window from "./window";
 import TipTap from "./TipTap";
@@ -25,13 +25,11 @@ import CounterToSave from "./savingIn";
 import MainPlaceHolder from "./placeholder";
 import NoteSettings from "./settings components/noteSettings";
 import ProjectSettings from "./settings components/projectSettings";
-//
-import './css/onProject.css'
-//
+import ChooseRepository from "./github-components/repoChoice";
 import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon, ClockArrowDown,FilePlus, Pause, CircleArrowDown,X, TriangleAlert, Eye, Bell } from 'lucide-react';
 import { Color } from "@tiptap/extension-text-style";
 
-export default function CurrentProjectComp({ project_id , handleGoBack}) {
+export default function CurrentProjectComp({ project_id , handleGoBack, repositoriesFound}) {
   const recievedAlmostDone = localStorage.getItem(`${project_id}recievedAlmostDone`) || localStorage.setItem(`${project_id}recievedAlmostDone`, false)
   const [editor,setEditor] = useState(null)
   const [projectName, setProjectName] = useState("");
@@ -88,7 +86,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
   const [lrName, setLrName] = useState(null) //lr = linked repository
   const [fullLrName, setFullLrName] = useState(null)
   const [defaultBranch, setDefaultBranc] = useState(null)
-    useEffect(() =>{
+  useEffect(() =>{
         async function setRepoId(params) {
            const r = await getLinkedRepositoryData();
             if(r.Status === "Repository id retrieved"){
@@ -452,7 +450,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
      </div>
      {!isOnNoteSettings && !isOnProjectSettings ? 
      <div className="currentWindowContentDiv">
-      {hasTrackCommitHistory && hasRepoLinked === false ?  <div className="notificationsDiv">
+      {wantsNotifications ? (hasTrackCommitHistory && hasRepoLinked === false ?  <div className="notificationsDiv">
         <label style={{margin:0}}><Bell size={18}/></label>
         <button className="hideNotifications" onClick={() => setWantsNotifications(false)}><X size={20}/></button>
         <p><TriangleAlert size={16} color="red"/>  You want handled to track your commits, but you haven't connected a repository to this project!</p>
@@ -461,7 +459,10 @@ export default function CurrentProjectComp({ project_id , handleGoBack}) {
           setIsOnProjectSettings(!isOnProjectSettings);
           setIsOnNoteSettings(false);
         }}>Repository and commits</button></label>     
-      </div> : null}
+      </div> : null) : null}
+
+       {repositoriesFound.length === 0 ? null : <ChooseRepository repositoriesFound={repositoriesFound}/>}
+
       <div className={activeSnoteId ? (hasTheme === 1 ? "windowContent" : "windowContentWhite") : "windowPH"}>
        {activeSnoteId ? <Toolbar
          editor={editor}
