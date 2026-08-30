@@ -106,16 +106,18 @@ def assing_repositories():
         cursor.close()
         conn.close()
 
-@integrations_bp.route("/getLinkedRepoData", methods=["GET"])
+@integrations_bp.route("/getLinkedRepoData", methods=["POST"])
 def give_linked_repo_data():
     current_user_id = session.get("user_id")
     if not current_user_id: return jsonify({"Status": "Not logged"}),401
-    current_project_id = session.get("current_project_id")
-    if not current_project_id: return jsonify({"Status": "No project selected"}),401
+    data = request.get_json()
+    if not data or "securityId" not in data:
+        return jsonify({"Status":"Missing fields"}),401
+    secure_project_id = data.get("securityId")
     conn = get_conn()
     cursor = conn.cursor()
     try:
-        cursor.execute("SELECT github_repo_id FROM users_projects WHERE user_id = %s AND project_id = %s", (current_user_id,current_project_id))
+        cursor.execute("SELECT github_repo_id FROM users_projects WHERE user_id = %s AND project_id = %s", (current_user_id,secure_project_id))
         r = cursor.fetchone()
         if r is None:
             return jsonify({"Status":"This project doesn't have a repository id"}), 400
