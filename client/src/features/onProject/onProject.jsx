@@ -88,7 +88,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
   const [defaultBranch, setDefaultBranc] = useState(null)
   useEffect(() =>{
         async function setRepoId() {
-           const r = await getLinkedRepositoryData();
+           const r = await getLinkedRepositoryData(project_id);
             if(r.Status === "Repository id retrieved"){
                 setHasRepoLinked(true)
                 const repositoryData = r.repoData
@@ -96,8 +96,11 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
                 setFullLrName(repositoryData.full_name)
                 setDefaultBranc(repositoryData.default_branch)
             }
+            else{
+              setHasRepoLinked(false)
+            }
         }
-        if (repositoriesFound.length === 0) setRepoId();
+        setRepoId();
    }, [])
   useEffect(() => {
     function onEnterDown(e){
