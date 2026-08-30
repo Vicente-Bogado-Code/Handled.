@@ -206,6 +206,7 @@ def webhook():
                 """,
                 (project_id,repository_id,repository_name,commit_sha,commit_message,commit_timestamp,commit_sender))
         conn.commit()
+        return jsonify({"Status":"Webhook processed"}), 200
     finally:
         cursor.close()
         conn.close()
