@@ -6,6 +6,7 @@ import hashlib
 import time
 import jwt
 import requests
+from html import escape
 
 integrations_bp = Blueprint("integrations",__name__)
 
@@ -181,30 +182,72 @@ def webhook():
     event = request.headers.get("X-Github-Event")
     if event != "push":
         return jsonify({"Status":"Ignored"}), 200
-    repository_name = data["repository"]["name"]
-    repository_id = data["repository"]["id"]
-    commit_sender = data["sender"]["login"]
+    repository_name = escape(data["repository"]["name"])
+    repository_id = escape(data["repository"]["id"])
+    commit_sender = escape(data["sender"]["login"])
     conn = get_conn()
     cursor = conn.cursor()
     try:
         cursor.execute("SELECT project_id FROM users_projects WHERE github_repo_id = %s", (repository_id,))
         row = cursor.fetchone()
         if row is None:
-            return jsonify({"Status":"Repository isn't connected to any handled project"}), 401
+            return jsonify({"Status":"Repository isn't connected to any handled project"}), 200
         project_id = row[0]
         for commit in data["commits"]:
-            commit_sha = commit["id"]
-            commit_message = commit["message"]
-            commit_timestamp = commit["timestamp"]
+            commit_sha = escape(commit["id"])
+            commit_message = escape(commit["message"])
+            commit_timestamp = escape(commit["timestamp"])
+            commit_url = escape(commit["url"])
             cursor.execute(
                 """
                 INSERT INTO webhook_deliveries
                 (project_id, repository_id, repository_name,
                  commit_sha, payload_message, payload_timestamp,
-                 payload_sender)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                 payload_sender, commit_url)
+                VALUES (%s, %s, %s, %s, %s, %s, %s,%s)
                 """,
-                (project_id,repository_id,repository_name,commit_sha,commit_message,commit_timestamp,commit_sender))
+                (project_id,repository_id,repository_name,commit_sha,commit_message,commit_timestamp,commit_sender, commit_url))
+            html_formatted = commit_html = f"""
+            <hr>
+            <p><u>Commit</u> <span style='font-size: 12px;'>{commit_sha}</span></p>
+
+            <p>
+                <span iconname='history' color='#000000' size='16' data-icon-node=''></span>
+                <strong>Timestamp</strong>: <em>{commit_timestamp}</em>
+            </p>
+
+            <p>
+                <span iconname='split' color='#000000' size='16' data-icon-node=''></span>
+                <strong>Sender</strong>: {commit_sender}
+            </p>
+
+            <p>
+                <span iconname='file-text' color='#000000' size='16' data-icon-node=''></span>
+                <strong>Message</strong>:
+            </p>
+
+            <p>
+                <span style='font-size: 18px;'>"</span>
+                <span style='font-size: 18px;'>{commit_message}</span>
+                <span style='font-size: 18px;'>"</span>
+            </p>
+
+            <p>
+                <span iconname='code' color='#000000' size='16' data-icon-node=''></span>
+                <strong>URL</strong>:
+                <a target='_blank'
+                  rel='noopener noreferrer nofollow'
+                   href='{commit_url}'>
+                   {commit_url}
+                </a>
+            </p>
+
+            <hr>
+            <p>
+                <span iconname='prompt-slash' color='#000000' size='16' data-icon-node=''></span>
+            </p>
+            """
+            cursor.execute("UPDATE secondary_notes SET snote_content = %s WHERE on_project_id = %s", (html_formatted, project_id))
         conn.commit()
         return jsonify({"Status":"Webhook processed"}), 200
     finally:

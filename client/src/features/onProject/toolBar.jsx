@@ -22,15 +22,13 @@ const devIconNames = [
   "git-branch", "git-commit", "git-merge", "git-pull-request",
   "git-compare", "git-fork", "git-pull-request-closed", "git-pull-request-draft",
   "folder-git", "folder-git-2", "merge", "split", "diff", "history",
-  "code", "code-2", "braces", "brackets", "terminal", "square-terminal",
-  "prompt-slash", "variable", "function-square", "clipboard-code", 
-  "scan-code", "binary", "blocks", "component", "layers", "workflow",
+  "code", "code-2", "braces", "brackets", "terminal", "square-terminal", "variable", "function-square","binary", "blocks", "component", "layers", "workflow",
   "file-code", "file-json", "file-text", "file-digit", "folder-code", 
   "folder-open", "folder-kanban", "copy", "scissors",
   "database", "database-backup", "database-zap", "table-properties",
   "server", "server-cog", "server-crash", "server-off", 
   "cloud", "cloud-cog", "cloud-lightning", "cloud-rain", "cloud-upload", "cloud-download",
-  "container", "cylinder", "network", "wifi", "cable", "radio-tower", "webhook", "api",
+  "container", "cylinder", "network", "wifi", "cable", "radio-tower", "webhook",
   "cpu", "hard-drive",
   "bug", "bug-off", "activity", "gauge", "gauge-circle", "heart-pulse", 
   "inspection-panel", "scan", "microscope", "target", "list-tree", "tree-deciduous",
@@ -44,7 +42,6 @@ const devIconNames = [
   "link", "link-2", "external-link", "eye", "eye-off",
   "rss", "share-2"
 ];
-
 
 function LinkPopover({ editor, onClose }) {
   const [url, setUrl] = useState(
