@@ -183,7 +183,7 @@ def webhook():
     if event != "push":
         return jsonify({"Status":"Ignored"}), 200
     repository_name = escape(data["repository"]["name"])
-    repository_id = escape(data["repository"]["id"])
+    repository_id = data["repository"]["id"]
     commit_sender = escape(data["sender"]["login"])
     conn = get_conn()
     cursor = conn.cursor()
@@ -194,9 +194,9 @@ def webhook():
             return jsonify({"Status":"Repository isn't connected to any handled project"}), 200
         project_id = row[0]
         for commit in data["commits"]:
-            commit_sha = escape(commit["id"])
+            commit_sha = commit["id"]
             commit_message = escape(commit["message"])
-            commit_timestamp = escape(commit["timestamp"])
+            commit_timestamp = commit["timestamp"]
             commit_url = escape(commit["url"])
             cursor.execute(
                 """
