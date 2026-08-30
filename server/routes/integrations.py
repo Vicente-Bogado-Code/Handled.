@@ -193,6 +193,9 @@ def webhook():
         if row is None:
             return jsonify({"Status":"Repository isn't connected to any handled project"}), 200
         project_id = row[0]
+        cursor.execute("SELECT snote_content FROM secondary_notes WHERE on_project_id = %s", (project_id,))
+        row = cursor.fetchone()
+        before_content = row[0] or "" if row else ""
         for commit in data["commits"]:
             commit_sha = commit["id"]
             commit_message = escape(commit["message"])
@@ -207,7 +210,7 @@ def webhook():
                 VALUES (%s, %s, %s, %s, %s, %s, %s,%s)
                 """,
                 (project_id,repository_id,repository_name,commit_sha,commit_message,commit_timestamp,commit_sender, commit_url))
-            html_formatted = commit_html = f"""
+            html_formatted = f"""
             <hr>
             <p><u>Commit</u> <span style='font-size: 12px;'>{commit_sha}</span></p>
 
@@ -247,7 +250,8 @@ def webhook():
                 <span iconname='prompt-slash' color='#000000' size='16' data-icon-node=''></span>
             </p>
             """
-            cursor.execute("UPDATE secondary_notes SET snote_content = %s WHERE on_project_id = %s", (html_formatted, project_id))
+            before_content += html_formatted
+        cursor.execute("UPDATE secondary_notes SET snote_content = %s WHERE on_project_id = %s", (before_content, project_id))
         conn.commit()
         return jsonify({"Status":"Webhook processed"}), 200
     finally:
