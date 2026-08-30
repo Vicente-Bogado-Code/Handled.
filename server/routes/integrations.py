@@ -195,7 +195,7 @@ def webhook():
             commit_sha = commit["id"]
             commit_message = commit["message"]
             commit_timestamp = commit["timestamp"]
-            commit_sender = commit["sender"]
+            commit_sender = commit["sender"]["login"]
             cursor.execute(
                 """
                 INSERT INTO webhook_deliveries
