@@ -76,7 +76,7 @@ export default function UserSettings({ username, setUsername, onLogout, setDesc 
         <div className="profileSettingsContent">
           <div className="avatar">
             <div className="settingsAvatar">
-              <User size={42} />
+              <User size={25} />
             </div>
           </div>
           <div className="profileFields">
@@ -190,7 +190,7 @@ export default function UserSettings({ username, setUsername, onLogout, setDesc 
             className="dangerButton"
             onClick={() => setIsDeletingAccount(true)}
           >
-            Delete account
+            Delete my account
           </button>
         </div>
 
@@ -201,7 +201,7 @@ export default function UserSettings({ username, setUsername, onLogout, setDesc 
             </p>
             <div className="accountDeleteBtnRow">
               <button className="confirmDeleteAccountBtn" onClick={() => {deleteMyAccount(); onLogout()}}>
-                Yes, delete my account
+                Yes, delete my account.
               </button>
               <button
                 className="cancelDeleteAccountBtn"

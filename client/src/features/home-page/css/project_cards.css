@@ -103,6 +103,7 @@
     margin: 0;
     cursor: pointer;
     border: none;
+    border-radius: 3px;
     display: flex;
     margin-left: 3px;
 }
@@ -127,10 +128,10 @@
 
 .inputChangeRepo{
     border: 1px solid var(--text-primary);
-    border-radius: 8px;
+    border-radius: 2px;
     color: var(--text-primary);
     background-color: var(--bg-secondary);
-    padding: 3px 3px;
+    padding: 6px;
     width: 180px;
 }
 .inputChangeRepo:focus{

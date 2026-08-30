@@ -102,9 +102,24 @@
 }
 .gitLogonInput{
     display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 10px;
     color: var(--text-primary);
+}
+.gitLogonInput label{
+    color: red;
+    font-size: 13px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 10px;
+}
+.actualGitLogoNinput{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 5px;
 }
 .ghlinkInputCreate{
     width: 100%;

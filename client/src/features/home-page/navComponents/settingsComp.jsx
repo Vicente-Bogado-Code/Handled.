@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import './css/settingsComp.css';
-import { Save, Clock, FileText, Info, Check } from 'lucide-react';
+import { Save, Clock, FileText, Info, Check, Settings } from 'lucide-react';
 import { getPreferences,savePreferences } from '../../api/getDataRequests/getUserPreferences';
+import { FaGithub } from 'react-icons/fa';
 
 export default function SettingsComp() {
     const [theme, setTheme] = useState("system");
@@ -131,6 +132,18 @@ export default function SettingsComp() {
                     >
                         <span className="toggleKnob" />
                     </button>
+                </div>
+            </section>
+            <section className="settingsSection">
+                 <div className="settingsSectionHeader">
+                    <FaGithub size={20} color='white' />
+                    <div>
+                        <h2>github connection</h2>
+                        <p>Manage handled's github app</p>
+                    </div>
+                </div>
+                  <div className="settingsRow">
+                    <button className='manageAppBtn' onClick={() => window.location.href = "https://github.com/apps/handled-integration"}><Settings size={16}/>Manage app</button>
                 </div>
             </section>
             <section className="settingsSection">
