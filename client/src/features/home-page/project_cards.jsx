@@ -2,32 +2,32 @@ import { useState } from 'react';
 import './css/project_cards.css'
 import './css/alternate.css'
 import { FaGithub } from "react-icons/fa"
-import { X, Check, Settings, Trash2, Pencil, SquarePen, CircleCheck, RotateCcw } from "lucide-react"
+import { X, Check, Settings, Trash2, Pencil, SquarePen, CircleCheck, RotateCcw, Undo, Save, TriangleAlert } from "lucide-react"
 import { getDate } from '../otherJSfunctions/getExactTime';
 
 function SettingsComp({makingChanges, isDeleting, setIsDeleting, isChangingName, setIsChangingName, isChangingDesc, setIsChangingDesc, newDesc, setNewDesc, newName, setNewName, id, deleteProject, changeProjectDesc, changeProjectName}){
     return(
         <div className='settingsDiv'>
             {makingChanges === false ? <div className='butnsOnSettings'>
-                <button className='deleteProjectBtn'
+                <button className='modifyProjectBtn' onClick={(e) => {
+                    e.stopPropagation();
+                    {isChangingName === true ? setIsChangingName(false) : setIsChangingName(true)}
+                }}><Pencil size={16}/>Change name</button>
+                <button className='modifyProjectBtn' onClick={(e) => {
+                    e.stopPropagation();
+                    {isChangingDesc === true ? setIsChangingDesc(false) : setIsChangingDesc(true)}
+                }}><SquarePen size={16}/>Change description</button>
+                 <button className='deleteProjectBtn'
                 onClick={(e) => 
                 {
                     e.stopPropagation()
                    {isDeleting === false ? setIsDeleting(true) : setIsDeleting(false)}
                 }
                 }
-                ><X size={16}/> Delete project</button>
-                <button className='modifyProjectBtn' onClick={(e) => {
-                    e.stopPropagation();
-                    {isChangingName === true ? setIsChangingName(false) : setIsChangingName(true)}
-                }}><Pencil size={16}/>Change project name</button>
-                <button className='modifyProjectBtn' onClick={(e) => {
-                    e.stopPropagation();
-                    {isChangingDesc === true ? setIsChangingDesc(false) : setIsChangingDesc(true)}
-                }}><SquarePen size={16}/>Change project description</button>
+                ><Trash2 size={16}/> Delete project</button>
             </div> : 
             (isDeleting === true ? <div className='askDeleteOrKeepDiv'>
-                <p className='labelOnDelete'>This project will be <strong style={{color:"red"}}>PERMANENTLY</strong> deleted</p>
+                <p className='labelOnDelete'><TriangleAlert size={16}/>This project will be <strong>permanently</strong> deleted</p>
                 <button className='modifyProjectBtn' onClick={(e) => {
                     e.stopPropagation()
                     setIsDeleting(false)
@@ -46,10 +46,10 @@ function SettingsComp({makingChanges, isDeleting, setIsDeleting, isChangingName,
                 <div className='btnsOKnGoBack'> <button className='updateBtn' onClick={(e) => {
                     e.stopPropagation()
                     if (newDesc !== ""){changeProjectDesc(id,newDesc); setNewDesc(""); setIsChangingDesc(false);}
-                }}>Update</button> <button className='goBackBtn' onClick={(e) => {
+                }}>Save</button> <button className='goBackBtn' onClick={(e) => {
                     e.stopPropagation()
                     setIsChangingDesc(false)
-                }}>Go back</button></div>
+                }}><Undo size={16}/></button></div>
             </div> : 
             <div className='changingNameDiv'>
                 <input type="text" placeholder="New Project name?"
@@ -60,10 +60,10 @@ function SettingsComp({makingChanges, isDeleting, setIsDeleting, isChangingName,
                 <div className='btnsOKnGoBack'> <button className='updateBtn' onClick={(e) => {
                     e.stopPropagation()
                     if (newName !== ""){changeProjectName(id,newName); setNewName(""); setIsChangingName(false);}
-                }}>Update</button><button className='goBackBtn' onClick={(e) => {
+                }}>Save</button><button className='goBackBtn' onClick={(e) => {
                     e.stopPropagation()
                     setIsChangingName(false)
-                }}>Go back</button></div>
+                }}><Undo size={16}/></button></div>
             </div>))}
             {makingChanges === false ? <p className='labelOnStngs'>Access more advanced settings inside the project settings</p> : null}
         </div>

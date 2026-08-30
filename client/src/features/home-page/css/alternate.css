@@ -62,7 +62,10 @@
     transform: scale(1.03);
 }
 .labelOnDelete{
-    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    justify-content: center;
     height: 10%;
     font-size: 12px;
     margin: 0;
@@ -70,14 +73,18 @@
     margin-bottom: 5px;
     width: 100%;
 }
+.labelOnDelete svg{
+    color: red;
+}
 .deleteProjectBtn{
-    background: none;
-    border: 1px solid red;
+    background:none;
     color: var(--text-primary);
+    border: 1px solid red;
+    background-color: rgb(208, 48, 48, 0.060);
 }
 .modifyProjectBtn{
-    border: 1px solid var(--accent);
-    background: none;
+    border:none;
+    background: var(--cool-green);
     color: var(--text-primary);
 }
 .labelOnStngs{
@@ -105,7 +112,6 @@
     gap: 5px;
     align-items: center;
     justify-content: center;
-    border: none;
     border-radius: 10px;
 }
 .askDeleteOrKeepDiv button:hover{
@@ -124,16 +130,16 @@
     width: 90%;
     height: 80%;
     text-align: left;
-    border: none;
+    border: 1px solid var(--border);
     background: none;
     resize: none;
+    border-radius: 6px;
+    padding: 10px;
     scrollbar-width: thin;
     scrollbar-color: var(--accent) var(--bg-secondary);
 }
 .changingDescInput:focus{
     outline: none;
-    border: none;
-    border-bottom:1px solid var(--accent);
 }
 
 .changingNameDiv{
