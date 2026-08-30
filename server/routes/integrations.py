@@ -166,9 +166,7 @@ def assing_repository_id():
 
         
 
-        
 
-"""
 @integrations_bp.route("/github/webhook", methods=["POST"])
 def webhook():
     signature = request.headers.get("X-Hub-Signature-256")
@@ -182,7 +180,32 @@ def webhook():
     data = request.get_json()
     event = request.headers.get("X-Github-Event")
     if event != "push":
-        return jsonify({"Ignored"}), 200
+        return jsonify({"Status":"Ignored"}), 200
+    repository_name = data["repository"]["name"]
+    repository_id = data["repository"]["id"]
     conn = get_conn()
     cursor = conn.cursor()
-"""
+    try:
+        cursor.execute("SELECT project_id FROM users_projects WHERE github_repo_id = %s", (repository_id,))
+        row = cursor.fetchone()
+        if row is None:
+            return jsonify({"Status":"Repository isn't connected to any handled project"}), 401
+        project_id = row[0]
+        for commit in data["commits"]:
+            commit_sha = commit["id"]
+            commit_message = commit["message"]
+            commit_timestamp = commit["timestamp"]
+            commit_sender = commit["sender"]
+            cursor.execute(
+                """
+                INSERT INTO webhook_deliveries
+                (project_id, repository_id, repository_name,
+                 commit_sha, payload_message, payload_timestamp,
+                 payload_sender)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                """,
+                (project_id,repository_id,repository_name,commit_sha,commit_message,commit_timestamp,commit_sender))
+        conn.commit()
+    finally:
+        cursor.close()
+        conn.close()
