@@ -112,14 +112,10 @@ def give_linked_repo_data():
     if not current_user_id: return jsonify({"Status": "Not logged"}),401
     current_project_id = session.get("current_project_id")
     if not current_project_id: return jsonify({"Status": "No project selected"}),401
-    data = request.get_json()
-    if not data or "projectId" not in data:
-        return jsonify({"Status": "Missing fields"}),400
-    project_id = data.get("projectId")
     conn = get_conn()
     cursor = conn.cursor()
     try:
-        cursor.execute("SELECT github_repo_id FROM users_projects WHERE user_id = %s AND project_id = %s", (current_user_id,project_id))
+        cursor.execute("SELECT github_repo_id FROM users_projects WHERE user_id = %s AND project_id = %s", (current_user_id,current_project_id))
         r = cursor.fetchone()
         if r is None:
             return jsonify({"Status":"This project doesn't have a repository id"}), 400
