@@ -41,7 +41,7 @@ export default function App(){
     return(
         <>
         {currentId ? null : <Header/>}
-        {user ? (currentId ? <CurrentProjectComp project_id={currentId} handleGoBack={setCurrentId} repositoriesFound={repositoriesFound}/> : <HomePage username={user} setUsername={setUser} onLogout={handleLogout} handleProjectClick={setCurrentId}/>)
+        {user ? (currentId ? <CurrentProjectComp project_id={currentId} handleGoBack={setCurrentId} repositoriesFound={repositoriesFound} setRepositoriesFound={setRepositoriesFound}/> : <HomePage username={user} setUsername={setUser} onLogout={handleLogout} handleProjectClick={setCurrentId}/>)
         : <AuthMainPortal onLoginSuccess={setUser}/>}
     </>
     );

@@ -29,7 +29,7 @@ import ChooseRepository from "./github-components/repoChoice";
 import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon, ClockArrowDown,FilePlus, Pause, CircleArrowDown,X, TriangleAlert, Eye, Bell } from 'lucide-react';
 import { Color } from "@tiptap/extension-text-style";
 
-export default function CurrentProjectComp({ project_id , handleGoBack, repositoriesFound}) {
+export default function CurrentProjectComp({ project_id , handleGoBack, repositoriesFound, setRepositoriesFound}) {
   const recievedAlmostDone = localStorage.getItem(`${project_id}recievedAlmostDone`) || localStorage.setItem(`${project_id}recievedAlmostDone`, false)
   const [editor,setEditor] = useState(null)
   const [projectName, setProjectName] = useState("");
@@ -87,7 +87,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
   const [fullLrName, setFullLrName] = useState(null)
   const [defaultBranch, setDefaultBranc] = useState(null)
   useEffect(() =>{
-        async function setRepoId(params) {
+        async function setRepoId() {
            const r = await getLinkedRepositoryData();
             if(r.Status === "Repository id retrieved"){
                 setHasRepoLinked(true)
@@ -97,7 +97,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
                 setDefaultBranc(repositoryData.default_branch)
             }
         }
-        setRepoId();
+        if (repositoriesFound.length === 0) setRepoId();
    }, [])
   useEffect(() => {
     function onEnterDown(e){
@@ -461,7 +461,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
         }}>Repository and commits</button></label>     
       </div> : null) : null}
 
-       {repositoriesFound.length === 0 ? null : <ChooseRepository repositoriesFound={repositoriesFound}/>}
+       {repositoriesFound.length === 0 ? null : <ChooseRepository repositoriesFound={repositoriesFound} setRepositoriesFound={setRepositoriesFound}/>}
 
       <div className={activeSnoteId ? (hasTheme === 1 ? "windowContent" : "windowContentWhite") : "windowPH"}>
        {activeSnoteId ? <Toolbar

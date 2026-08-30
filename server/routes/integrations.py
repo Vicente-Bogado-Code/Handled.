@@ -141,6 +141,27 @@ def give_linked_repo_data():
         cursor.close()
         conn.close()
 
+@integrations_bp.route("/assingRepoIdToProject", methods=["POST"])
+def assing_repository_id():
+    current_user_id = session.get("user_id")
+    if not current_user_id: return jsonify({"Status": "Not logged"}),401
+    current_project_id = session.get("current_project_id")
+    if not current_project_id: return jsonify({"Status": "No project selected"}),401
+    data = request.get_json()
+    if not data or "repositoryId" not in data:
+        return jsonify({"Status": "Missing fields"}),400
+    repository_id = data.get("repositoryId")
+    conn = get_conn()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("UPDATE users_projects SET github_repo_id = %s WHERE user_id = %s AND project_id = %s", (repository_id,current_user_id,current_project_id))
+        conn.commit()
+        return jsonify({"Status": "Repository id set correctly"}), 200
+    finally:
+        cursor.close()
+        conn.close()
+
+
         
 
         
