@@ -183,6 +183,7 @@ def webhook():
         return jsonify({"Status":"Ignored"}), 200
     repository_name = data["repository"]["name"]
     repository_id = data["repository"]["id"]
+    commit_sender = data["sender"]["login"]
     conn = get_conn()
     cursor = conn.cursor()
     try:
@@ -195,7 +196,6 @@ def webhook():
             commit_sha = commit["id"]
             commit_message = commit["message"]
             commit_timestamp = commit["timestamp"]
-            commit_sender = commit["sender"]["login"]
             cursor.execute(
                 """
                 INSERT INTO webhook_deliveries
