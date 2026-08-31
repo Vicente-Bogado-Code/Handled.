@@ -170,13 +170,13 @@ export default function ProjectSettings({
                             <div><Check size={18} style={{color:"var(--cool-green)"}}/><label className='correcltyCntcRepoLbl'>Repository connected</label></div>
                             <div style={{margin:0}}><FaGithub size={30} color='white'/><h2 className='connectedToLbl'>Connected to {lrName}</h2></div>
                             <p className='fullNameLbl'>{fullLrName}</p>
-                            <div><GitCommit size={20} style={{color:"var(--accent)"}}/><p className='defaultBrnchLbl'>{defaultBranch}</p></div>
-                        
+                            <label style={{color:"var(--text-secondary)", fontSize:"13px"}}>Source</label>
+                            <div><GitBranch size={20}/><p className='defaultBrnchLbl'>{defaultBranch}</p></div>
                         </div>
                         }
                     </div>
                      <div className="settingsToggleRow">
-                        <span className="settingsToggleLabel"><GitBranch size={18}/>Track commits (if false, Handled will stop tracking commits, but the note "Commit history" will still have the old ones)</span>
+                        <span className="settingsToggleLabel"><GitCommit size={18}/>Track commits (if false, Handled will stop tracking commits, but the note "Commit history" will still have the old ones)</span>
                         <button
                             className={`settingsToggleSwitch ${settingsTrackCommits ? "toggleOn" : ""}`}
                             onClick={() => {setSettingsTrackCommits(!settingsTrackCommits); setIsSaved(false)}}
