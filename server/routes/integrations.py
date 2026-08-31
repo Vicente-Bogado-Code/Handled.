@@ -284,9 +284,6 @@ def webhook():
             </p>
 
             <hr>
-            <p>
-                <span iconname='prompt-slash' color='#000000' size='16' data-icon-node=''></span>
-            </p>
             """
             before_content = html_formatted + before_content
         cursor.execute("UPDATE secondary_notes SET snote_content = %s WHERE snote_id = %s AND on_project_id = %s", (before_content, commit_history_id,project_id))

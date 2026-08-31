@@ -17,10 +17,11 @@ export default function ProjectSettings({
     handleChangeRepo, handleDeleteProject, handleChangeProjectName,
     hasMnote,hasReadmeNote,hasTrackCommit,hasIsPublic,hasAutoSave,hasAutoSaveInterval, hasTheme,
     handleChangeProjectPreferences,
-    hasRepoLinked,
-    lrName,
-    fullLrName,
-    defaultBranch}){
+    hasRepoLinked, setHasRepoLinked,
+    lrName, setLrName,
+    fullLrName, setFullLrName,
+    defaultBranch, setDefaultBranch
+}){
     const [newRepo, setNewRepo] = useState("")
     const [isDeleting, setIsDeleting] = useState(false)
     const [savedRepo,setSavedRepo] = useState(false)
@@ -37,7 +38,7 @@ export default function ProjectSettings({
     const [repositoriesFound, setRepositoriesFound] = useState([])
     return(
         <div className="projectSettingsDiv">
-            {repositoriesFound !== [] && isConnecting ? <ListAllowedRepositories allowedRepositories={repositoriesFound} setIsConnecting={setIsConnecting}/> : null}
+            {isConnecting ? <ListAllowedRepositories allowedRepositories={repositoriesFound} setIsConnecting={setIsConnecting} setHasRepoLinked={setHasRepoLinked}/> : null}
             <div className="labelOnProjectSettings">
                 <div className="projectSettingsTitleDiv">
                     <p className="projectIdLbl">Project id: {id}</p>
@@ -164,7 +165,6 @@ export default function ProjectSettings({
                                 window.location.href = "https://github.com/apps/handled-integration"
                             }      
                         }}>
-                        
                         <FaGithub size={20}/>Connect repository</button> :
                         <div className='whenRepoConnected'>
                             <div><Check size={18} style={{color:"var(--cool-green)"}}/><label className='correcltyCntcRepoLbl'>Repository connected</label></div>

@@ -2,7 +2,7 @@ import { XCircle } from "lucide-react";
 import RepositoryAsOption from "./repositoryOption";
 
 //Shared CSS
-export default function ListAllowedRepositories({allowedRepositories, setIsConnecting}){
+export default function ListAllowedRepositories({allowedRepositories, setIsConnecting, setHasRepoLinked, setLrName, setLrFullName,setDefaultBranch}){
      return(
         <div className="chooseRepositoryMainDiv">
             <div className="chooseRepositoryDiv">
@@ -22,6 +22,10 @@ export default function ListAllowedRepositories({allowedRepositories, setIsConne
                     httpLink={r.html_url}
                     thisRepoId={r.id}
                     setRepositoriesFound={allowedRepositories}
+                    setHasRepoLinked={setHasRepoLinked}
+                    setLrName={setLrName}
+                    setFullLrName={setLrFullName}
+                    setDefaultBranch={setDefaultBranch}
                     />)}
                 
             

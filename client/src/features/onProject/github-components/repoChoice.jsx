@@ -1,7 +1,7 @@
 import { FaGithub } from "react-icons/fa";
 import "./chooseRepo.css"
 import RepositoryAsOption from './repositoryOption';
-export default function ChooseRepository({repositoriesFound, setRepositoriesFound}){
+export default function ChooseRepository({repositoriesFound, setRepositoriesFound, setHasRepoLinked, setLrName,setFullLrName, setDefaultBranch}){
     return(
     <div className="chooseRepositoryMainDiv">
         <div className="chooseRepositoryDiv">
@@ -17,6 +17,10 @@ export default function ChooseRepository({repositoriesFound, setRepositoriesFoun
                 httpLink={obj.html_url}
                 thisRepoId={obj.id}
                 setRepositoriesFound={setRepositoriesFound}
+                setLrName={setLrName}
+                setHasRepoLinked={setHasRepoLinked}
+                setFullLrName={setFullLrName}
+                setDefaultBranch={setDefaultBranch}
                 />)}
             </div>
         </div>

@@ -453,6 +453,10 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
       lrName={lrName}
       fullLrName={fullLrName}
       defaultBranch={defaultBranch}
+      setHasRepoLinked={setHasRepoLinked}
+      setLrName={setLrName}
+      setFullLrName={setFullLrName}
+      setDefaultBranch={setDefaultBranc}
      />) : null}
      <div className={isOnNoteSettings === true || isOnProjectSettings === true ? "hide" : (windows.length > 0 ? "navWindows" : "navWindowsOnPH")}>
       {windows.map(window => <Window 
@@ -479,7 +483,14 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
         }}>Repository and commits</button></label>     
       </div> : null) : null}
 
-       {repositoriesFound.length === 0 ? null : <ChooseRepository repositoriesFound={repositoriesFound} setRepositoriesFound={setRepositoriesFound}/>}
+       {repositoriesFound.length === 0 ? null : <ChooseRepository 
+       repositoriesFound={repositoriesFound}
+        setRepositoriesFound={setRepositoriesFound}
+        setHasRepoLinked={setHasRepoLinked}
+        setLrName={setLrName}
+        setFullLrName={setFullLrName}
+        setDefaultBranch={setDefaultBranc}
+        />}
 
       <div className={activeSnoteId ? (hasTheme === 1 ? "windowContent" : "windowContentWhite") : "windowPH"}>
        {activeSnoteId ? <Toolbar
