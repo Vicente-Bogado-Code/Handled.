@@ -486,7 +486,7 @@
     margin-bottom: 0;
 }
 .defaultBrnchLbl{
-    color: var(--accent);
+    color: var(--text-primary);
     margin: 0;
 }
 .hide{

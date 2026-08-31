@@ -10,7 +10,7 @@ export default function RepositoryAsOption({name,fullName,httpLink, thisRepoId, 
         if (r.Status === "Repository id set correctly"){
            setRepositoriesFound([])
            setHasRepoLinked(true)
-           const r = await getLinkedRepositoryData(project_id);
+           const r = await getLinkedRepositoryData(projectId);
             if(r.Status === "Repository id retrieved"){
                 const repositoryData = r.repoData
                 setLrName(repositoryData.name)

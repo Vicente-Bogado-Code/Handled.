@@ -175,7 +175,7 @@ export default function ProjectSettings({
                         </div>
                         }
                     </div>
-                     <div className="settingsToggleRow">
+                   {hasRepoLinked ? <div className="settingsToggleRow">
                         <span className="settingsToggleLabel"><GitCommit size={18}/>Track commits (if false, Handled will stop tracking commits, but the note "Commit history" will still have the old ones)</span>
                         <button
                             className={`settingsToggleSwitch ${settingsTrackCommits ? "toggleOn" : ""}`}
@@ -183,7 +183,7 @@ export default function ProjectSettings({
                         >
                             <div className="settingsToggleKnob"></div>
                         </button>
-                </div>
+                    </div> : null}
                 <a className='trackingCommitsLblHelp' href='#'><Info size={16}/>How does handled track my commits?</a> 
                 </div>
 
