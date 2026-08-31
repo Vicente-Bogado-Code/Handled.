@@ -112,3 +112,7 @@
 .otherThingyDiv svg:hover{
     color: red;
 }
+
+.hide{
+    display: none;
+}

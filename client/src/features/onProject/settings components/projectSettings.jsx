@@ -37,8 +37,8 @@ export default function ProjectSettings({
     const [isConnecting, setIsConnecting] = useState(false)
     const [repositoriesFound, setRepositoriesFound] = useState([])
     return(
-        <div className={isConnecting ? "projectSettingsDiv" : "hide"}>
-            {repositoriesFound.length > 0 ? <ListAllowedRepositories allowedRepositories={repositoriesFound} setIsConnecting={setIsConnecting} setHasRepoLinked={setHasRepoLinked} setLrName={setLrName} setLrFullName={setFullLrName} setDefaultBranch={setDefaultBranch} setRepositoriesFound={setRepositoriesFound}/> : null}
+        <div className="projectSettingsDiv">
+            {repositoriesFound.length > 0 ? <ListAllowedRepositories allowedRepositories={repositoriesFound} isConnecting={isConnecting} setIsConnecting={setIsConnecting} setHasRepoLinked={setHasRepoLinked} setLrName={setLrName} setLrFullName={setFullLrName} setDefaultBranch={setDefaultBranch} setRepositoriesFound={setRepositoriesFound}/> : null}
             <div className="labelOnProjectSettings">
                 <div className="projectSettingsTitleDiv">
                     <p className="projectIdLbl">Project id: {id}</p>

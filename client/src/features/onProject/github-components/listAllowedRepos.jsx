@@ -2,9 +2,9 @@ import { XCircle } from "lucide-react";
 import RepositoryAsOption from "./repositoryOption";
 
 //Shared CSS
-export default function ListAllowedRepositories({allowedRepositories, setIsConnecting, setHasRepoLinked, setLrName, setLrFullName,setDefaultBranch, setRepositoriesFound}){
+export default function ListAllowedRepositories({allowedRepositories,isConnecting, setIsConnecting, setHasRepoLinked, setLrName, setLrFullName,setDefaultBranch, setRepositoriesFound}){
      return(
-        <div className="chooseRepositoryMainDiv">
+        <div className={isConnecting ? "chooseRepositoryMainDiv" : hide}>
             <div className="chooseRepositoryDiv">
                 <div className='chooseRepositoryHeader'>
                     <div className="otherThingyDiv">
