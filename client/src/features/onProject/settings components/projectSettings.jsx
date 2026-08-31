@@ -38,7 +38,7 @@ export default function ProjectSettings({
     const [repositoriesFound, setRepositoriesFound] = useState([])
     return(
         <div className="projectSettingsDiv">
-            {isConnecting ? <ListAllowedRepositories allowedRepositories={repositoriesFound} setIsConnecting={setIsConnecting} setHasRepoLinked={setHasRepoLinked}/> : null}
+            {isConnecting ? <ListAllowedRepositories allowedRepositories={repositoriesFound} setIsConnecting={setIsConnecting} setHasRepoLinked={setHasRepoLinked} setLrName={setLrName} setLrFullName={setFullLrName} setDefaultBranch={setDefaultBranch}/> : null}
             <div className="labelOnProjectSettings">
                 <div className="projectSettingsTitleDiv">
                     <p className="projectIdLbl">Project id: {id}</p>
