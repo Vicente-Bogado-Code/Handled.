@@ -235,10 +235,11 @@ def webhook():
             return jsonify({"Status":"Repository isn't connected to any handled project"}), 200
         project_id = row[0]
         cursor.execute("SELECT snote_id FROM secondary_notes WHERE on_project_id = %s AND snote_name = 'Commit history'", (project_id,))
+        row = cursor.fetchone()
         if row is None:
             return jsonify({"Status":"This project doesn't have a commit history"}), 200
         commit_history_id = row[0]
-        cursor.execute("SELECT snote_content FROM secondary_notes WHERE on_project_id = %s", (project_id,))
+        cursor.execute("SELECT snote_content FROM secondary_notes WHERE snote_id = %s AND on_project_id = %s", (commit_history_id,project_id))
         row = cursor.fetchone()
         before_content = row[0] or "" if row else ""
         for commit in data["commits"]:
@@ -246,15 +247,7 @@ def webhook():
             commit_message = escape(commit["message"])
             commit_timestamp = commit["timestamp"]
             commit_url = escape(commit["url"])
-            cursor.execute(
-                """
-                INSERT INTO webhook_deliveries
-                (project_id, repository_id, repository_name,
-                 commit_sha, payload_message, payload_timestamp,
-                 payload_sender, commit_url)
-                VALUES (%s, %s, %s, %s, %s, %s, %s,%s)
-                """,
-                (project_id,repository_id,repository_name,commit_sha,commit_message,commit_timestamp,commit_sender, commit_url))
+            cursor.execute("INSERT INTO webhook_deliveries(project_id, repository_id, repository_name,commit_sha, payload_message, payload_timestamp,payload_sender, commit_url) VALUES (%s, %s, %s, %s, %s, %s, %s,%s) ",(project_id,repository_id,repository_name,commit_sha,commit_message,commit_timestamp,commit_sender, commit_url))
             html_formatted = f"""
             <hr>
             <p><u>Commit</u> <span style='font-size: 12px;'>{commit_sha}</span></p>
