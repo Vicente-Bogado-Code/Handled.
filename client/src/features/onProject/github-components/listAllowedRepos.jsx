@@ -2,7 +2,7 @@ import { XCircle } from "lucide-react";
 import RepositoryAsOption from "./repositoryOption";
 
 //Shared CSS
-export default function ListAllowedRepositories({allowedRepositories, setIsConnecting, setHasRepoLinked, setLrName, setLrFullName,setDefaultBranch}){
+export default function ListAllowedRepositories({allowedRepositories, setIsConnecting, setHasRepoLinked, setLrName, setLrFullName,setDefaultBranch, setRepositoriesFound}){
      return(
         <div className="chooseRepositoryMainDiv">
             <div className="chooseRepositoryDiv">
