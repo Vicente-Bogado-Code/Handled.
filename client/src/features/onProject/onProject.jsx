@@ -26,7 +26,7 @@ import MainPlaceHolder from "./placeholder";
 import NoteSettings from "./settings components/noteSettings";
 import ProjectSettings from "./settings components/projectSettings";
 import ChooseRepository from "./github-components/repoChoice";
-import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon, ClockArrowDown,FilePlus, Pause, CircleArrowDown,X, TriangleAlert, Eye, Bell } from 'lucide-react';
+import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon, ClockArrowDown,FilePlus, Pause, CircleArrowDown,X, TriangleAlert, Eye, Bell, Trash } from 'lucide-react';
 import { Color } from "@tiptap/extension-text-style";
 
 export default function CurrentProjectComp({ project_id , handleGoBack, repositoriesFound, setRepositoriesFound}) {
@@ -36,6 +36,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
   const [mySecNotes, setMySecNotes] = useState([]);
   const mySecNotesRef = useRef(mySecNotes)
   const [nameOfNewSnote, setNameOfSnote] = useState("");
+  const [newNameInvalid, setNewNameInvalid] = useState(false)
   const [windows,setWindows] = useState([]);
   const [activeWindowId, setActiveWindowId] = useState(null)
   const activeSnote = mySecNotes.find(note => note.id === activeWindowId);
@@ -105,16 +106,18 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
   useEffect(() => {
     function onEnterDown(e){
       if (e.key === "Enter" && isCreating){
-        console.log("Enter while creating")
-        handleCreateSnote(nameOfNewSnote,title,"S");
-        setTitle(""); 
-        setNameOfSnote("");
+        const validate = handleCreateSnote(nameOfNewSnote,title,"S");
       }
     }
      document.addEventListener("keydown",onEnterDown)
      return () => document.removeEventListener('keydown',onEnterDown)
   },[nameOfNewSnote])
 
+  useEffect(() => {
+    if(nameOfNewSnote === ""){
+      setNewNameInvalid(false)
+    }
+  }, [nameOfNewSnote])
   useEffect(() =>{
     mySecNotesRef.current = mySecNotes;
   }, [mySecNotes])
@@ -154,11 +157,15 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
 
   //Content
   async function handleCreateSnote(name,content,imp){
-    if (name === ""){return}
+    const repeated = allNotesNames.find(note => note.toLowerCase() === name.toLowerCase());
+    if (repeated !== undefined || name === ""){setNewNameInvalid(true); return false}
+    else setNewNameInvalid(false)
     const response = await newSecondaryNote(name,content,imp)
     if (response.Status === "Secondary note created")
     {
+      setNameOfSnote("")
       setMySecNotes(prev => [...prev, response.Snote])
+      allNotesNames.push(name)
     }
     setActiveWindowId(response.Snote.id)
     setWindows(prev => [...prev, {"id":response.Snote.id,"name":name}]);
@@ -321,18 +328,26 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
       <div className={isCreating === true ? "newNoteFormDiv" : "hide"} >
         <div className="parentNewNoteForm">
         <p className="Slabel">S</p>
-          <input type="text" placeholder="name?"
+          <input type="text" placeholder="Note name? e.g. Bugs"
            maxLength={25} 
            value={nameOfNewSnote}
+           style={{borderColor: newNameInvalid ? "red" : "var(--border)"}}
            onChange={e => setNameOfSnote(e.target.value)}
            className="noteNameInput"
            />
            <button 
            className="createSnoteBtn"
-           onClick={() => {handleCreateSnote(nameOfNewSnote,title,"S"); setTitle(""); setNameOfSnote("")}}
+           onClick={() => {
+            const validate = handleCreateSnote(nameOfNewSnote,title,"S"); 
+            if (validate === true){
+              setTitle("");
+              setNameOfSnote("")
+            }
+          }}
            ><FilePlus size={15}/></button>
         </div>
       </div>
+     {newNameInvalid && isCreating ? <label className='alreadyExistNoteLbl'><TriangleAlert size={16}/>note already exists</label> : null}
 
       <div className="secondaryNotesDiv">
         {Dnotes.length > 0 ? (<button className="DnotesBtn" onClick={() => { visualDnotes === false ? setVisualDnotes(true) : setVisualDnotes(false)}}>Default<span className={visualDnotes ? "CsetColor" : "CsetColorNonActive"}>{visualDnotes === true ? <ChevronDown size={22}/> : <ChevronRight size={22}/>}</span>{currentNoteImportance === "D" ? <p className="labelCrntNote" title={currentNoteName}>{currentNoteName}</p> : null}</button>) : null}

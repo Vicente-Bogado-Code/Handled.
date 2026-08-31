@@ -164,6 +164,46 @@ def assing_repository_id():
         cursor.close()
         conn.close()
 
+@integrations_bp.route("/getAccesibleRepositories", methods=["GET"])
+def get_allowed_repositories():
+    current_user_id = session.get("user_id")
+    if not current_user_id: return jsonify({"Status": "Not logged"}),401
+    conn = get_conn()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT installation_id FROM handled_users WHERE id = %s", (current_user_id,))
+        row = cursor.fetchone()
+        if row is None:
+            return jsonify({"Status":"No installation id found"}),200
+        installation_id = row[0]
+        jwtoken = get_gh_JWT()
+        installation_token = get_installation_token(jwtoken,installation_id)
+        response = requests.get(
+                    "https://api.github.com/installation/repositories",
+                    params={
+                        "per_page": 100,
+                        "page": 1
+                    },
+                    headers={
+                        "Authorization": f"Bearer {installation_token}",
+                        "Accept": "application/vnd.github+json",
+                        "X-GitHub-Api-Version": "2026-03-10"
+                    }
+                )
+        response.raise_for_status()
+        repositories = response.json()["repositories"]
+        data_to_give = [{
+            "id":repository["id"],
+            "name":repository["name"],
+            "full_name":repository["full_name"],
+            "html_url": repository["html_url"]
+        } for repository in repositories]
+        return jsonify({"Status":"Fetched repositories", "repositories":data_to_give}),200
+    finally:
+        cursor.close()
+        conn.close()
+
+
 
         
 
@@ -193,6 +233,10 @@ def webhook():
         if row is None:
             return jsonify({"Status":"Repository isn't connected to any handled project"}), 200
         project_id = row[0]
+        cursor.execute("SELECT snote_id WHERE on_project_id = %s AND snote_name = 'Commit history'", (project_id,))
+        if row is None:
+            return jsonify({"Status":"This project doesn't have a commit history"}), 200
+        commit_history_id = row[0]
         cursor.execute("SELECT snote_content FROM secondary_notes WHERE on_project_id = %s", (project_id,))
         row = cursor.fetchone()
         before_content = row[0] or "" if row else ""
@@ -250,8 +294,8 @@ def webhook():
                 <span iconname='prompt-slash' color='#000000' size='16' data-icon-node=''></span>
             </p>
             """
-            before_content += html_formatted
-        cursor.execute("UPDATE secondary_notes SET snote_content = %s WHERE on_project_id = %s", (before_content, project_id))
+            before_content = html_formatted + before_content
+        cursor.execute("UPDATE secondary_notes SET snote_content = %s WHERE snote_id = %s AND on_project_id = %s", (before_content, commit_history_id,project_id))
         conn.commit()
         return jsonify({"Status":"Webhook processed"}), 200
     finally:

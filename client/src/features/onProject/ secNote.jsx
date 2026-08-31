@@ -44,7 +44,7 @@ export default function SecondaryProjectComp({importance,name,noteId,content,win
                     }}>
                     <Settings2 size={15}/>
                     </div> : null}
-                    </div> : <button className='addToBeDeletedbtn' onClick={() => setWillBeDeleted(!willBeDeleted)}> {willBeDeleted ? <Check size={16}/> : <Trash2 size={16}/> }</button>}
+                    </div> : <div className='addToBeDeletedbtn' onClick={() => setWillBeDeleted(!willBeDeleted)}> {willBeDeleted ? <Check size={16}/> : <Trash2 size={16}/> }</div>}
             </button>
           </div>
     );

@@ -7,11 +7,10 @@ export default function RepositoryAsOption({name,fullName,httpLink, thisRepoId, 
     async function handleAssigment(id){
         const r = await assingRepoIdToProject(id)
         if (r.Status === "Repository id set correctly"){
-            setRepositoriesFound([])
-            console.log(id, "Corretly setted to this project")
+           setRepositoriesFound([])
         }
         else{
-            console.log(r.Status)
+            alert(r.Status)
         }
     }
     return(

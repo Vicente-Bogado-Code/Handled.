@@ -16,6 +16,7 @@
     padding: 20px 32px;
     border-radius: 16px;
     border: 1px solid var(--border);
+    position: relative;
     width: 50%;
     display: flex;
     height: fit-content;
@@ -95,4 +96,19 @@
     color: var(--accent);
     font-size: 12px;
     cursor: pointer;
+}
+
+.otherThingyDiv{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.otherThingyDiv svg{
+    color: var(--text-primary);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+.otherThingyDiv svg:hover{
+    color: red;
 }

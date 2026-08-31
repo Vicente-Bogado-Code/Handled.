@@ -38,3 +38,12 @@ export async function assingRepoIdToProject(repoId) {
     const response = await r.json()
     return response
 }
+
+export async function getAccesibleRepositories() {
+    const r = await fetch(`${API_BASE}/getAccesibleRepositories`,{
+        method:"GET",
+        credentials:"include"
+    });
+    const response = await r.json()
+    return response
+}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './noteSettings.css'
-import { Trash, Edit2, Undo2, Check, Save, Info,ClockArrowDown } from 'lucide-react';
+import { Trash, Edit2, Undo2, Check, Save, Info,ClockArrowDown, MousePointer } from 'lucide-react';
 import { deleteSecNote } from '../../api/deleteRequests/deleteSecNote';
 
 export default function NoteSettings({name,id,importance,setIsOnSettings, handleDeleteNote, setIsDeletingNotes, idsToBeDeleted, setIdsToBeDeleted, allIds, handleChangeNoteName,wantsAutoSave, handleChangeAutoSave, projectWantsAutoSave}){
@@ -23,19 +23,22 @@ export default function NoteSettings({name,id,importance,setIsOnSettings, handle
 
             <div className="changeDataDiv">
                 <div className='inputDiv'>
-                    <label className='inputLabel'>Change name</label>
+                    <label className='inputLabel'>{importance === "D" ? "You can't change the name of a default note":"Change name"}</label>
                     <div className='inputNicon'>
-                        <Edit2 size={16}/>
-                        <input type="text" maxLength={25} className='changeNameInput' placeholder={name}
+                        {importance === "D" ? null : <Edit2 size={16}/>}
+                        {importance === "D" ?  <input type="text"  className='changeNameInput' 
+                        value={name}
+                        readOnly
+                        /> : <input type="text" maxLength={25} className='changeNameInput' placeholder={name}
                         value={newName}
                         onChange={(e) => {setNewName(e.target.value); setSavedName(false)}}
-                        />
-                        <button className='saveNotebtn'
+                        />}
+                        {importance === "D"? null : <button className='saveNotebtn'
                          onClick={() => {
                          if (newName !== ""){handleChangeNoteName(newName,id);  setSavedName(true);;}
                         }}>
-                            {savedName ? <Check size={16}/> : <Save size={16}/>}
-                        </button>
+                            {savedName ? <Check size={16}/> : "Save"}
+                        </button>}
                         <div className='autoSaveAskDiv'>
                             {projectWantsAutoSave ? <ClockArrowDown size={18} style={{borderLeft:"1px solid var(--border)", paddingLeft:"10px"}}/> : <ClockArrowDown size={18} style={{borderLeft:"1px solid var(--border)", paddingLeft:"10px", color:"red"}}/>}
                             {projectWantsAutoSave ? <p className='includeAutoSlbl'>Autosave?</p> : null}

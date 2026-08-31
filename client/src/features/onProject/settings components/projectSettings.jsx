@@ -3,8 +3,24 @@ import './projectSettings.css'
 import { Trash, Undo2, Check, TriangleAlert, Info, Copy, Link, Pointer, GitBranch, GitCommit } from 'lucide-react';
 import { FaGithub } from "react-icons/fa"
 import { getLinkedRepositoryData } from '../../api/third-party-APIs/github_api';
+import { getAccesibleRepositories } from '../../api/third-party-APIs/github_api';
+import ChooseRepository from '../github-components/repoChoice';
+import ListAllowedRepositories from '../github-components/listAllowedRepos';
 
-export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnProjectSettings, handleChangeRepo, handleDeleteProject, handleChangeProjectName,hasMnote,hasReadmeNote,hasTrackCommit,hasIsPublic,hasAutoSave,hasAutoSaveInterval, hasTheme, handleChangeProjectPreferences,hasRepoLinked,lrName,fullLrName,defaultBranch}){
+export default function ProjectSettings({
+    name,
+    id,
+    repoLink,
+    status,
+    atDate,
+    setIsOnProjectSettings,
+    handleChangeRepo, handleDeleteProject, handleChangeProjectName,
+    hasMnote,hasReadmeNote,hasTrackCommit,hasIsPublic,hasAutoSave,hasAutoSaveInterval, hasTheme,
+    handleChangeProjectPreferences,
+    hasRepoLinked,
+    lrName,
+    fullLrName,
+    defaultBranch}){
     const [newRepo, setNewRepo] = useState("")
     const [isDeleting, setIsDeleting] = useState(false)
     const [savedRepo,setSavedRepo] = useState(false)
@@ -17,8 +33,11 @@ export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnP
     const DB_trackCommits = hasTrackCommit;
     const [settingsTrackCommits, setSettingsTrackCommits] = useState(hasTrackCommit)
     const [isSaved, setIsSaved] = useState(false)
+    const [isConnecting, setIsConnecting] = useState(false)
+    const [repositoriesFound, setRepositoriesFound] = useState([])
     return(
         <div className="projectSettingsDiv">
+            {repositoriesFound.length > 0 && isConnecting ? <ListAllowedRepositories allowedRepositories={repositoriesFound} setIsConnecting={setIsConnecting}/> : null}
             <div className="labelOnProjectSettings">
                 <div className="projectSettingsTitleDiv">
                     <p className="projectIdLbl">Project id: {id}</p>
@@ -133,7 +152,20 @@ export default function ProjectSettings({name,id,repoLink,status,atDate,setIsOnP
                 <div className='projectInputDiv settingsCategorySeparator'>
                     <label className='projectInputLabel'>Repository and commits</label>
                     <div className='projectInputNicon'>
-                        {!hasRepoLinked ? <button className='connectGHrepoBtn' onClick={() => window.location.href = "https://github.com/apps/handled-integration"}><FaGithub size={20}/>Connect repository</button> :
+                        {!hasRepoLinked ? <button className='connectGHrepoBtn' onClick={async () => {
+                            setIsConnecting(true)
+                           const alreadyInstalled = await getAccesibleRepositories()
+                           if (alreadyInstalled.Status === "Fetched repositories"){
+                                setRepositoriesFound(alreadyInstalled.repositories)
+                                setIsConnecting(true)
+                            }
+                            else if (alreadyInstalled.Status === "No installation id found")
+                            {
+                                window.location.href = "https://github.com/apps/handled-integration"
+                            }      
+                        }}>
+                        
+                        <FaGithub size={20}/>Connect repository</button> :
                         <div className='whenRepoConnected'>
                             <div><Check size={18} style={{color:"var(--cool-green)"}}/><label className='correcltyCntcRepoLbl'>Repository connected</label></div>
                             <div style={{margin:0}}><FaGithub size={30} color='white'/><h2 className='connectedToLbl'>Connected to {lrName}</h2></div>

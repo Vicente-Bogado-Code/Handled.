@@ -89,7 +89,15 @@
     font-size: 14px;
     font-weight: 550;
 }
-
+.alreadyExistNoteLbl{
+    margin: 0;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    color: red;
+    gap: 5px;
+    font-size: 13px;
+}
 .autoSaveOnNewNoteFormDiv{
     display: flex;
     align-items: center;
@@ -97,15 +105,17 @@
 }
 .noteNameInput{
     background: none;
-    border: none;
     color: var(--text-primary);
     font-size: 14px;
     cursor: text;
     font-weight: 550;
-    text-align: center;
-    width: 150px;
+    text-align: left;
+    width: 200px;
     margin-left: 5px;
-    border-bottom: 1px solid var(--text-primary);
+    height: 20px;
+    padding: 5px 8px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
 }
 .noteNameInput:focus{
     outline: none;
@@ -116,7 +126,7 @@
     width: 50%;
     height: 50px;
     font-size: 15px;
-    background-color: var(--accent);
+    background-color: var(--transparent-blue-btns);
     border: none;
     color: var(--text-primary);
     border-radius: 8px;
@@ -124,6 +134,7 @@
 }
 .addNoteBtn:hover{
     transform: scale(1.01);
+    background-color: rgba(33, 120, 241, 0.5);
 }
 .autoSaveOnNewNoteFormDiv{
     margin: 0;
@@ -134,7 +145,7 @@
     color: greenyellow;
 }
 .createSnoteBtn{
-    background-color: rgb(48, 144, 48);
+    background-color: var(--transparent-green-btns);
     color: var(--text-primary);
     border-radius: 8px;
     border: none;
@@ -143,7 +154,7 @@
     height: 25px;
 }
 .createSnoteBtn:hover{
-    transform: scale(1.02);
+    background-color: rgb(7, 241, 7,0.5);
 }
 
 .snotesDiv{
