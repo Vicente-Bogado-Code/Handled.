@@ -173,8 +173,9 @@ def get_allowed_repositories():
     try:
         cursor.execute("SELECT installation_id FROM handled_users WHERE id = %s", (current_user_id,))
         row = cursor.fetchone()
-        if row is None:
-            return jsonify({"Status":"No installation id found"}),200
+        if row is None or row[0] is None:
+            return jsonify({"Status": "No installation id found"}), 200
+        installation_id = row[0]
         installation_id = row[0]
         jwtoken = get_gh_JWT()
         installation_token = get_installation_token(jwtoken,installation_id)
@@ -233,7 +234,7 @@ def webhook():
         if row is None:
             return jsonify({"Status":"Repository isn't connected to any handled project"}), 200
         project_id = row[0]
-        cursor.execute("SELECT snote_id WHERE on_project_id = %s AND snote_name = 'Commit history'", (project_id,))
+        cursor.execute("SELECT snote_id FROM secondary_notes WHERE on_project_id = %s AND snote_name = 'Commit history'", (project_id,))
         if row is None:
             return jsonify({"Status":"This project doesn't have a commit history"}), 200
         commit_history_id = row[0]

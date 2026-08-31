@@ -37,7 +37,7 @@ export default function ProjectSettings({
     const [repositoriesFound, setRepositoriesFound] = useState([])
     return(
         <div className="projectSettingsDiv">
-            {repositoriesFound.length > 0 && isConnecting ? <ListAllowedRepositories allowedRepositories={repositoriesFound} setIsConnecting={setIsConnecting}/> : null}
+            {repositoriesFound.length !== 0 && isConnecting ? <ListAllowedRepositories allowedRepositories={repositoriesFound} setIsConnecting={setIsConnecting}/> : null}
             <div className="labelOnProjectSettings">
                 <div className="projectSettingsTitleDiv">
                     <p className="projectIdLbl">Project id: {id}</p>
