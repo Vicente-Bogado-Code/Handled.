@@ -10,11 +10,12 @@ export default function RepositoryAsOption({name,fullName,httpLink, thisRepoId, 
         if (r.Status === "Repository id set correctly"){
            setRepositoriesFound([])
            setHasRepoLinked(true)
-           const repoData = await getLinkedRepositoryData(projectId);
-           if (repoData.Status === "Repository id retrieved") {
-                setLrName(repoData.RepoData.name);
-                setFullLrName(repoData.RepoData.full_name);
-                setDefaultBranch(repoData.RepoData.default_branch);
+           const r = await getLinkedRepositoryData(project_id);
+            if(r.Status === "Repository id retrieved"){
+                const repositoryData = r.repoData
+                setLrName(repositoryData.name)
+                setFullLrName(repositoryData.full_name)
+                setDefaultBranc(repositoryData.default_branch)
             }
         }
         else{

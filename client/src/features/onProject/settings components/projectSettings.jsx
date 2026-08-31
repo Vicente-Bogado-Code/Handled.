@@ -170,8 +170,8 @@ export default function ProjectSettings({
                             <div><Check size={18} style={{color:"var(--cool-green)"}}/><label className='correcltyCntcRepoLbl'>Repository connected</label></div>
                             <div style={{margin:0}}><FaGithub size={30} color='white'/><h2 className='connectedToLbl'>Connected to {lrName}</h2></div>
                             <p className='fullNameLbl'>{fullLrName}</p>
-                            <label style={{color:"var(--text-secondary)", fontSize:"13px"}}>Source</label>
-                            <div><GitBranch size={20}/><p className='defaultBrnchLbl'>{defaultBranch}</p></div>
+                            <label style={{color:"var(--text-secondary)", fontSize:"13px", marginBottom:4}}>Source</label>
+                            <div><GitBranch size={20} style={{color:"var(--text-secondary)"}}/><p className='defaultBrnchLbl'>{defaultBranch}</p></div>
                         </div>
                         }
                     </div>
