@@ -21,7 +21,7 @@ export default function ListAllowedRepositories({allowedRepositories, setIsConne
                     fullName={r.full_name}
                     httpLink={r.html_url}
                     thisRepoId={r.id}
-                    setRepositoriesFound={allowedRepositories}
+                    setRepositoriesFound={setRepositoriesFound}
                     setHasRepoLinked={setHasRepoLinked}
                     setLrName={setLrName}
                     setFullLrName={setLrFullName}
