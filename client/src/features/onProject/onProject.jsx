@@ -490,6 +490,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
         setLrName={setLrName}
         setFullLrName={setFullLrName}
         setDefaultBranch={setDefaultBranc}
+        projectId={project_id}
         />}
 
       <div className={activeSnoteId ? (hasTheme === 1 ? "windowContent" : "windowContentWhite") : "windowPH"}>

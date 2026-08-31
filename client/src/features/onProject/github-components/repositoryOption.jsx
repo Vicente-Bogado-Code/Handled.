@@ -4,13 +4,13 @@ import { FaGithub } from "react-icons/fa";
 import { assingRepoIdToProject } from "../../api/third-party-APIs/github_api";
 import { getLinkedRepositoryData } from "../../api/third-party-APIs/github_api";
 
-export default function RepositoryAsOption({name,fullName,httpLink, thisRepoId, setRepositoriesFound, setHasRepoLinked,setLrName,setFullLrName,setDefaultBranch}){
+export default function RepositoryAsOption({name,fullName,httpLink, thisRepoId, setRepositoriesFound, setHasRepoLinked,setLrName,setFullLrName,setDefaultBranch, projectId}){
     async function handleAssigment(id){
         const r = await assingRepoIdToProject(id)
         if (r.Status === "Repository id set correctly"){
            setRepositoriesFound([])
            setHasRepoLinked(true)
-           const repoData = await getLinkedRepositoryData();
+           const repoData = await getLinkedRepositoryData(projectId);
            if (repoData.Status === "Repository id retrieved") {
                 setLrName(repoData.RepoData.name);
                 setFullLrName(repoData.RepoData.full_name);
