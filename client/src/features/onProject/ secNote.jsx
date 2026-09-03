@@ -3,13 +3,15 @@ import './css/notesBtn.css'
 import { Trash2, Circle,ClockArrowDown, Settings2, Check, CircleArrowDown} from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-export default function SecondaryProjectComp({importance,name,noteId,content,windows,setWindow,activeWindowId,setActiveWindowId,modifiedNotesIds,isOnSettings, setIsOnSettings,isDeletingNotes,idsToBeDeleted,setIdsToBeDeleted,projectWanstAutoSave, wantsAutoSave,setIsOnProjectSettings}){
+export default function SecondaryProjectComp({importance,name,noteId,content,windows,setWindow,activeWindowId,setActiveWindowId,modifiedNotesIds,isOnSettings, setIsOnSettings,isDeletingNotes,idsToBeDeleted,setIdsToBeDeleted,projectWanstAutoSave, wantsAutoSave,setIsOnProjectSettings,setDraggedNote}){
     wantsAutoSave = projectWanstAutoSave ? wantsAutoSave : false
     const inIt = modifiedNotesIds.find(id => id === noteId);
     const willBeDeleted = idsToBeDeleted.find(id => id === noteId)
     return(
     <div className="secNoteOnNavDiv">
         <button
+        draggable
+        onDragStart={() => setDraggedNote(noteId)}
         className={!willBeDeleted ? (!isDeletingNotes ? (activeWindowId === noteId ? "activeSnote" : (inIt ? "secondaryNoteUnsaved" : "secondaryNote")) : "deletingNotes") : "willBeDeletedClass" } onClick={
         () => {
             setIsOnProjectSettings(false)
@@ -34,8 +36,7 @@ export default function SecondaryProjectComp({importance,name,noteId,content,win
          <span className="noteNameOnNav" title={name}>{name}</span>
                     {!isDeletingNotes ? <div className='statusSettings'>
                         <Circle className='savedLabel' size={10} fill='currentColor'/> 
-                        {wantsAutoSave ? <ClockArrowDown style={{color:"greenyellow"}} size={15}/> : null}
-                        {inIt ? <CircleArrowDown size={15} style={{color:"red"}}/> : null}
+                        {wantsAutoSave ? <ClockArrowDown style={{color:"green"}} size={15}/> : null}
                     {activeWindowId === noteId ? <div className='settingsBtn' onClick={(e) =>{
                         setActiveWindowId(noteId)
                         setIsOnSettings(!isOnSettings);

@@ -4,7 +4,7 @@ import RepositoryAsOption from "./repositoryOption";
 //Shared CSS
 export default function ListAllowedRepositories({allowedRepositories,isConnecting, setIsConnecting, setHasRepoLinked, setLrName, setLrFullName,setDefaultBranch, setRepositoriesFound, projectId}){
      return(
-        <div className={isConnecting ? "chooseRepositoryMainDiv" : hide}>
+        <div className={isConnecting ? "chooseRepositoryMainDiv" : "hide"}>
             <div className="chooseRepositoryDiv">
                 <div className='chooseRepositoryHeader'>
                     <div className="otherThingyDiv">

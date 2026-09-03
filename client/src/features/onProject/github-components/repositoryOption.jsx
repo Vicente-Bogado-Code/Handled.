@@ -15,7 +15,7 @@ export default function RepositoryAsOption({name,fullName,httpLink, thisRepoId, 
                 const repositoryData = r.repoData
                 setLrName(repositoryData.name)
                 setFullLrName(repositoryData.full_name)
-                setDefaultBranc(repositoryData.default_branch)
+                setDefaultBranch(repositoryData.default_branch)
             }
         }
         else{

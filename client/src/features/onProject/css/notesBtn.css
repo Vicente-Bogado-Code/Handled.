@@ -12,7 +12,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-.DnotesBtn{
+.DnotesBtn, .folderBtn{
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -26,6 +26,9 @@
     min-width: 0;
     overflow: hidden;
     gap: 4px;
+}
+.folderBtn{
+    margin-left: 5%;
 }
 .CsetColor{
     display: flex;
@@ -66,9 +69,10 @@
     width: 100%;
     height: 30px;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
+    gap: 20px;
 }
 .newNoteFormDiv{
     background-color: var(--bg-primary);
@@ -76,7 +80,13 @@
     width: 97%;
     padding: 5px 5px;
     border-radius: 5px;
-    margin-top: 10px;
+    margin-bottom: 0;
+
+}
+.newNoteFormDiv button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .parentNewNoteForm{
@@ -123,8 +133,8 @@
 
 .addNoteBtn{
     cursor: pointer;
-    width: 50%;
-    height: 50px;
+    width: 40%;
+    height: 35px;
     font-size: 15px;
     background-color: var(--transparent-blue-btns);
     border: none;
@@ -154,7 +164,7 @@
     height: 25px;
 }
 .createSnoteBtn:hover{
-    background-color: rgb(7, 241, 7,0.5);
+    background-color: rgb(7, 241, 7,0.3);
 }
 
 .snotesDiv{
@@ -190,12 +200,12 @@
 }
 .secondaryNote{
     background-color: rgb(48, 144, 48,0.080);
-    color: rgb(48, 144, 48,0.8);;
+    color: var(--text-secondary);
 }
 
 .secondaryNoteUnsaved{
-    background-color: rgb(255, 123, 123,0.080);
-    color: rgb(255, 123, 123,0.8);
+    background-color: rgb(255, 123, 123,0.050);
+    color: var(--text-secondary);
 }
 .secondaryNoteUnsaved svg{
     color: red;
@@ -213,7 +223,7 @@
     border-left: 1px solid orange;
 }
 .Slabel{
-    color: var(--text-secondary);
+    color: var(--text-primary);
     font-size: 15px;
     flex-shrink: 0;
 }

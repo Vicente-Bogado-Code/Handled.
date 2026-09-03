@@ -120,7 +120,7 @@ def give_linked_repo_data():
     try:
         cursor.execute("SELECT github_repo_id FROM users_projects WHERE user_id = %s AND project_id = %s", (current_user_id,secure_project_id))
         r = cursor.fetchone()
-        if r is None:
+        if r[0] or row is None:
             return jsonify({"Status":"This project doesn't have a repository id"}), 400
         cursor.execute("SELECT installation_id FROM handled_users WHERE id = %s", (current_user_id,))
         row = cursor.fetchone()
@@ -175,7 +175,6 @@ def get_allowed_repositories():
         row = cursor.fetchone()
         if row is None or row[0] is None:
             return jsonify({"Status": "No installation id found"}), 200
-        installation_id = row[0]
         installation_id = row[0]
         jwtoken = get_gh_JWT()
         installation_token = get_installation_token(jwtoken,installation_id)

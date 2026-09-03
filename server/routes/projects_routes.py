@@ -308,3 +308,70 @@ def change_p_preferences():
     finally:
         cursor.close()
         conn.close()
+
+@projects_bp.route("/createFolder", methods=["POST"])
+def create_folder():
+    current_user_id = session.get("user_id")
+    if not current_user_id:return jsonify({"Status": "Not logged"}),401
+    current_project_id = session.get("current_project_id")
+    if not current_project_id:return jsonify({"Status": "No project selected"}),400 
+    data = request.get_json()
+    folder_name = data.get("folderName")
+    if not folder_name or not folder_name.strip():return jsonify({"Status": "Folder name required"}), 400
+    conn = get_conn()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT 1 FROM users_projects WHERE user_id = %s AND project_id = %s", (current_user_id, current_project_id))
+        if cursor.fetchone() is None:
+            return jsonify({"Status": "Not authorized for this project"}), 403
+        cursor.execute("INSERT INTO folders(folder_name,project_id) VALUES (%s,%s) RETURNING folder_id", (folder_name,current_project_id))
+        folder_id = cursor.fetchone()[0]
+        conn.commit()
+        return jsonify({"Status": "Folder created", "id":folder_id}),200
+    finally:
+        cursor.close()
+        conn.close()
+
+@projects_bp.route("/getFolders", methods=["GET"])
+def get_folders():
+    current_user_id = session.get("user_id")
+    if not current_user_id: return jsonify({"Status": "Not logged"}), 401
+    current_project_id = session.get("current_project_id")
+    if not current_project_id: return jsonify({"Status": "No project selected"}), 400
+    conn = get_conn()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT 1 FROM users_projects WHERE user_id = %s AND project_id = %s", (current_user_id, current_project_id))
+        if cursor.fetchone() is None: return jsonify({"Status": "Not authorized for this project"}), 403
+        cursor.execute("SELECT folder_id, folder_name FROM folders WHERE project_id = %s", (current_project_id,))
+        folders = [
+            {"id": row[0], "name": row[1]} for row in cursor.fetchall()
+            ]
+        return jsonify({"Status": "Data retrieved", "folders": folders}), 200
+    finally:
+        cursor.close()
+        conn.close()
+
+@projects_bp.route("/assingNoteToFolder", methods=["POST"])
+def assing_note_to_folder():
+    current_user_id = session.get("user_id")
+    if not current_user_id: return jsonify({"Status": "Not logged"}), 401
+    current_project_id = session.get("current_project_id")
+    if not current_project_id: return jsonify({"Status": "No project selected"}), 400
+    data = request.get_json()
+    if not data or "noteId" not in data or "folderId" not in data:
+        return jsonify({"Status":"Missing fields"}), 400
+    note_id = data.get("noteId")
+    folder_id = data.get("folderId")
+    conn = get_conn()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT 1 FROM users_projects WHERE user_id = %s AND project_id = %s", (current_user_id, current_project_id))
+        if cursor.fetchone() is None: return jsonify({"Status": "Not authorized for this project"}), 403
+        cursor.execute("UPDATE secondary_notes SET on_folder = %s WHERE snote_id = %s AND on_project_id = %s", (folder_id,note_id,current_project_id))
+        if cursor.rowcount == 0: return jsonify({"Status": "Note not found"}), 404
+        conn.commit()
+        return jsonify({"Status":"Note appended"}),200
+    finally:
+        cursor.close()
+        conn.close()

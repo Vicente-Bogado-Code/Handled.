@@ -16,6 +16,9 @@ import { useState, useEffect, useRef } from 'react';
 import { getProjectPreferences } from "../api/getDataRequests/getProjectPreferences";
 import { changeProjectPreferences } from "../api/alterRequests/changeProjectPreferences";
 import { getLinkedRepositoryData } from "../api/third-party-APIs/github_api";
+import { createFolder } from '../api/createRequest/createFolder';
+import { getFolders } from '../api/getDataRequests/getProjectFolders';
+import { assingNoteToFolder } from '../api/alterRequests/addNoteToFolder';
 import SecondaryProjectComp from "./ secNote";
 import Window from "./window";
 import TipTap from "./TipTap";
@@ -26,7 +29,7 @@ import MainPlaceHolder from "./placeholder";
 import NoteSettings from "./settings components/noteSettings";
 import ProjectSettings from "./settings components/projectSettings";
 import ChooseRepository from "./github-components/repoChoice";
-import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon, ClockArrowDown,FilePlus, Pause, CircleArrowDown,X, TriangleAlert, Eye, Bell, Trash } from 'lucide-react';
+import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon, ClockArrowDown,FilePlus, Pause, CircleArrowDown,X, TriangleAlert, Eye, Bell, Trash, Folder, FolderArchive, FolderCheck, Key, ChevronLeft, PaperBag } from 'lucide-react';
 import { Color } from "@tiptap/extension-text-style";
 
 export default function CurrentProjectComp({ project_id , handleGoBack, repositoriesFound, setRepositoriesFound}) {
@@ -87,6 +90,11 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
   const [lrName, setLrName] = useState(null) //lr = linked repository
   const [fullLrName, setFullLrName] = useState(null)
   const [defaultBranch, setDefaultBranc] = useState(null)
+  const [isCreatingFolder,setIsCreatingFolder] = useState(false)
+  const [folderName,setFolderName] = useState("")
+  const [projectFolders,setProjectFolders] = useState([])
+  const [openFolders, setOpenFolders] = useState()
+  const [draggedNote, setDraggedNote] = useState(null)
   useEffect(() =>{
         async function setRepoId() {
            const r = await getLinkedRepositoryData(project_id);
@@ -101,6 +109,14 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
               setHasRepoLinked(false)
             }
         }
+        getFolders().then(r => {
+          setProjectFolders(r.folders)
+          const initialState = {}
+          for (let i = 0; i < r.folders.length; i++){
+            initialState[r.folders[i].id] = true
+          }
+          setOpenFolders(initialState)
+        })
         setRepoId();
    }, [])
   useEffect(() => {
@@ -155,7 +171,6 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
   }, [project_id,isOnProjectSettings]);
 
 
-  //Content
   async function handleCreateSnote(name,content,imp){
     const repeated = allNotesNames.find(note => note.toLowerCase() === name.toLowerCase());
     if (repeated !== undefined || name === ""){setNewNameInvalid(true); return false}
@@ -169,6 +184,16 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
     }
     setActiveWindowId(response.Snote.id)
     setWindows(prev => [...prev, {"id":response.Snote.id,"name":name}]);
+  }
+  async function handleCreateFolder(folderName) {
+    const r = createFolder(folderName)
+    if (r.Status = "Folder created"){
+      const newFolderId = r.id
+      setProjectFolders(prev => [...prev, {"name":folderName, "id":newFolderId}])
+    }
+  }
+  function folderClosing(folderId){
+    const updatedFolders = openF
   }
   //
   function startAutoSaveTimer(EveryXseconds){
@@ -299,7 +324,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
         }}/>
       </div>
       {Mnote.length > 0 ? <div className="mainNoteBtnDiv">
-        <p className="mainNoteLabel">main note:</p>
+        <p className="mainNoteLabel">main note</p>
         {Mnote.map(Mnote => <SecondaryProjectComp
          key={Mnote.id}
          importance={"M"}
@@ -321,13 +346,14 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
          setIsOnProjectSettings={setIsOnProjectSettings}
          />)}
       </div> : null}
-      <p className="mainNoteLabel">secondary note/s:</p>
+      <p className="mainNoteLabel">create</p>
       <div className="newSnoteForm">
-         <button className="addNoteBtn" onClick={() => {isCreating === false ? setIsCreating(true) : setIsCreating(false)}}>{isCreating === true ? <Minus size={18}/> : <FilePlus size={18}/>}</button>
+         <button className="addNoteBtn" onClick={() => {isCreating === false ? setIsCreating(true) : setIsCreating(false)}}>{isCreating === true ? <X size={18}/> : <FilePlus size={18}/>}</button>
+          <button className="addNoteBtn" onClick={() => {setIsCreatingFolder(!isCreatingFolder)}}>{isCreatingFolder === true ? <X size={18}/> : <FolderArchive size={18}/>}</button>
       </div>
       <div className={isCreating === true ? "newNoteFormDiv" : "hide"} >
         <div className="parentNewNoteForm">
-        <p className="Slabel">S</p>
+        <FilePlus size={18}/>
           <input type="text" placeholder="Note name? e.g. Bugs"
            maxLength={25} 
            value={nameOfNewSnote}
@@ -344,7 +370,28 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
               setNameOfSnote("")
             }
           }}
-           ><FilePlus size={15}/></button>
+           >
+            <FilePlus size={15}/></button>
+        </div>
+      </div>
+      <div className={isCreatingFolder === true ? "newNoteFormDiv" : "hide"} >
+        <div className="parentNewNoteForm">
+          <Folder size={18}/>
+          <input type="text" placeholder="Folder name? e.g. Tables"
+           maxLength={25} 
+           value={folderName}
+           onChange={e => setFolderName(e.target.value)}
+           className="noteNameInput"
+           />
+           <button 
+           className="createSnoteBtn"
+           onClick={() => {
+            if (folderName !== ""){
+              handleCreateFolder(folderName)
+            }
+          }}
+           >
+            <FolderCheck size={15}/></button>
         </div>
       </div>
      {newNameInvalid && isCreating ? <label className='alreadyExistNoteLbl'><TriangleAlert size={16}/>note already exists</label> : null}
@@ -371,12 +418,16 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
           projectWanstAutoSave={hasAutoSave}
           wantsAutoSave={Dnote.auto_save}
           setIsOnProjectSettings={setIsOnProjectSettings}
+          setDraggedNote={setDraggedNote}
          />)}
         </div>
         <div className="snotesDiv">
         <button className="DnotesBtn" onClick={() => { visualSnotes === false ? setVisualSnotes(true) : setVisualSnotes(false)}}>Created<span className={visualSnotes ? "CsetColor" : "CsetColorNonActive"}>{visualSnotes === true ? <ChevronDown size={22}/> : <ChevronRight size={22}/>}</span>{currentNoteImportance === "S" ? <p className="labelCrntNote" title={currentNoteName}>{currentNoteName}</p> : null}</button>
-        <div className={visualSnotes === true ? null : "hide"}>
-           {Snotes.map(Snote => <SecondaryProjectComp
+        <div
+         className={visualSnotes === true ? null : "hide"} 
+         >
+           {Snotes.filter(Snote => Snote.on_folder === null).map(Snote => 
+         <SecondaryProjectComp
            key={Snote.id}
            importance={"S"}
            name={Snote.name}
@@ -395,7 +446,50 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
            projectWanstAutoSave={hasAutoSave}
            wantsAutoSave={Snote.auto_save}
            setIsOnProjectSettings={setIsOnProjectSettings}
+           setDraggedNote={setDraggedNote}
          />)}
+        </div>
+        <div>
+          {visualSnotes ? projectFolders.map(f => 
+          <div
+          onDragOver={(e) => e.preventDefault()}
+          onDrop={() => {
+            assingNoteToFolder(draggedNote,f.id);
+          }}
+          key={f.id}>
+            <button onClick={() => {
+             setOpenFolders(prev => ({...prev, [f.id] : !prev[f.id]}))
+            }}
+            className="folderBtn">{f.name}
+             {openFolders[f.id] === true ? <ChevronDown color='white' size={22}/> : <ChevronRight size={22}/>}
+            </button> 
+            <div className="onFolderNotes">
+            <div
+             className={openFolders[f.id] ? 'VisualSnotes' : 'hide'}
+             >
+              {Snotes.filter(Snote => Snote.on_folder === f.id).map(Snote => <SecondaryProjectComp
+                   key={Snote.id}
+                   importance={"S"}
+                   name={Snote.name}
+                   noteId={Snote.id}
+                   content={Snote.content}
+                   windows={windows}
+                   setWindow={setWindows}
+                   activeWindowId={activeWindowId}
+                   setActiveWindowId={setActiveWindowId}
+                   modifiedNotesIds={modifiedNotesId}
+                   isOnSettings={isOnNoteSettings}
+                   setIsOnSettings={setIsOnNoteSettings}
+                   isDeletingNotes={isDeletingNotes}
+                   idsToBeDeleted={idsToBeDeleted}
+                   setIdsToBeDeleted={setIdsToBeDeleted}
+                   projectWanstAutoSave={hasAutoSave}
+                   wantsAutoSave={Snote.auto_save}
+                   setIsOnProjectSettings={setIsOnProjectSettings}
+                />)}
+            </div>
+            </div>
+          </div>) : null}
         </div>
       </div>
       </div>

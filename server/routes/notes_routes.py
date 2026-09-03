@@ -79,7 +79,7 @@ def get_secondary_notes():
     if not current_project_id:return jsonify({"Status": "No project selected"}),400 
     conn = get_conn()
     cursor = conn.cursor()
-    cursor.execute("SELECT Snote_id,Snote_name,Snote_content,importance,auto_save FROM secondary_notes WHERE on_project_id = %s", (current_project_id,))
+    cursor.execute("SELECT Snote_id,Snote_name,Snote_content,importance,auto_save,on_folder FROM secondary_notes WHERE on_project_id = %s", (current_project_id,))
     db_response = cursor.fetchall()
     retrieved_notes = [
         {
@@ -87,7 +87,8 @@ def get_secondary_notes():
             "name": row[1],
             "content": row[2],
             "importance": row[3],
-            "auto_save": row[4]
+            "auto_save": row[4],
+            "on_folder": row[5]
         }
         for row in db_response
     ]
