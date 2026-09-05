@@ -30,7 +30,7 @@ import MainPlaceHolder from "./placeholder";
 import NoteSettings from "./settings components/noteSettings";
 import ProjectSettings from "./settings components/projectSettings";
 import ChooseRepository from "./github-components/repoChoice";
-import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon, ClockArrowDown,FilePlus, Pause, CircleArrowDown,X, TriangleAlert, Eye, Bell, Trash, Folder, FolderArchive, FolderCheck, Key, ChevronLeft, PaperBag, EthernetPort, KeyIcon, DeleteIcon, FolderEdit, FolderPlus, Trash2, BadgeAlert, FolderOpen } from 'lucide-react';
+import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon, ClockArrowDown,FilePlus, Pause, CircleArrowDown,X, TriangleAlert, Eye, Bell, Trash, Folder, FolderArchive, FolderCheck, Key, ChevronLeft, PaperBag, EthernetPort, KeyIcon, DeleteIcon, FolderEdit, FolderPlus, Trash2, BadgeAlert, FolderOpen, FileText, Info } from 'lucide-react';
 import { Color } from "@tiptap/extension-text-style";
 
 export default function CurrentProjectComp({ project_id , handleGoBack, repositoriesFound, setRepositoriesFound}) {
@@ -181,7 +181,8 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
     const repeated = allNotesNames.find(note => note.toLowerCase() === name.toLowerCase());
     if (repeated !== undefined || name === ""){setNewNameInvalid(true); return false}
     else setNewNameInvalid(false)
-    const response = await newSecondaryNote(name,content,imp)
+    const onFolder = activeFolder ? activeFolder.id : null
+    const response = await newSecondaryNote(name,content,imp,onFolder)
     if (response.Status === "Secondary note created")
     {
       setNameOfSnote("")
@@ -373,9 +374,8 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
       </div>
       <div className={isCreating === true ? "newNoteFormDiv" : "hide"} >
         <div className="parentNewNoteForm">
-        <FilePlus size={18}/>
+        <FileText size={18}/>
           <input type="text" placeholder="Note name? e.g. Bugs"
-           maxLength={25} 
            value={nameOfNewSnote}
            style={{borderColor: newNameInvalid ? "red" : "var(--border)"}}
            onChange={e => setNameOfSnote(e.target.value)}
@@ -393,12 +393,24 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
            >
             <Plus size={15}/></button>
         </div>
+        <label style={{
+          color:"var(--text-secondary)",
+          alignSelf:"center",
+          justifySelf:"center",
+          fontSize:"10px",
+          marginTop:5,
+          display:"flex",
+          alignItems:"center",
+          gap:5
+        }}>
+          Going inside <span className='toAccent'>{activeFolder ? activeFolder.name : "Created"}</span>
+          <FolderOpen size={15}/>
+          </label>
       </div>
       <div className={isCreatingFolder === true ? "newNoteFormDiv" : "hide"} >
         <div className="parentNewNoteForm">
-          <Folder size={18}/>
+          <FolderOpen size={18}/>
           <input type="text" placeholder="Folder name? e.g. Tables"
-           maxLength={25} 
            value={folderName}
            onChange={e => setFolderName(e.target.value)}
            className="noteNameInput"
@@ -485,11 +497,14 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
           Created
           <span className={visualSnotes ? "CsetColor" : "CsetColorNonActive"}>{visualSnotes === true ? <ChevronDown size={22}/> : <ChevronRight size={22}/>}
           </span>{currentNoteImportance === "S" ? <p className="labelCrntNote" title={currentNoteName}>
-            <span>
+            <span
+            style={{color:"var(--text-secondary)"}}
+            >
             {activeFolder ? activeFolder.name : null}
             </span>
 
             <span
+            style={{margin:"0 5px"}}
             >{activeFolder ? "/" : null}
             </span>
 
