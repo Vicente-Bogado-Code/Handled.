@@ -120,7 +120,7 @@ def give_linked_repo_data():
     try:
         cursor.execute("SELECT github_repo_id FROM users_projects WHERE user_id = %s AND project_id = %s", (current_user_id,secure_project_id))
         r = cursor.fetchone()
-        if r[0] or r is None:
+        if r is None or r[0] is None:
             return jsonify({"Status":"This project doesn't have a repository id"}), 400
         cursor.execute("SELECT installation_id FROM handled_users WHERE id = %s", (current_user_id,))
         row = cursor.fetchone()
