@@ -231,11 +231,13 @@ def webhook():
         cursor.execute("SELECT project_id FROM users_projects WHERE github_repo_id = %s", (repository_id,))
         row = cursor.fetchone()
         if row is None:
+            print(1)
             return jsonify({"Status":"Repository isn't connected to any handled project"}), 200
         project_id = row[0]
         cursor.execute("SELECT snote_id FROM secondary_notes WHERE on_project_id = %s AND snote_name = 'Commit history'", (project_id,))
         row = cursor.fetchone()
         if row is None:
+            print(2)
             return jsonify({"Status":"This project doesn't have a commit history"}), 200
         commit_history_id = row[0]
         cursor.execute("SELECT snote_content FROM secondary_notes WHERE snote_id = %s AND on_project_id = %s", (commit_history_id,project_id))
@@ -287,6 +289,7 @@ def webhook():
             before_content = html_formatted + before_content
         cursor.execute("UPDATE secondary_notes SET snote_content = %s WHERE snote_id = %s AND on_project_id = %s", (before_content, commit_history_id,project_id))
         conn.commit()
+        print(3)
         return jsonify({"Status":"Webhook processed"}), 200
     finally:
         cursor.close()
