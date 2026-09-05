@@ -32,7 +32,7 @@ html{
 .onProjectNav{
     background-color: var(--bg-primary);
     margin: 0;
-    width:300px;
+    width:320px;
     padding: 0 20px 10px 20px;
     height: 100vh;
     border-right:1px solid var(--border);

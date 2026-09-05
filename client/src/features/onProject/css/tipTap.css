@@ -193,7 +193,7 @@
 .colorPickerValue {
   font-family: monospace;
   font-size: 12px;
-  color: var(--accent);
+  color: black;
 }
 
 .linkButtonWrapper {
@@ -270,7 +270,7 @@
   appearance: none;
   -webkit-appearance: none;
   background-color: transparent;
-  color: var(--accent);
+  color: black;
   border: none;
   outline: none;
   padding: 0 16px 0 0;

@@ -1,9 +1,9 @@
 import './css/onProject.css'
 import './css/notesBtn.css'
-import { Trash2, Circle,ClockArrowDown, Settings2, Check, CircleArrowDown} from 'lucide-react';
+import { Trash2, Circle,ClockArrowDown, Settings2, Check, CircleArrowDown, File, ClockFading} from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-export default function SecondaryProjectComp({importance,name,noteId,content,windows,setWindow,activeWindowId,setActiveWindowId,modifiedNotesIds,isOnSettings, setIsOnSettings,isDeletingNotes,idsToBeDeleted,setIdsToBeDeleted,projectWanstAutoSave, wantsAutoSave,setIsOnProjectSettings,setDraggedNote}){
+export default function SecondaryProjectComp({importance,name,noteId,content,windows,setWindow,activeWindowId,setActiveWindowId,modifiedNotesIds,isOnSettings, setIsOnSettings,isDeletingNotes,idsToBeDeleted,setIdsToBeDeleted,projectWanstAutoSave, wantsAutoSave,setIsOnProjectSettings,setDraggedNote,setDraggedNoteName}){
     wantsAutoSave = projectWanstAutoSave ? wantsAutoSave : false
     const inIt = modifiedNotesIds.find(id => id === noteId);
     const willBeDeleted = idsToBeDeleted.find(id => id === noteId)
@@ -11,7 +11,11 @@ export default function SecondaryProjectComp({importance,name,noteId,content,win
     <div className="secNoteOnNavDiv">
         <button
         draggable
-        onDragStart={() => setDraggedNote(noteId)}
+        onDragStart={() => {
+            setDraggedNote(noteId); 
+            if (!windows.find(window => window.id === noteId)){setDraggedNoteName(name)}
+            else {setDraggedNoteName(null)}
+        }}
         className={!willBeDeleted ? (!isDeletingNotes ? (activeWindowId === noteId ? "activeSnote" : (inIt ? "secondaryNoteUnsaved" : "secondaryNote")) : "deletingNotes") : "willBeDeletedClass" } onClick={
         () => {
             setIsOnProjectSettings(false)
@@ -32,7 +36,7 @@ export default function SecondaryProjectComp({importance,name,noteId,content,win
                 }
             }
         }}>
-        <span className='Slabel'>{importance}</span>
+        <span className='Slabel'><File size={15}/></span>
          <span className="noteNameOnNav" title={name}>{name}</span>
                     {!isDeletingNotes ? <div className='statusSettings'>
                         <Circle className='savedLabel' size={10} fill='currentColor'/> 
@@ -45,7 +49,7 @@ export default function SecondaryProjectComp({importance,name,noteId,content,win
                     }}>
                     <Settings2 size={15}/>
                     </div> : null}
-                    </div> : <div className='addToBeDeletedbtn' onClick={() => setWillBeDeleted(!willBeDeleted)}> {willBeDeleted ? <Check size={16}/> : <Trash2 size={16}/> }</div>}
+                    </div> : <div className='addToBeDeletedbtn'> {willBeDeleted ? <Check size={16}/> : <Trash2 size={16}/> }</div>}
             </button>
           </div>
     );

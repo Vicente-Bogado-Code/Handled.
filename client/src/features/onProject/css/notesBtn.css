@@ -12,7 +12,7 @@
     text-overflow: ellipsis;
     white-space: nowrap;
 }
-.DnotesBtn, .folderBtn{
+.DnotesBtn, .folderBtn, .deletingFolder{
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -20,15 +20,21 @@
     border: none;
     color: var(--text-secondary);
     text-align: left;
-    padding: 10px 0;
+    padding: 10px;
     font-size: 18px;
     width: 100%;
     min-width: 0;
     overflow: hidden;
     gap: 4px;
 }
-.folderBtn{
-    margin-left: 5%;
+.DnotesBtn:hover{
+    background-color: var(--bg-secondary);
+    border-radius: 8px
+}
+.DnotesBtn{
+    margin: 10px 0;
+    text-transform: uppercase;
+    color: var(--text-primary);
 }
 .CsetColor{
     display: flex;
@@ -48,6 +54,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    display: flex;
+    align-items: center;
 }
 .buttonOnNav{
     background: none;
@@ -79,9 +87,9 @@
     border: none;
     width: 97%;
     padding: 5px 5px;
-    border-radius: 5px;
     margin-bottom: 0;
-
+    margin-top: 10px;
+    padding-bottom: 10px;
 }
 .newNoteFormDiv button{
     display: flex;
@@ -120,9 +128,9 @@
     cursor: text;
     font-weight: 550;
     text-align: left;
-    width: 200px;
+    width: 90%;
     margin-left: 5px;
-    height: 20px;
+    height: 30px;
     padding: 5px 8px;
     border: 1px solid var(--border);
     border-radius: 4px;
@@ -131,20 +139,30 @@
     outline: none;
 }
 
-.addNoteBtn{
+.addNoteBtn, .deleteModeBtn{
     cursor: pointer;
     width: 40%;
-    height: 35px;
+    height: 40px;
     font-size: 15px;
     background-color: var(--transparent-blue-btns);
     border: none;
     color: var(--text-primary);
     border-radius: 8px;
     margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
 }
 .addNoteBtn:hover{
     transform: scale(1.01);
     background-color: rgba(33, 120, 241, 0.5);
+}
+.deleteModeBtn{
+    background-color: rgba(255, 0, 0, 0.2);
+}
+.deleteModeBtn:hover{
+    background-color: rgba(255, 0, 0, 0.5);
 }
 .autoSaveOnNewNoteFormDiv{
     margin: 0;
@@ -155,16 +173,16 @@
     color: greenyellow;
 }
 .createSnoteBtn{
-    background-color: var(--transparent-green-btns);
+    background-color: var(--transparent-blue-btns);
     color: var(--text-primary);
     border-radius: 8px;
     border: none;
     cursor: pointer;
-    width: 50px;
-    height: 25px;
+    width: 55px;
+    height: 35px;
 }
 .createSnoteBtn:hover{
-    background-color: rgb(7, 241, 7,0.3);
+    background-color: rgba(33, 120, 241, 0.5);
 }
 
 .snotesDiv{
@@ -187,19 +205,19 @@
     color: var(--text-primary);
     text-align: center;
     width: 100%;
-    height: 40px;
+    height: 42px;
     font-size: 14px;
     cursor: pointer;
     margin-bottom: 5px;
     padding: 5px 5px;
     border-radius: 5px;
     font-weight: 550;
+    margin-left: 20px;
 }
 .secondaryNote svg{
     color: rgb(48, 144, 48);
 }
 .secondaryNote{
-    background-color: rgb(48, 144, 48,0.080);
     color: var(--text-secondary);
 }
 
@@ -216,11 +234,12 @@
     color: orange;
 }
 .secondaryNote:hover, .secondaryNoteUnsaved:hover{
-    background-color: var(--bg-primary);
+    background-color: var(--bg-secondary);
 }
 .activeSnote{
     border-radius: 0;
-    border-left: 1px solid orange;
+    background-color: var(--bg-secondary);
+    padding: 0 10px;
 }
 .Slabel{
     color: var(--text-primary);
@@ -286,7 +305,7 @@
 
 
 .willBeDeletedClass{
-    background-color: rgb(255, 0, 0, 0.50);
+    background-color: rgb(255, 0, 0, 0.1);
 }
 .addToBeDeletedbtn{
     cursor: pointer;
@@ -299,3 +318,110 @@
     color: var(--text-primary);
 }
 
+.folderBtn, .deletingFolder{
+    width: 100%;
+    height: 100%;
+    padding: 10px 5px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+    display:flex ;
+    align-items: center;
+    color: var(--text-primary);
+}
+.folderBtn svg, .deletingFolder svg{
+    flex-shrink:0;
+}
+.folderBtn:hover{
+    background-color: var(--bg-secondary);
+}
+.deletingFolder{
+    color: var(--text-primary);
+    background-color: rgb(255, 0, 0, 0.2);
+}
+.deleteAllSelectedbtn{
+    background-color: rgb(255, 0, 0, 0.2);
+    width: 100%;
+    margin-top: 8px;
+    height: 35px;
+    border-radius: 8px;
+    border: none;
+    color: var(--text-primary);
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    cursor: pointer;
+}
+.deleteAllSelectedbtn:hover{
+    background-color: rgb(255, 0, 0, 0.5);
+}
+
+.deleteNotesInsideDiv{
+    margin-top: 5px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    font-size: 14px;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.deletingSwitch{
+    cursor: pointer;
+    width: 38px;
+    height: 20px;
+    border-radius: 10px;
+    border: none;
+    background-color: var(--bg-secondary);
+    padding: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    transition: background-color 0.15s ease;
+}
+.settingsToggleKnobD{
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background-color: var(--text-primary);
+}
+.deletingSwitch.toggleOn{
+    background-color:  rgba(33, 120, 241, 0.5);
+    justify-content: flex-end;
+}
+
+.addBtnsDeleting{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    gap: 10px;
+    background: none;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 8px;
+}
+
+.selectAllBtn{
+    cursor: pointer;
+    width: 33%;
+    border: none;
+    border-radius: 8px;
+    height: 30px;
+    color: var(--text-secondary);
+    background-color: var(--bg-primary);
+}
+.selectAllBtn:hover{
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
+}
+
+.deletingNotesDiv{
+    border: 1px solid rgb(191, 32, 32,0.2);
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 20px;
+}

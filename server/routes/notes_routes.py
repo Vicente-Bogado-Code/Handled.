@@ -57,14 +57,15 @@ def add_secondary_note():
     imp = data.get("importance")
     conn = get_conn()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO secondary_notes(Snote_name,Snote_content,on_project_id,importance,auto_save) VALUES (%s,%s,%s,%s,%s) RETURNING Snote_id,Snote_name, Snote_content,importance,auto_save", (Snote_name,Snote_content,current_project_id,imp,True))
+    cursor.execute("INSERT INTO secondary_notes(Snote_name,Snote_content,on_project_id,importance,auto_save, on_folder) VALUES (%s,%s,%s,%s,%s,%s) RETURNING Snote_id,Snote_name, Snote_content,importance,auto_save,on_folder", (Snote_name,Snote_content,current_project_id,imp,True, None))
     db_response = cursor.fetchone()
     note = {
         "id": db_response[0],
         "name": db_response[1],
         "content": db_response[2],
         "importance": db_response[3],
-        "auto_save": db_response[4]
+        "auto_save": db_response[4],
+        "on_folder" : db_response[5]
     }
     conn.commit()
     cursor.close()

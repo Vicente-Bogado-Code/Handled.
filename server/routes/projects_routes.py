@@ -317,7 +317,6 @@ def create_folder():
     if not current_project_id:return jsonify({"Status": "No project selected"}),400 
     data = request.get_json()
     folder_name = data.get("folderName")
-    if not folder_name or not folder_name.strip():return jsonify({"Status": "Folder name required"}), 400
     conn = get_conn()
     cursor = conn.cursor()
     try:
@@ -369,9 +368,37 @@ def assing_note_to_folder():
         cursor.execute("SELECT 1 FROM users_projects WHERE user_id = %s AND project_id = %s", (current_user_id, current_project_id))
         if cursor.fetchone() is None: return jsonify({"Status": "Not authorized for this project"}), 403
         cursor.execute("UPDATE secondary_notes SET on_folder = %s WHERE snote_id = %s AND on_project_id = %s", (folder_id,note_id,current_project_id))
-        if cursor.rowcount == 0: return jsonify({"Status": "Note not found"}), 404
         conn.commit()
         return jsonify({"Status":"Note appended"}),200
+    finally:
+        cursor.close()
+        conn.close()
+
+
+@projects_bp.route("/deleteFolder", methods=["POST"])
+def delete_folder():
+    current_user_id = session.get("user_id")
+    if not current_user_id: return jsonify({"Status": "Not logged"}), 401
+    current_project_id = session.get("current_project_id")
+    if not current_project_id: return jsonify({"Status": "No project selected"}), 400
+    data = request.get_json()
+    if not data or "folderId" not in data or "alsoNotes" not in data:
+        return jsonify({"Status":"Missing fields"}), 400
+    folder_id = data.get("folderId")
+    notes_bool = data.get("alsoNotes")
+    print(folder_id, notes_bool)
+    conn = get_conn()
+    cursor = conn.cursor()
+    try:
+        cursor.execute("SELECT 1 FROM users_projects WHERE user_id = %s AND project_id = %s", (current_user_id, current_project_id))
+        if cursor.fetchone() is None: return jsonify({"Status": "Not authorized for this project"}), 403
+        if notes_bool == False:
+            cursor.execute("UPDATE secondary_notes SET on_folder = null WHERE on_folder = %s AND on_project_id = %s",(folder_id,current_project_id))
+        else:
+            cursor.execute("DELETE FROM secondary_notes WHERE on_project_id = %s AND on_folder = %s", (current_project_id,folder_id))
+        cursor.execute("DELETE FROM folders WHERE folder_id = %s AND project_id = %s",(folder_id,current_project_id))
+        conn.commit()
+        return jsonify({"Status":"Folder deleted"}), 200
     finally:
         cursor.close()
         conn.close()

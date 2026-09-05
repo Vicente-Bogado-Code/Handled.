@@ -17,6 +17,7 @@ import { getProjectPreferences } from "../api/getDataRequests/getProjectPreferen
 import { changeProjectPreferences } from "../api/alterRequests/changeProjectPreferences";
 import { getLinkedRepositoryData } from "../api/third-party-APIs/github_api";
 import { createFolder } from '../api/createRequest/createFolder';
+import { deleteFolder } from '../api/deleteRequests/deleteFolder';
 import { getFolders } from '../api/getDataRequests/getProjectFolders';
 import { assingNoteToFolder } from '../api/alterRequests/addNoteToFolder';
 import SecondaryProjectComp from "./ secNote";
@@ -29,7 +30,7 @@ import MainPlaceHolder from "./placeholder";
 import NoteSettings from "./settings components/noteSettings";
 import ProjectSettings from "./settings components/projectSettings";
 import ChooseRepository from "./github-components/repoChoice";
-import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon, ClockArrowDown,FilePlus, Pause, CircleArrowDown,X, TriangleAlert, Eye, Bell, Trash, Folder, FolderArchive, FolderCheck, Key, ChevronLeft, PaperBag } from 'lucide-react';
+import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon, ClockArrowDown,FilePlus, Pause, CircleArrowDown,X, TriangleAlert, Eye, Bell, Trash, Folder, FolderArchive, FolderCheck, Key, ChevronLeft, PaperBag, EthernetPort, KeyIcon, DeleteIcon, FolderEdit, FolderPlus, Trash2, BadgeAlert, FolderOpen } from 'lucide-react';
 import { Color } from "@tiptap/extension-text-style";
 
 export default function CurrentProjectComp({ project_id , handleGoBack, repositoriesFound, setRepositoriesFound}) {
@@ -95,6 +96,11 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
   const [projectFolders,setProjectFolders] = useState([])
   const [openFolders, setOpenFolders] = useState()
   const [draggedNote, setDraggedNote] = useState(null)
+  const [draggedNoteName,setDraggedNoteName] = useState(null)
+  const [deleteAlsoNotes,setDeleteAlsoNotes] = useState(false)
+  const activeFolder = activeSnote ? projectFolders.find(f => f.id === activeSnote.on_folder ? f.id : null) : null
+  const [foldersIdsToBeDeleted, setFoldersIdsToBeDeleted] = useState([])
+  const allFoldersIds = projectFolders ? projectFolders.map(f => f.id) : null
   useEffect(() =>{
         async function setRepoId() {
            const r = await getLinkedRepositoryData(project_id);
@@ -186,14 +192,12 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
     setWindows(prev => [...prev, {"id":response.Snote.id,"name":name}]);
   }
   async function handleCreateFolder(folderName) {
-    const r = createFolder(folderName)
+    const r = await createFolder(folderName)
     if (r.Status = "Folder created"){
       const newFolderId = r.id
+      setFolderName("")
       setProjectFolders(prev => [...prev, {"name":folderName, "id":newFolderId}])
     }
-  }
-  function folderClosing(folderId){
-    const updatedFolders = openF
   }
   //
   function startAutoSaveTimer(EveryXseconds){
@@ -245,8 +249,17 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
     setWindows(prev => prev.filter(window => window.id !== clickedWindowId));
   }
   //Delete Snote
-  async function handleDeleteSnote(idsToBeDeletedArray){
+  async function handleDeleteSnote(idsToBeDeletedArray, foldersIdsToBeDeleted, alsoNotes){
     clearInterval(timerRef.current)
+    for (let i = 0; i < foldersIdsToBeDeleted.length; i++){
+      const currentId = foldersIdsToBeDeleted[i]
+      const response = await deleteFolder(currentId,alsoNotes)
+      if (response.Status === "Folder deleted"){
+            setProjectFolders(prev => prev.filter(f => f.id !== currentId));
+            setMySecNotes(prev => prev.map(n => n.on_folder === currentId ? {...n, on_folder:null} : n ))
+            startAutoSaveTimer(0)
+            setIsDeletingNotes(false)
+      }}
     for (let i = 0; i < idsToBeDeletedArray.length; i++){
       const currentId = idsToBeDeletedArray[i]
       const response = await deleteSecNote(currentId)
@@ -256,8 +269,8 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
             setWindows(prev => prev.filter(w => w.id !== currentId));
             setActiveWindowId(null);
             startAutoSaveTimer(0)
+            setIsDeletingNotes(false)
     }
-
     }
   }
 
@@ -324,7 +337,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
         }}/>
       </div>
       {Mnote.length > 0 ? <div className="mainNoteBtnDiv">
-        <p className="mainNoteLabel">main note</p>
+        <p className="mainNoteLabel">- main</p>
         {Mnote.map(Mnote => <SecondaryProjectComp
          key={Mnote.id}
          importance={"M"}
@@ -346,10 +359,17 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
          setIsOnProjectSettings={setIsOnProjectSettings}
          />)}
       </div> : null}
-      <p className="mainNoteLabel">create</p>
+      <p className="mainNoteLabel">- modify</p>
       <div className="newSnoteForm">
          <button className="addNoteBtn" onClick={() => {isCreating === false ? setIsCreating(true) : setIsCreating(false)}}>{isCreating === true ? <X size={18}/> : <FilePlus size={18}/>}</button>
-          <button className="addNoteBtn" onClick={() => {setIsCreatingFolder(!isCreatingFolder)}}>{isCreatingFolder === true ? <X size={18}/> : <FolderArchive size={18}/>}</button>
+
+        <button className="addNoteBtn" onClick={() => {setIsCreatingFolder(!isCreatingFolder)}}>{isCreatingFolder === true ? <X size={18}/> : <FolderPlus size={18}/>}</button>
+
+        <button className="deleteModeBtn" onClick={() => {
+          setIsDeletingNotes(!isDeletingNotes); 
+          setIdsToBeDeleted([]); setFoldersIdsToBeDeleted([]);
+          setIsCreating(false); setIsCreatingFolder(false)
+          }}>{isDeletingNotes === true ? <X size={18}/> : <DeleteIcon size={18}/>}</button>
       </div>
       <div className={isCreating === true ? "newNoteFormDiv" : "hide"} >
         <div className="parentNewNoteForm">
@@ -371,7 +391,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
             }
           }}
            >
-            <FilePlus size={15}/></button>
+            <Plus size={15}/></button>
         </div>
       </div>
       <div className={isCreatingFolder === true ? "newNoteFormDiv" : "hide"} >
@@ -391,13 +411,44 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
             }
           }}
            >
-            <FolderCheck size={15}/></button>
+            <Plus size={15}/></button>
+        </div>
+      </div>
+      <div className={isDeletingNotes === true ? "deletingNotesDiv" : "hide"} >
+        <div className='addBtnsDeleting'>
+          <button className='selectAllBtn' onClick={() => setFoldersIdsToBeDeleted(allFoldersIds)}>Folders</button>
+          <button className='selectAllBtn' onClick={() => setIdsToBeDeleted(allNotesIds)}>Notes</button>
+          <button className='selectAllBtn' onClick={() => {setIdsToBeDeleted(allNotesIds); setFoldersIdsToBeDeleted(allFoldersIds)}}>All</button>
+          <button className='selectAllBtn' onClick={() => {setIdsToBeDeleted([]); setFoldersIdsToBeDeleted([])}}>None</button>
+        </div>
+        <button className='deleteAllSelectedbtn' onClick={() => {
+          handleDeleteSnote(idsToBeDeleted,foldersIdsToBeDeleted,deleteAlsoNotes)
+        }}>DELETE</button>
+          <div className='deleteNotesInsideDiv'>
+           {foldersIdsToBeDeleted.length > 0 ? <label htmlFor='deleteAlsoNotes' style={{display:"flex", alignItems:"center", gap:5}}><BadgeAlert size={18}/>Delete notes inside folders</label> : null}
+            {foldersIdsToBeDeleted.length > 0 ? <button className={`deletingSwitch ${deleteAlsoNotes ? "toggleOn" : ""}`}
+            onClick={() => {setDeleteAlsoNotes(!deleteAlsoNotes);}}
+            >
+                  <div className="settingsToggleKnobD"></div>
+            </button> : null}
         </div>
       </div>
      {newNameInvalid && isCreating ? <label className='alreadyExistNoteLbl'><TriangleAlert size={16}/>note already exists</label> : null}
 
       <div className="secondaryNotesDiv">
-        {Dnotes.length > 0 ? (<button className="DnotesBtn" onClick={() => { visualDnotes === false ? setVisualDnotes(true) : setVisualDnotes(false)}}>Default<span className={visualDnotes ? "CsetColor" : "CsetColorNonActive"}>{visualDnotes === true ? <ChevronDown size={22}/> : <ChevronRight size={22}/>}</span>{currentNoteImportance === "D" ? <p className="labelCrntNote" title={currentNoteName}>{currentNoteName}</p> : null}</button>) : null}
+        {Dnotes.length > 0 ? 
+        (<button className="DnotesBtn" 
+        onClick={() => 
+        { visualDnotes === false ? setVisualDnotes(true) :
+         setVisualDnotes(false)}}>
+          Default
+          <span className={visualDnotes ? "CsetColor" : "CsetColorNonActive"}>
+          {visualDnotes === true ? <ChevronDown size={22}/> : <ChevronRight size={22}/>}
+          </span>{currentNoteImportance === "D" ? 
+          <p className="labelCrntNote" title={currentNoteName}>{currentNoteName}</p> :
+           null}
+           </button>) :
+            null}
         <div className={visualDnotes === true ? null : "hide"}>
           {Dnotes.map(Dnote => <SecondaryProjectComp
           key={Dnote.id}
@@ -419,10 +470,34 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
           wantsAutoSave={Dnote.auto_save}
           setIsOnProjectSettings={setIsOnProjectSettings}
           setDraggedNote={setDraggedNote}
+          setDraggedNoteName={setDraggedNoteName}
          />)}
         </div>
         <div className="snotesDiv">
-        <button className="DnotesBtn" onClick={() => { visualSnotes === false ? setVisualSnotes(true) : setVisualSnotes(false)}}>Created<span className={visualSnotes ? "CsetColor" : "CsetColorNonActive"}>{visualSnotes === true ? <ChevronDown size={22}/> : <ChevronRight size={22}/>}</span>{currentNoteImportance === "S" ? <p className="labelCrntNote" title={currentNoteName}>{currentNoteName}</p> : null}</button>
+        <button className="DnotesBtn"
+         onClick={() => { visualSnotes === false ? setVisualSnotes(true) : setVisualSnotes(false)}}
+         onDragOver={(e) => e.preventDefault()}
+         onDrop={() => {
+            assingNoteToFolder(draggedNote,null);
+            setMySecNotes(prev => prev.map(note => note.id === draggedNote ? {...note, on_folder:null} : note))
+          }}
+         >
+          Created
+          <span className={visualSnotes ? "CsetColor" : "CsetColorNonActive"}>{visualSnotes === true ? <ChevronDown size={22}/> : <ChevronRight size={22}/>}
+          </span>{currentNoteImportance === "S" ? <p className="labelCrntNote" title={currentNoteName}>
+            <span>
+            {activeFolder ? activeFolder.name : null}
+            </span>
+
+            <span
+            >{activeFolder ? "/" : null}
+            </span>
+
+            <span  style={{
+              color:"var(--text-primary)",
+            }}>{currentNoteName}</span>
+            </p> : null}
+          </button>
         <div
          className={visualSnotes === true ? null : "hide"} 
          >
@@ -447,21 +522,40 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
            wantsAutoSave={Snote.auto_save}
            setIsOnProjectSettings={setIsOnProjectSettings}
            setDraggedNote={setDraggedNote}
+           setDraggedNoteName={setDraggedNoteName}
          />)}
         </div>
         <div>
           {visualSnotes ? projectFolders.map(f => 
           <div
           onDragOver={(e) => e.preventDefault()}
-          onDrop={() => {
-            assingNoteToFolder(draggedNote,f.id);
+          onDrop={async () => {
+            const r = await assingNoteToFolder(draggedNote,f.id);
+            setMySecNotes(prev => prev.map(note => note.id === draggedNote ? {...note, on_folder:f.id} : note))
           }}
+          style={{width:"100%", borderLeft:"1px solid var(--border)", borderRadius:3, marginBottom:10, paddingLeft:10}}
           key={f.id}>
             <button onClick={() => {
              setOpenFolders(prev => ({...prev, [f.id] : !prev[f.id]}))
             }}
-            className="folderBtn">{f.name}
-             {openFolders[f.id] === true ? <ChevronDown color='white' size={22}/> : <ChevronRight size={22}/>}
+            className={foldersIdsToBeDeleted.find(id => id === f.id) ? "deletingFolder" : "folderBtn"}> 
+            <FolderOpen size={18}/>
+            <p style={{
+               whiteSpace: "nowrap",
+               overflow: "hidden",
+               textOverflow: "ellipsis",
+               margin:0,
+               width:"100%"
+            }}>{f.name}</p>
+            {openFolders[f.id] === true ? <ChevronDown color='white' size={22}/> : <ChevronRight size={22}/>}
+            {isDeletingNotes ? <DeleteIcon size={18} 
+            onClick={(e) => {e.stopPropagation();
+              if(foldersIdsToBeDeleted.find(id => id === f.id)) {
+                setFoldersIdsToBeDeleted(prev => prev.filter(id => id !== f.id))
+                return
+              }
+              setFoldersIdsToBeDeleted(prev => [...prev, f.id])
+            }}/> : null}
             </button> 
             <div className="onFolderNotes">
             <div
@@ -486,6 +580,8 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
                    projectWanstAutoSave={hasAutoSave}
                    wantsAutoSave={Snote.auto_save}
                    setIsOnProjectSettings={setIsOnProjectSettings}
+                   setDraggedNote={setDraggedNote}
+                   setDraggedNoteName={setDraggedNoteName}
                 />)}
             </div>
             </div>
@@ -552,7 +648,14 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
       setFullLrName={setFullLrName}
       setDefaultBranch={setDefaultBranc}
      />) : null}
-     <div className={isOnNoteSettings === true || isOnProjectSettings === true ? "hide" : (windows.length > 0 ? "navWindows" : "navWindowsOnPH")}>
+     <div 
+     className={isOnNoteSettings === true || isOnProjectSettings === true ? "hide" : (windows.length > 0 ? "navWindows" : "navWindowsOnPH")}
+     onDragOver={(e) => e.preventDefault()}
+     onDrop={() => {
+      if (draggedNoteName === null) return
+        setWindows(prev => [...prev, {"id":draggedNote,"name":draggedNoteName}]);
+    }}
+     >
       {windows.map(window => <Window 
       key={window.id}
       windowName={window.name}
