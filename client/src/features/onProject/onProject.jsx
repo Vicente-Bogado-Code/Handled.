@@ -116,7 +116,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
             }
         }
         getFolders().then(r => {
-          setProjectFolders(r.folders)
+          setProjectFolders(r.folders || [])
           const initialState = {}
           for (let i = 0; i < r.folders.length; i++){
             initialState[r.folders[i].id] = true
