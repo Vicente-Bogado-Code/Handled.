@@ -5,7 +5,6 @@ import ProjectCard from "../project_cards";
 export default function MyProjects({
     isCreating,
     setIsCreating,
-
     projectName,
     setProjectName,
     description,
@@ -24,23 +23,17 @@ export default function MyProjects({
     setChoiceCommitHistory,
     choicePublic,
     setChoicePublic,
-
     handleCreate,
-
     username,
-
     searchTerm,
     setSearchTerm,
-
     showActive,
     setShowActive,
     showDone,
     setShowDone,
-
     projectsFound,
     activeProjects,
     markedAsDone,
-
     handleStatus,
     handleProjectClick,
     handleChangeRepo,

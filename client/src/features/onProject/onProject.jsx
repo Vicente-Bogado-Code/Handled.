@@ -101,57 +101,19 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
   const activeFolder = activeSnote ? projectFolders.find(f => f.id === activeSnote.on_folder ? f.id : null) : null
   const [foldersIdsToBeDeleted, setFoldersIdsToBeDeleted] = useState([])
   const allFoldersIds = projectFolders ? projectFolders.map(f => f.id) : null
-  useEffect(() =>{
-        async function setRepoId() {
-           const r = await getLinkedRepositoryData(project_id);
-            if(r.Status === "Repository id retrieved"){
-                setHasRepoLinked(true)
-                const repositoryData = r.repoData
-                setLrName(repositoryData.name)
-                setFullLrName(repositoryData.full_name)
-                setDefaultBranc(repositoryData.default_branch)
-            }
-            else{
-              setHasRepoLinked(false)
-            }
-        }
-        getFolders().then(r => {
-          setProjectFolders(r.folders || [])
+  useEffect(() => {
+    setCurrentProject(project_id).then(response => {
+      if (response.Status === "Current project set") {
+        setProjectName(response.projectName);
+         getFolders().then(r => {
+          const folders = r.folders || []
+          setProjectFolders(folders)
           const initialState = {}
           for (let i = 0; i < r.folders.length; i++){
             initialState[r.folders[i].id] = true
           }
           setOpenFolders(initialState)
         })
-        setRepoId();
-   }, [])
-  useEffect(() => {
-    function onEnterDown(e){
-      if (e.key === "Enter" && isCreating){
-        const validate = handleCreateSnote(nameOfNewSnote,title,"S");
-      }
-    }
-     document.addEventListener("keydown",onEnterDown)
-     return () => document.removeEventListener('keydown',onEnterDown)
-  },[nameOfNewSnote])
-
-  useEffect(() => {
-    if(nameOfNewSnote === ""){
-      setNewNameInvalid(false)
-    }
-  }, [nameOfNewSnote])
-  useEffect(() =>{
-    mySecNotesRef.current = mySecNotes;
-  }, [mySecNotes])
-  useEffect(() =>{
-    modifiedNotesIdRef.current = modifiedNotesId;
-  }, [modifiedNotesId])
-
-  useEffect(() => {
-    setCurrentProject(project_id).then(response => {
-      if (response.Status === "Current project set") {
-        setProjectName(response.projectName);
-
         getSecondaryNotes().then(response => setMySecNotes(response.Snotes));
         getMyProjects().then(data => {
           const p = data.projects.find(pr => pr.project_id === project_id)
@@ -175,6 +137,44 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
       }
     });
   }, [project_id,isOnProjectSettings]);
+  
+  useEffect(() =>{
+        async function setRepoId() {
+           const r = await getLinkedRepositoryData(project_id);
+            if(r.Status === "Repository id retrieved"){
+                setHasRepoLinked(true)
+                const repositoryData = r.repoData
+                setLrName(repositoryData.name)
+                setFullLrName(repositoryData.full_name)
+                setDefaultBranc(repositoryData.default_branch)
+            }
+            else{
+              setHasRepoLinked(false)
+            }
+        }
+        setRepoId();
+   }, [project_id])
+  useEffect(() => {
+    function onEnterDown(e){
+      if (e.key === "Enter" && isCreating){
+        const validate = handleCreateSnote(nameOfNewSnote,title,"S");
+      }
+    }
+     document.addEventListener("keydown",onEnterDown)
+     return () => document.removeEventListener('keydown',onEnterDown)
+  },[nameOfNewSnote])
+
+  useEffect(() => {
+    if(nameOfNewSnote === ""){
+      setNewNameInvalid(false)
+    }
+  }, [nameOfNewSnote])
+  useEffect(() =>{
+    mySecNotesRef.current = mySecNotes;
+  }, [mySecNotes])
+  useEffect(() =>{
+    modifiedNotesIdRef.current = modifiedNotesId;
+  }, [modifiedNotesId])
 
 
   async function handleCreateSnote(name,content,imp){
