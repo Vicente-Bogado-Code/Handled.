@@ -58,11 +58,32 @@ html{
 .goBackDiv:hover{
     color: var(--accent);
 }
+.powerNpublicLbl{
+    display: flex;
+    align-items:center ;
+    justify-content: space-between;
+    margin: 0;
+    gap: 10px;
+
+}
+.powerLbl{
+    color: var(--accent);
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
 
 
 .titleDiv{
     display: flex;
     justify-content: center;
+}
+.byLbl{
+    color: var(--text-primary);
+    margin: 0;
+    text-align: center;
+    width: 100%;
 }
 
 .mainOnProject {
@@ -77,11 +98,15 @@ html{
     background-color: var(--bg-secondary);
     gap: 4px;
     min-width: 100%;
-    width: fit-content;
     min-height: 44px;
     padding: 0;
     display: flex;
     align-items: flex-end;
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) var(--bg-primary);
     position: sticky;
     top: 0;
     z-index: 6;
@@ -92,6 +117,7 @@ html{
     background: none;
     border: none;
     height: 40px;
+    width:min-content;
     margin: 0;
     font-size: 0.85rem;
     display: flex;
@@ -189,14 +215,13 @@ html{
     width: 50vw;
     border: 1px solid var(--border);
     border-radius: 12px;
-    min-height: 80vh;
+    min-height: 90vh;
     height: fit-content;
-    padding: 24px 32px;
+    padding: 16px 32px;
+    margin-top: 20px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-self: center;
-    margin-top: 20px;
     align-items: center;
 }
 .windowContent .tiptap.ProseMirror {
@@ -386,6 +411,7 @@ html{
     background-color: var(--bg-primary);
     width: 100%;
     box-sizing: border-box;
+    margin-bottom: 0;
 }
 
 .titleOnNav {
@@ -397,6 +423,7 @@ html{
     text-overflow: ellipsis;
     flex: 1;       
     min-width: 0;  
+    text-align: center;
 }
 
 .goBackIcon {

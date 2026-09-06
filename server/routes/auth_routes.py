@@ -1,6 +1,6 @@
 from flask import Blueprint,session,request, jsonify
 import bcrypt
-from db import get_conn, get_user_data
+from db import get_conn, get_user_data,with_resolved_power
 
 
 auth_bp = Blueprint('auth', __name__)
@@ -92,7 +92,7 @@ def delete_account():
         cursor.execute("SELECT * FROM handled_users WHERE id = %s", (current_user_id,))
         r = cursor.fetchone()
         if r is None:
-            return jsonify({"Status":"Account doesn't exist"}),404
+            return jsonify({"Status":"Account doesn't exist"}),404 
         cursor.execute("DELETE FROM secondary_notes WHERE on_project_id IN (SELECT project_id FROM users_projects WHERE user_id = %s)", (current_user_id,))
         cursor.execute("DELETE FROM users_projects WHERE user_id = %s", (current_user_id,))
         cursor.execute("DELETE FROM handled_users WHERE id = %s", (current_user_id,))
@@ -106,7 +106,6 @@ def delete_account():
 @auth_bp.route("/whoAmI", methods=["GET"])
 def give_data():
     current_user_id = session.get("user_id")
-    if not current_user_id:return jsonify({"Status": "Not logged"}),401
     current_project_id = session.get("current_project_id") 
     conn = get_conn()
     cursor = conn.cursor()

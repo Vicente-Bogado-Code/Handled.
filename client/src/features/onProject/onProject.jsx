@@ -30,7 +30,7 @@ import MainPlaceHolder from "./placeholder";
 import NoteSettings from "./settings components/noteSettings";
 import ProjectSettings from "./settings components/projectSettings";
 import ChooseRepository from "./github-components/repoChoice";
-import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon, ClockArrowDown,FilePlus, Pause, CircleArrowDown,X, TriangleAlert, Eye, Bell, Trash, Folder, FolderArchive, FolderCheck, Key, ChevronLeft, PaperBag, EthernetPort, KeyIcon, DeleteIcon, FolderEdit, FolderPlus, Trash2, BadgeAlert, FolderOpen, FileText, Info } from 'lucide-react';
+import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon, ClockArrowDown,FilePlus, Pause, CircleArrowDown,X, TriangleAlert, Eye, Bell, Trash, Folder, FolderArchive, FolderCheck, Key, ChevronLeft, PaperBag, EthernetPort, KeyIcon, DeleteIcon, FolderEdit, FolderPlus, Trash2, BadgeAlert, FolderOpen, FileText, Info, LockIcon, LockOpenIcon, WholeWordIcon, Globe, User2Icon } from 'lucide-react';
 import { Color } from "@tiptap/extension-text-style";
 
 export default function CurrentProjectComp({ project_id , handleGoBack, repositoriesFound, setRepositoriesFound}) {
@@ -101,11 +101,19 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
   const activeFolder = activeSnote ? projectFolders.find(f => f.id === activeSnote.on_folder ? f.id : null) : null
   const [foldersIdsToBeDeleted, setFoldersIdsToBeDeleted] = useState([])
   const allFoldersIds = projectFolders ? projectFolders.map(f => f.id) : null
+  const [projectURL,setProjectURL] = useState("")
+  const [power,setPower] = useState(null)
+  const [by,setBy] = useState(null)
   useEffect(() => {
+    try{
     setCurrentProject(project_id).then(response => {
-      if (response.Status === "Current project set") {
+      if (response.Status === "Current project set") 
+      {
         setProjectName(response.projectName);
-         getFolders().then(r => {
+        setProjectURL(response.projectURL)
+        setPower(response.power)
+        setBy(response.by)
+        getFolders().then(r => {
           const folders = r.folders || []
           setProjectFolders(folders)
           const initialState = {}
@@ -135,7 +143,11 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
                     setHasTheme(r.projectPreferences[0].theme)}
           })
       }
-    });
+    });}
+    catch (error){
+      console.log(error)
+    }
+
   }, [project_id,isOnProjectSettings]);
   
   useEffect(() =>{
@@ -238,6 +250,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
     if (wantsSaving && hasAutoSave){startAutoSaveTimer(0)}
   }
   async function handleSaveContent(Snote_id,content) {
+    if (power !== "owner") {alert("You don't have permission to do that.");  return}
     const response = await saveNoteContent(Snote_id,content)
     setModifiedNotesId(prev => prev.filter(id => id !== activeSnoteId))
   }
@@ -328,16 +341,25 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
   <div className={hasTheme === 1 ? "mainDiv" : "mainDivWhite"}>
     <nav className="onProjectNav">
       <div className="goBackAndSettingsDiv">
-        <Undo2Icon size={18} className="goBackIcon" onClick={() => {handleGoBack("")}}/>
+        {power === "owner" ? <Undo2Icon size={18} className="goBackIcon" onClick={() => {handleGoBack("")}}/> : null}
         <h3 className="titleOnNav" title={projectName}>{projectName}</h3>
         
-        <SettingsIcon size={18} className="settingsIcon" 
+        {power === "owner" ? <SettingsIcon size={18} className="settingsIcon" 
         onClick={() => {
           setIsOnProjectSettings(!isOnProjectSettings);
           setIsOnNoteSettings(false);
-        }}/>
+        }}/> : null}
       </div>
-      {Mnote.length > 0 ? <div className="mainNoteBtnDiv">
+      {power !== "owner" ? <label className='byLbl'><span style={{fontSize:10}}>by</span> {by}</label> : null}
+         <label className='powerNpublicLbl'>{power === "owner" ? 
+          <label className='powerLbl'><User2Icon size={16}/> Owner </label> :
+          <label className='powerLbl'> <Eye size={16}/> Visitor </label>}
+
+          {hasIsPublic ? 
+          <Globe size={16} color='orange'/>  : 
+          <LockIcon size={16} color='orange'/>}
+          </label>
+      {Mnote.length > 0 ? <div className="mainNoteBtnDiv" style={{marginBottom:power === "owner" ? 10 : 0}}>
         <p className="mainNoteLabel">- main</p>
         {Mnote.map(Mnote => <SecondaryProjectComp
          key={Mnote.id}
@@ -358,10 +380,11 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
          projectWanstAutoSave={hasAutoSave}
          wantsAutoSave={Mnote.auto_save}
          setIsOnProjectSettings={setIsOnProjectSettings}
+         power={power}
          />)}
       </div> : null}
-      <p className="mainNoteLabel">- modify</p>
-      <div className="newSnoteForm">
+      {power === "owner" ? <p className="mainNoteLabel">- modify</p> : null}
+      {power === "owner" ? <div className="newSnoteForm">
          <button className="addNoteBtn" onClick={() => {isCreating === false ? setIsCreating(true) : setIsCreating(false)}}>{isCreating === true ? <X size={18}/> : <FilePlus size={18}/>}</button>
 
         <button className="addNoteBtn" onClick={() => {setIsCreatingFolder(!isCreatingFolder)}}>{isCreatingFolder === true ? <X size={18}/> : <FolderPlus size={18}/>}</button>
@@ -371,7 +394,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
           setIdsToBeDeleted([]); setFoldersIdsToBeDeleted([]);
           setIsCreating(false); setIsCreatingFolder(false)
           }}>{isDeletingNotes === true ? <X size={18}/> : <DeleteIcon size={18}/>}</button>
-      </div>
+      </div> : null}
       <div className={isCreating === true ? "newNoteFormDiv" : "hide"} >
         <div className="parentNewNoteForm">
         <FileText size={18}/>
@@ -483,6 +506,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
           setIsOnProjectSettings={setIsOnProjectSettings}
           setDraggedNote={setDraggedNote}
           setDraggedNoteName={setDraggedNoteName}
+          power={power}
          />)}
         </div>
         <div className="snotesDiv">
@@ -490,6 +514,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
          onClick={() => { visualSnotes === false ? setVisualSnotes(true) : setVisualSnotes(false)}}
          onDragOver={(e) => e.preventDefault()}
          onDrop={() => {
+          if (power !== "owner") {alert("You don't have permission to do that.");  return}
             assingNoteToFolder(draggedNote,null);
             setMySecNotes(prev => prev.map(note => note.id === draggedNote ? {...note, on_folder:null} : note))
           }}
@@ -538,6 +563,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
            setIsOnProjectSettings={setIsOnProjectSettings}
            setDraggedNote={setDraggedNote}
            setDraggedNoteName={setDraggedNoteName}
+           power={power}
          />)}
         </div>
         <div>
@@ -545,6 +571,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
           <div
           onDragOver={(e) => e.preventDefault()}
           onDrop={async () => {
+            if (power !== "owner") {alert("You don't have permission to do that.");  return}
             const r = await assingNoteToFolder(draggedNote,f.id);
             setMySecNotes(prev => prev.map(note => note.id === draggedNote ? {...note, on_folder:f.id} : note))
           }}
@@ -597,6 +624,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
                    setIsOnProjectSettings={setIsOnProjectSettings}
                    setDraggedNote={setDraggedNote}
                    setDraggedNoteName={setDraggedNoteName}
+                   power={power}
                 />)}
             </div>
             </div>
@@ -615,6 +643,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
       currentSnoteId={activeSnoteId}
       currentSnoteContent={currentNoteContent}
       handleSaveNow={handleSaveNow}
+      power={power}
       />
       {isOnNoteSettings ? <NoteSettings
        name={activeSnote.name}
@@ -662,6 +691,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
       setLrName={setLrName}
       setFullLrName={setFullLrName}
       setDefaultBranch={setDefaultBranc}
+      projectURL={projectURL}
      />) : null}
      <div 
      className={isOnNoteSettings === true || isOnProjectSettings === true ? "hide" : (windows.length > 0 ? "navWindows" : "navWindowsOnPH")}
@@ -684,16 +714,24 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
      </div>
      {!isOnNoteSettings && !isOnProjectSettings ? 
      <div className="currentWindowContentDiv">
-      {wantsNotifications ? (hasTrackCommitHistory && hasRepoLinked === false ?  <div className="notificationsDiv">
+      {power === "owner" ? (wantsNotifications ? (hasTrackCommitHistory && hasRepoLinked === false ?  <div className="notificationsDiv">
         <label style={{margin:0}}><Bell size={18}/></label>
         <button className="hideNotifications" onClick={() => setWantsNotifications(false)}><X size={20}/></button>
-        <p><TriangleAlert size={16} color="red"/>  You want handled to track your commits, but you haven't connected a repository to this project!</p>
+        <p><TriangleAlert size={16} color="red"/> You want handled to track your commits, but you haven't connected a repository to this project!</p>
         <label>You can connect a repository on 
         <button className="goToPrjcSettingsBtn" onClick={() => {
           setIsOnProjectSettings(!isOnProjectSettings);
           setIsOnNoteSettings(false);
         }}>Repository and commits</button></label>     
-      </div> : null) : null}
+      </div> : null) : null) : null}
+      {power !== "owner" && wantsNotifications ? (<div className="notificationsDiv">
+        <label style={{margin:0}}><Bell size={18}/></label>
+        <button className="hideNotifications" onClick={() => setWantsNotifications(false)}><X size={20}/></button>
+        <p><TriangleAlert size={16} color="red"/> You're visiting a public project, be careful when clicking other user's links.</p>
+        <label> Want an account?
+        <button className="goToPrjcSettingsBtn" onClick={() => {
+        }}>Create handled account</button></label>     
+      </div>) : null}
 
        {repositoriesFound.length === 0 ? null : <ChooseRepository 
        repositoriesFound={repositoriesFound}
@@ -706,7 +744,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
         />}
 
       <div className={activeSnoteId ? (hasTheme === 1 ? "windowContent" : "windowContentWhite") : "windowPH"}>
-       {activeSnoteId ? <Toolbar
+       {activeSnoteId && power === "owner" ? <Toolbar
          editor={editor}
          activeSnote={activeSnote ? activeSnote.id : null} 
          currentContent={currentNoteContent}  
@@ -727,6 +765,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
         setActiveWindowId={setActiveWindowId}
         windows={windows}
         setWindows={setWindows}
+        power={power}
         /> : <MainPlaceHolder/> }
       </div>
 

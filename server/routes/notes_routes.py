@@ -1,11 +1,13 @@
 from flask import Blueprint,session,request, jsonify
 import bcrypt
-from db import get_conn
+from db import get_conn,with_resolved_power
 
 notes_bp = Blueprint('Notes',__name__)
 
 @notes_bp.route("/addMainNote", methods=["POST"])
-def add_main_note():
+@with_resolved_power
+def add_main_note(role):
+    if role != "owner": return
     current_user_id = session.get("user_id")
     if not current_user_id:
         return jsonify({"Status": "Not logged"}),401
@@ -25,9 +27,6 @@ def add_main_note():
 
 @notes_bp.route("/getMainNotes", methods=["POST"])
 def get_main_notes():
-    current_user_id = session.get("user_id")
-    if not current_user_id:
-        return jsonify({"Status": "Not logged"}),401
     current_project_id = session.get("current_project_id")
     if not current_project_id:
         return jsonify({"Status": "No project selected"}),400
@@ -46,7 +45,9 @@ def get_main_notes():
 
 
 @notes_bp.route("/addSecondaryNote", methods=["POST"])
-def add_secondary_note():
+@with_resolved_power
+def add_secondary_note(role):
+    if role != "owner": return
     current_user_id = session.get("user_id")
     if not current_user_id:return jsonify({"Status": "Not logged"}),401
     current_project_id = session.get("current_project_id")
@@ -75,8 +76,6 @@ def add_secondary_note():
 
 @notes_bp.route("/getSecondaryNotes",methods=["POST"])
 def get_secondary_notes():
-    current_user_id = session.get("user_id")
-    if not current_user_id:return jsonify({"Status": "Not logged"}),401
     current_project_id = session.get("current_project_id")
     if not current_project_id:return jsonify({"Status": "No project selected"}),400 
     conn = get_conn()
@@ -99,7 +98,9 @@ def get_secondary_notes():
     return jsonify({"Snotes": retrieved_notes, "Status": "Main notes retrieved"}),200
 
 @notes_bp.route("/deleteSnote",methods=["POST"])
-def delete_Snote():
+@with_resolved_power
+def delete_Snote(role):
+    if role != "owner": return
     current_user_id = session.get("user_id")
     if not current_user_id:return jsonify({"Status": "Not logged"}),401
     current_project_id = session.get("current_project_id")
@@ -135,7 +136,9 @@ def delete_Snote():
 
 
 @notes_bp.route("/saveSnoteContent",methods=["POST"])
-def save_content():
+@with_resolved_power
+def save_content(role):
+    if role != "owner": return
     current_user_id = session.get("user_id")
     if not current_user_id:return jsonify({"Status": "Not logged"}),401
     current_project_id = session.get("current_project_id")
@@ -167,7 +170,9 @@ def save_content():
     return jsonify({"Status": "Note content updated"}), 200
 
 @notes_bp.route("/changeNoteName",methods=["POST"])
-def change_name():
+@with_resolved_power
+def change_name(role):
+    if role != "owner": return
     current_user_id = session.get("user_id")
     if not current_user_id:
         return jsonify({"Status": "Not logged"}),401
@@ -200,7 +205,9 @@ def change_name():
         conn.close()
 
 @notes_bp.route("/changeNoteAutoSave",methods=["POST"])
-def change_note_auto_save():
+@with_resolved_power
+def change_note_auto_save(role):
+    if role != "owner": return
     current_user_id = session.get("user_id")
     if not current_user_id:
         return jsonify({"Status": "Not logged"}),401

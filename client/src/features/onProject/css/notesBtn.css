@@ -1,5 +1,4 @@
 .mainNoteBtnDiv{
-    margin-bottom: 20px;
     height: 60px;
 }
 .mainNoteLabel{
@@ -241,7 +240,6 @@
 .activeSnote{
     border-radius: 0;
     background-color: var(--bg-secondary);
-    padding: 0 10px;
 }
 .Slabel{
     color: var(--text-primary);

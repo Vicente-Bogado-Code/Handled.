@@ -18,8 +18,18 @@ export default function App(){
             window.history.replaceState({},"",window.location.pathname);
         }
     }
+    const [isVisiting,setIsVisiting] = useState(false)
+    async function checkPath() {
+        const params = new URLSearchParams(window.location.search)
+        const projectId = params.get("project")
+        if (projectId){
+            const r = await setCurrentId(projectId)
+            setIsVisiting(true)
+        }
+    }
     useEffect(() => {
        askForRepos()
+       checkPath()
     }, [])
     const [user,setUser] = useState(null)
     const [currentId, setCurrentId] = useState("")
@@ -31,8 +41,7 @@ export default function App(){
             setCurrentId(r.Me.current_project_id)
         }
     }
-    getCookie();
-
+    if (!isVisiting) getCookie();
     }, [])
     function handleLogout(){
         logout()
@@ -41,8 +50,26 @@ export default function App(){
     return(
         <>
         {currentId ? null : <Header/>}
-        {user ? (currentId ? <CurrentProjectComp project_id={currentId} handleGoBack={setCurrentId} repositoriesFound={repositoriesFound} setRepositoriesFound={setRepositoriesFound}/> : <HomePage username={user} setUsername={setUser} onLogout={handleLogout} handleProjectClick={setCurrentId}/>)
-        : <AuthMainPortal onLoginSuccess={setUser}/>}
+        
+        {!isVisiting ? (user ? 
+        (currentId ? 
+        <CurrentProjectComp
+         project_id={currentId}
+         handleGoBack={setCurrentId}
+         repositoriesFound={repositoriesFound}
+         setRepositoriesFound={setRepositoriesFound}/>
+         : 
+         <HomePage 
+         username={user}
+         setUsername={setUser}
+         onLogout={handleLogout} 
+         handleProjectClick={setCurrentId}/>)
+         : 
+        <AuthMainPortal onLoginSuccess={setUser}/>) : <CurrentProjectComp
+         project_id={currentId}
+         handleGoBack={setCurrentId}
+         repositoriesFound={repositoriesFound}
+         setRepositoriesFound={setRepositoriesFound}/>}
     </>
     );
 }

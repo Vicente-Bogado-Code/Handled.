@@ -22,7 +22,8 @@ const TipTap = ({
   projectWantsAutoSave,
   setActiveWindowId,
   windows,
-  setWindows
+  setWindows,
+  power
 }) => {
   const editor = useEditor({
     extensions: [
@@ -40,6 +41,7 @@ const TipTap = ({
     ],
 
     content: currentContent,
+    editable: power === "owner" ? true : false,
 
     editorProps: {
       attributes: {
@@ -48,6 +50,7 @@ const TipTap = ({
     },
 
     onUpdate: ({ editor }) => {
+      if (power !== "owner") return
       onContentChange(editor.getHTML());
     },
   });

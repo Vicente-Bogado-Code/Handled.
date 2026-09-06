@@ -224,20 +224,17 @@ def webhook():
         return jsonify({"Status":"Ignored"}), 200
     repository_name = escape(data["repository"]["name"])
     repository_id = data["repository"]["id"]
-    commit_sender = escape(data["sender"]["login"])
     conn = get_conn()
     cursor = conn.cursor()
     try:
         cursor.execute("SELECT project_id FROM users_projects WHERE github_repo_id = %s", (repository_id,))
         row = cursor.fetchone()
         if row is None:
-            print(1)
             return jsonify({"Status":"Repository isn't connected to any handled project"}), 200
         project_id = row[0]
         cursor.execute("SELECT snote_id FROM secondary_notes WHERE on_project_id = %s AND snote_name = 'Commit history'", (project_id,))
         row = cursor.fetchone()
         if row is None:
-            print(2)
             return jsonify({"Status":"This project doesn't have a commit history"}), 200
         commit_history_id = row[0]
         cursor.execute("SELECT snote_content FROM secondary_notes WHERE snote_id = %s AND on_project_id = %s", (commit_history_id,project_id))
@@ -248,6 +245,7 @@ def webhook():
             commit_message = escape(commit["message"])
             commit_timestamp = commit["timestamp"]
             commit_url = escape(commit["url"])
+            commit_sender = commit["author"]["name"]
             cursor.execute("INSERT INTO webhook_deliveries(project_id, repository_id, repository_name,commit_sha, payload_message, payload_timestamp,payload_sender, commit_url) VALUES (%s, %s, %s, %s, %s, %s, %s,%s) ",(project_id,repository_id,repository_name,commit_sha,commit_message,commit_timestamp,commit_sender, commit_url))
             html_formatted = f"""
             <hr>

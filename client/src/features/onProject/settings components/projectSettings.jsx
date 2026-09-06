@@ -20,7 +20,8 @@ export default function ProjectSettings({
     hasRepoLinked, setHasRepoLinked,
     lrName, setLrName,
     fullLrName, setFullLrName,
-    defaultBranch, setDefaultBranch
+    defaultBranch, setDefaultBranch,
+    projectURL
 }){
     const [newRepo, setNewRepo] = useState("")
     const [isDeleting, setIsDeleting] = useState(false)
@@ -115,7 +116,7 @@ export default function ProjectSettings({
                     <div className='shreURLdiv'>
                         <div style={{display:"flex", alignItems:"center"}}>
                         <Link size={18}/>
-                        <p className='shareURL'>URLtoShareProject/username/projectname</p>
+                        <a className='shareURL' href={projectURL} target='_blank'>{projectURL}</a>
                         </div>
                         <Copy size={16} style={{cursor:"pointer"}}/>
                     </div>

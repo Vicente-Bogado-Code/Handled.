@@ -3,7 +3,7 @@ import './css/notesBtn.css'
 import { Trash2, Circle,ClockArrowDown, Settings2, Check, CircleArrowDown, File, ClockFading,FileText} from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-export default function SecondaryProjectComp({importance,name,noteId,content,windows,setWindow,activeWindowId,setActiveWindowId,modifiedNotesIds,isOnSettings, setIsOnSettings,isDeletingNotes,idsToBeDeleted,setIdsToBeDeleted,projectWanstAutoSave, wantsAutoSave,setIsOnProjectSettings,setDraggedNote,setDraggedNoteName}){
+export default function SecondaryProjectComp({importance,name,noteId,content,windows,setWindow,activeWindowId,setActiveWindowId,modifiedNotesIds,isOnSettings, setIsOnSettings,isDeletingNotes,idsToBeDeleted,setIdsToBeDeleted,projectWanstAutoSave, wantsAutoSave,setIsOnProjectSettings,setDraggedNote,setDraggedNoteName,power}){
     wantsAutoSave = projectWanstAutoSave ? wantsAutoSave : false
     const inIt = modifiedNotesIds.find(id => id === noteId);
     const willBeDeleted = idsToBeDeleted.find(id => id === noteId)
@@ -40,14 +40,14 @@ export default function SecondaryProjectComp({importance,name,noteId,content,win
          <span className="noteNameOnNav" title={name}>{name}</span>
                     {!isDeletingNotes ? <div className='statusSettings'>
                         <Circle className='savedLabel' size={10} fill='currentColor'/> 
-                        {wantsAutoSave ? <ClockArrowDown style={{color:"green"}} size={15}/> : null}
+                        {power === "owner" ? (wantsAutoSave ? <ClockArrowDown style={{color:"green"}} size={15}/> : null) : null}
                     {activeWindowId === noteId ? <div className='settingsBtn' onClick={(e) =>{
                         setActiveWindowId(noteId)
                         setIsOnSettings(!isOnSettings);
                         setIsOnProjectSettings(false);
                         e.stopPropagation();
                     }}>
-                    <Settings2 size={15}/>
+                    {power === "owner" ? <Settings2 size={15}/> : null}
                     </div> : null}
                     </div> : <div className='addToBeDeletedbtn'> {willBeDeleted ? <Check size={16}/> : <Trash2 size={16}/> }</div>}
             </button>

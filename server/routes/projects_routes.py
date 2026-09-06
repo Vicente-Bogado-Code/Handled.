@@ -1,7 +1,9 @@
-from flask import Blueprint, jsonify, request, session
-from db import get_conn
+from flask import Blueprint, jsonify, request, session,redirect
+from db import get_conn,with_resolved_power
 
 projects_bp = Blueprint("projects",__name__)
+
+    
 
 @projects_bp.route("/getMyProjects",methods=["POST"])
 def get_projects():
@@ -55,12 +57,15 @@ def add_project():
        (project_name, user_id,project_desc,project_ghrepo,project_status,project_atDate))
         row = cursor.fetchone()
         conn.commit()
+        project_url = f"https://handled-kappa.vercel.app/?project={row[0]}" #locally, testing
+        cursor.execute("UPDATE users_projects SET project_url = %s WHERE project_id = %s AND user_id = %s",(project_url,row[0],user_id))
+        conn.commit()
     else: 
         cursor.close()
         conn.close()
         return jsonify({"Status": "Project already exists"}),409
     if prefers_track_commitH:
-        cursor.execute("INSERT INTO secondary_notes (Snote_name,Snote_content,on_project_id,importance,auto_save) VALUES (%s,%s,%s,%s,%s)",("Commit history","<p>This is a note created by default.</p>",row[0],"D",True))
+        cursor.execute("INSERT INTO secondary_notes (Snote_name,Snote_content,on_project_id,importance,auto_save) VALUES (%s,%s,%s,%s,%s)",("Commit history","<p>This is a note created by default. Sometimes commits might require you to leave and re-enter the project in order to see them.</p>",row[0],"D",True))
     #
     if prefers_mnote:
         cursor.execute("INSERT INTO secondary_notes (Snote_name,Snote_content,on_project_id,importance,auto_save) VALUES (%s,%s,%s,%s,%s)",(f"{project_name} main","<p>This is a note created by default.</p>",row[0],"M",True))
@@ -225,35 +230,46 @@ def change_repoLink():
 
 @projects_bp.route("/setCurrentProject", methods=["POST"])
 def set_current_project():
-    current_user_id = session.get("user_id")
-    if not current_user_id:
-        return jsonify({"Status": "Not logged"}),401
-    data = request.get_json()
-    current_pjt_id = data.get("project_id")
     conn = get_conn()
     cursor = conn.cursor()
-    cursor.execute("SELECT project_name,user_id FROM users_projects WHERE project_id = %s", (current_pjt_id,))
-    db_response = cursor.fetchone()
-    if db_response is None:
-        cursor.close()
-        conn.close()
-        return jsonify({"Status": "Project doesn't exist"}),404
-    project_name = db_response[0]
-    belongs_to_user_id = db_response[1]
-    if belongs_to_user_id == current_user_id:
+    try:
+        data = request.get_json()
+        current_pjt_id = data.get("project_id")
+        cursor.execute("SELECT project_name, user_id, project_url FROM users_projects WHERE project_id = %s",(current_pjt_id,))
+        db_response = cursor.fetchone()
+        if db_response is None:
+            return redirect("https://handled-kappa.vercel.app/"),404
+        project_name = db_response[0]
+        project_owner_id = db_response[1]
+        project_url = db_response[2]
+        cursor.execute("SELECT public FROM project_preferences WHERE project_id = %s",(current_pjt_id,))
+        row = cursor.fetchone()
+        if row is None:
+            return jsonify({"Status": "Project preferences don't exist"}), 404
+        public = row[0]
+        current_user_id = session.get("user_id")
+        if current_user_id != project_owner_id and not public:
+            return jsonify({"Status": "Not found"}), 404
+        elif current_user_id != project_owner_id and public:
+            power = "visitor"
+        power = "owner" if current_user_id == project_owner_id else None
         session["current_project_id"] = current_pjt_id
-    else:
+        cursor.execute("SELECT username FROM handled_users WHERE id = %s",(project_owner_id,))
+        by = cursor.fetchone()[0]
+        return jsonify({
+            "Status": "Current project set",
+            "projectName": project_name,
+            "projectURL": project_url,
+            "power":power,
+            "by":by
+        }), 200
+    finally:
         cursor.close()
         conn.close()
-        return jsonify({"Status": "Forbidden"}), 403
-    cursor.close()
-    conn.close()
-    return jsonify({"Status": "Current project set", "projectName": project_name}),200
+
 
 @projects_bp.route("/getProjectPreferences",methods=["GET"])
 def give_Ppreferences():
-    current_user_id = session.get("user_id")
-    if not current_user_id:return jsonify({"Status": "Not logged"}),401
     current_project_id = session.get("current_project_id")
     if not current_project_id:return jsonify({"Status": "No project selected"}),400 
     conn = get_conn()
@@ -277,7 +293,9 @@ def give_Ppreferences():
             conn.close()
 
 @projects_bp.route("/changeProjectPreferences", methods=["POST"])
-def change_p_preferences():
+@with_resolved_power
+def change_p_preferences(role):
+    if role != "owner": return
     current_user_id = session.get("user_id")
     if not current_user_id:
         return jsonify({"Status": "Not logged"}), 401
@@ -310,7 +328,9 @@ def change_p_preferences():
         conn.close()
 
 @projects_bp.route("/createFolder", methods=["POST"])
-def create_folder():
+@with_resolved_power
+def create_folder(role):
+    if role != "owner": return
     current_user_id = session.get("user_id")
     if not current_user_id:return jsonify({"Status": "Not logged"}),401
     current_project_id = session.get("current_project_id")
@@ -333,15 +353,11 @@ def create_folder():
 
 @projects_bp.route("/getFolders", methods=["GET"])
 def get_folders():
-    current_user_id = session.get("user_id")
-    if not current_user_id: return jsonify({"Status": "Not logged"}), 401
     current_project_id = session.get("current_project_id")
     if not current_project_id: return jsonify({"Status": "No project selected"}), 400
     conn = get_conn()
     cursor = conn.cursor()
     try:
-        cursor.execute("SELECT 1 FROM users_projects WHERE user_id = %s AND project_id = %s", (current_user_id, current_project_id))
-        if cursor.fetchone() is None: return jsonify({"Status": "Not authorized for this project"}), 403
         cursor.execute("SELECT folder_id, folder_name FROM folders WHERE project_id = %s", (current_project_id,))
         folders = [
             {"id": row[0], "name": row[1]} for row in cursor.fetchall()
@@ -352,7 +368,9 @@ def get_folders():
         conn.close()
 
 @projects_bp.route("/assingNoteToFolder", methods=["POST"])
-def assing_note_to_folder():
+@with_resolved_power
+def assing_note_to_folder(role):
+    if role != "owner": return
     current_user_id = session.get("user_id")
     if not current_user_id: return jsonify({"Status": "Not logged"}), 401
     current_project_id = session.get("current_project_id")
@@ -376,7 +394,9 @@ def assing_note_to_folder():
 
 
 @projects_bp.route("/deleteFolder", methods=["POST"])
-def delete_folder():
+@with_resolved_power
+def delete_folder(role):
+    if role != "owner": return
     current_user_id = session.get("user_id")
     if not current_user_id: return jsonify({"Status": "Not logged"}), 401
     current_project_id = session.get("current_project_id")
