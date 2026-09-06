@@ -151,6 +151,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
   }, [project_id,isOnProjectSettings]);
   
   useEffect(() =>{
+    if (power !== "owner") return
         async function setRepoId() {
            const r = await getLinkedRepositoryData(project_id);
             if(r.Status === "Repository id retrieved"){

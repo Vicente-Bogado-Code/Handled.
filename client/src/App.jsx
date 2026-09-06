@@ -23,7 +23,7 @@ export default function App(){
         const params = new URLSearchParams(window.location.search)
         const projectId = params.get("project")
         if (projectId){
-            const r = await setCurrentId(projectId)
+            setCurrentId(projectId)
             setIsVisiting(true)
         }
     }
