@@ -239,7 +239,7 @@ def set_current_project():
         cursor.execute("SELECT project_name, user_id, project_url,description,gh_repo,status,atdate FROM users_projects WHERE project_id = %s",(current_pjt_id,))
         db_response = cursor.fetchone()
         if db_response is None:
-            return redirect("https://handled-kappa.vercel.app/"),404
+            return jsonify({"Status": "Project not found"}), 404
         project_name = db_response[0]
         project_owner_id = db_response[1]
         project_url = db_response[2]
@@ -252,11 +252,12 @@ def set_current_project():
         if row is None:
             return jsonify({"Status": "Project preferences don't exist"}), 404
         public = row[0]
-        if current_user_id != project_owner_id and not public:
-            return jsonify({"Status": "Not found"}), 404
-        elif current_user_id != project_owner_id and public:
+        if project_owner_id == current_user_id:
+            power = "owner"
+        elif public:
             power = "visitor"
-        power = "owner" if current_user_id == project_owner_id else None
+        else:
+            return jsonify({"Status": "Not found"}), 404
         session["current_project_id"] = current_pjt_id
         cursor.execute("SELECT username FROM handled_users WHERE id = %s",(project_owner_id,))
         by = cursor.fetchone()[0]
