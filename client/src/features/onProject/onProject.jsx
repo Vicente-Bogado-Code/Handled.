@@ -34,7 +34,6 @@ import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon
 import { Color } from "@tiptap/extension-text-style";
 
 export default function CurrentProjectComp({ project_id , handleGoBack, repositoriesFound, setRepositoriesFound}) {
-  const recievedAlmostDone = localStorage.getItem(`${project_id}recievedAlmostDone`) || localStorage.setItem(`${project_id}recievedAlmostDone`, false)
   const [editor,setEditor] = useState(null)
   const [projectName, setProjectName] = useState("");
   const [mySecNotes, setMySecNotes] = useState([]);

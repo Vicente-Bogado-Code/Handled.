@@ -104,7 +104,9 @@ def delete_account():
         conn.close()
 
 @auth_bp.route("/whoAmI", methods=["GET"])
-def give_data():
+@with_resolved_power
+def give_data(role):
+    if role == "visitor": return 200
     current_user_id = session.get("user_id")
     current_project_id = session.get("current_project_id") 
     conn = get_conn()
@@ -127,7 +129,9 @@ def give_data():
         conn.close()
 
 @auth_bp.route("/getPreferences", methods=["GET"])
-def give_preferences():
+@with_resolved_power
+def give_preferences(role):
+    if role == "visitor": return
     current_user_id = session.get("user_id")
     if not current_user_id: return jsonify({"Status": "Not logged"}),401
     conn = get_conn()
