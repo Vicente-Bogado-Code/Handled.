@@ -104,7 +104,9 @@ def delete_project():
         if r is None:
             return jsonify({"Status": "Project doesn't exists"}),401
         if user_id == r[0]:
+            cursor.execute("DELETE FROM webhook_deliveries WHERE project_id = %s", (project_id,))
             cursor.execute("DELETE FROM secondary_notes WHERE on_project_id = %s", (project_id,))
+            cursor.execute("DELETE FROM folders WHERE project_id = %s", (project_id,))
             cursor.execute("DELETE FROM project_preferences WHERE project_id = %s", (project_id,))
             cursor.execute("DELETE FROM users_projects WHERE project_id = %s", (project_id,))
             conn.commit()
@@ -259,7 +261,6 @@ def set_current_project():
         else:
             return jsonify({"Status": "Not found"}), 404
         session["current_project_id"] = current_pjt_id
-        print("CURRENT SESSION PROJECT:", current_pjt_id)
         cursor.execute("SELECT username FROM handled_users WHERE id = %s",(project_owner_id,))
         by = cursor.fetchone()[0]
         return jsonify({
@@ -364,8 +365,6 @@ def create_folder(role):
 @projects_bp.route("/getFolders", methods=["GET"])
 def get_folders():
     current_project_id = session.get("current_project_id")
-    print("CURRENT SESSION PROJECT:", current_project_id)
-    print("FOLDERS:", dict(session))
     if not current_project_id: return jsonify({"Status": "No project selected"}), 400
     conn = get_conn()
     cursor = conn.cursor()

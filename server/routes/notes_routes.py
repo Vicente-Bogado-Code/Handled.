@@ -77,8 +77,6 @@ def add_secondary_note(role):
 @notes_bp.route("/getSecondaryNotes",methods=["POST"])
 def get_secondary_notes():
     current_project_id = session.get("current_project_id")
-    print("CURRENT SESSION PROJECT:", current_project_id)
-    print("NOTES:", dict(session))
     if not current_project_id:return jsonify({"Status": "No project selected"}),400 
     conn = get_conn()
     cursor = conn.cursor()
