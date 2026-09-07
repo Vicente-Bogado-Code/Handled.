@@ -27,13 +27,6 @@ export default function App(){
             setIsVisiting(true)
         }
     }
-    useEffect(() => {
-       askForRepos()
-       checkPath()
-    }, [])
-    const [user,setUser] = useState(null)
-    const [currentId, setCurrentId] = useState("")
-    useEffect(() => {
     async function getCookie() {
         const r = await getMyData()
         if (r.Status === "Data retrieved"){
@@ -41,8 +34,14 @@ export default function App(){
             setCurrentId(r.Me.current_project_id)
         }
     }
-    if (!isVisiting) getCookie();
+    useEffect(() => {
+       askForRepos()
+       checkPath().then(r => {
+        if (!isVisiting) getCookie();
+       })
     }, [])
+    const [user,setUser] = useState(null)
+    const [currentId, setCurrentId] = useState("")
     function handleLogout(){
         logout()
         setUser(null)

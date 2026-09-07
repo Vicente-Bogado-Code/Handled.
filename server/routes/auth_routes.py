@@ -104,6 +104,7 @@ def delete_account():
         conn.close()
 
 @auth_bp.route("/whoAmI", methods=["GET"])
+@with_resolved_power
 def give_data():
     current_user_id = session.get("user_id")
     current_project_id = session.get("current_project_id") 
