@@ -365,6 +365,7 @@ def create_folder(role):
 def get_folders():
     current_project_id = session.get("current_project_id")
     print("CURRENT SESSION PROJECT:", current_project_id)
+    print("FOLDERS:", dict(session))
     if not current_project_id: return jsonify({"Status": "No project selected"}), 400
     conn = get_conn()
     cursor = conn.cursor()

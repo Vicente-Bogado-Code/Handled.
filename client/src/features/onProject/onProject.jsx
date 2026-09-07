@@ -726,6 +726,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
         <p><TriangleAlert size={16} color="red"/> You're visiting a public project, be careful when clicking other user's links.</p>
         <label> Want an account?
         <button className="goToPrjcSettingsBtn" onClick={() => {
+          window.location.href = "https://handled-kappa.vercel.app/"
         }}>Create handled account</button></label>     
       </div>) : null}
 
