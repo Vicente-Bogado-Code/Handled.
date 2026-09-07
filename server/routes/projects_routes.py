@@ -232,22 +232,26 @@ def change_repoLink():
 def set_current_project():
     conn = get_conn()
     cursor = conn.cursor()
+    current_user_id = session.get("user_id")
     try:
         data = request.get_json()
         current_pjt_id = data.get("project_id")
-        cursor.execute("SELECT project_name, user_id, project_url FROM users_projects WHERE project_id = %s",(current_pjt_id,))
+        cursor.execute("SELECT project_name, user_id, project_url,description,gh_repo,status,atdate FROM users_projects WHERE project_id = %s",(current_pjt_id,))
         db_response = cursor.fetchone()
         if db_response is None:
             return redirect("https://handled-kappa.vercel.app/"),404
         project_name = db_response[0]
         project_owner_id = db_response[1]
         project_url = db_response[2]
+        project_desc = db_response[3]
+        project_repo = db_response[4]
+        project_status = db_response[5]
+        project_atdate = db_response[6]
         cursor.execute("SELECT public FROM project_preferences WHERE project_id = %s",(current_pjt_id,))
         row = cursor.fetchone()
         if row is None:
             return jsonify({"Status": "Project preferences don't exist"}), 404
         public = row[0]
-        current_user_id = session.get("user_id")
         if current_user_id != project_owner_id and not public:
             return jsonify({"Status": "Not found"}), 404
         elif current_user_id != project_owner_id and public:
@@ -260,6 +264,10 @@ def set_current_project():
             "Status": "Current project set",
             "projectName": project_name,
             "projectURL": project_url,
+            "desc": project_desc,
+            "repo":project_repo,
+            "status":project_status,
+            "atDate":project_atdate,
             "power":power,
             "by":by
         }), 200

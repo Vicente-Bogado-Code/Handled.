@@ -111,27 +111,22 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
       {
         setProjectName(response.projectName);
         setProjectURL(response.projectURL)
+        setProjectDesc(response.desc)
+        setProjectRepo(response.repo)
+        setProjectStatus(response.status)
+        setProjectDate(response.atDate)
         setPower(response.power)
         setBy(response.by)
         getFolders().then(r => {
           const folders = r.folders || []
           setProjectFolders(folders)
           const initialState = {}
-          for (let i = 0; i < r.folders.length; i++){
-            initialState[r.folders[i].id] = true
+          for (let i = 0; i < folders.length; i++){
+            initialState[folders[i].id] = true
           }
           setOpenFolders(initialState)
         })
         getSecondaryNotes().then(response => setMySecNotes(response.Snotes));
-        getMyProjects().then(data => {
-          const p = data.projects.find(pr => pr.project_id === project_id)
-          if (p){
-            setProjectDesc(p.description)
-            setProjectRepo(p.repoLink)
-            setProjectStatus(p.status)
-            setProjectDate(p.atDate)
-          }
-        }) 
         getProjectPreferences().then(r => {
               if (r.Status === "Data retrieved"){
                     setHasMainNote(r.projectPreferences[0].includeMnote)
