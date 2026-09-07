@@ -126,6 +126,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
           setOpenFolders(initialState)
         })
         getSecondaryNotes().then(response => setMySecNotes(response.Snotes));
+        if (response.power === "visitor") return
         getProjectPreferences().then(r => {
               if (r.Status === "Data retrieved"){
                     setHasMainNote(r.projectPreferences[0].includeMnote)

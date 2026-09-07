@@ -259,6 +259,7 @@ def set_current_project():
         else:
             return jsonify({"Status": "Not found"}), 404
         session["current_project_id"] = current_pjt_id
+        print("CURRENT SESSION PROJECT:", current_pjt_id)
         cursor.execute("SELECT username FROM handled_users WHERE id = %s",(project_owner_id,))
         by = cursor.fetchone()[0]
         return jsonify({
@@ -363,6 +364,7 @@ def create_folder(role):
 @projects_bp.route("/getFolders", methods=["GET"])
 def get_folders():
     current_project_id = session.get("current_project_id")
+    print("CURRENT SESSION PROJECT:", current_project_id)
     if not current_project_id: return jsonify({"Status": "No project selected"}), 400
     conn = get_conn()
     cursor = conn.cursor()
