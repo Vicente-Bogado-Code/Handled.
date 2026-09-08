@@ -59,7 +59,7 @@ def add_secondary_note(role):
     on_folder = data.get("on_folder") if data.get("on_folder") else None
     conn = get_conn()
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO secondary_notes(Snote_name,Snote_content,on_project_id,importance,auto_save, on_folder) VALUES (%s,%s,%s,%s,%s,%s) RETURNING Snote_id,Snote_name, Snote_content,importance,auto_save,on_folder", (Snote_name,Snote_content,current_project_id,imp,True, on_folder))
+    cursor.execute("INSERT INTO secondary_notes(Snote_name,Snote_content,on_project_id,importance,auto_save, on_folder, important) VALUES (%s,%s,%s,%s,%s,%s,%s) RETURNING Snote_id,Snote_name, Snote_content,importance,auto_save,on_folder,important", (Snote_name,Snote_content,current_project_id,imp,True,on_folder,False))
     db_response = cursor.fetchone()
     note = {
         "id": db_response[0],
@@ -67,7 +67,8 @@ def add_secondary_note(role):
         "content": db_response[2],
         "importance": db_response[3],
         "auto_save": db_response[4],
-        "on_folder" : db_response[5]
+        "on_folder" : db_response[5],
+        "important" : db_response[6]
     }
     conn.commit()
     cursor.close()
@@ -80,7 +81,7 @@ def get_secondary_notes():
     if not current_project_id:return jsonify({"Status": "No project selected"}),400 
     conn = get_conn()
     cursor = conn.cursor()
-    cursor.execute("SELECT Snote_id,Snote_name,Snote_content,importance,auto_save,on_folder FROM secondary_notes WHERE on_project_id = %s", (current_project_id,))
+    cursor.execute("SELECT Snote_id,Snote_name,Snote_content,importance,auto_save,on_folder,important FROM secondary_notes WHERE on_project_id = %s", (current_project_id,))
     db_response = cursor.fetchall()
     retrieved_notes = [
         {
@@ -89,7 +90,8 @@ def get_secondary_notes():
             "content": row[2],
             "importance": row[3],
             "auto_save": row[4],
-            "on_folder": row[5]
+            "on_folder": row[5],
+            "important": row[6]
         }
         for row in db_response
     ]
@@ -218,7 +220,6 @@ def change_note_auto_save(role):
         return jsonify({"Status": "Missing fields"}),400
     note_id = data.get("id")
     boolean = data.get("boolean")
-    print(boolean)
     try:
         cursor.execute(
             """
@@ -234,6 +235,41 @@ def change_note_auto_save(role):
             cursor.execute("UPDATE secondary_notes SET auto_save = %s WHERE snote_id = %s", (boolean,note_id))
             conn.commit()
             return jsonify({"Status": "Auto save changed"}),200
+        else:
+            return jsonify({"Status": "Note doesn't belong to you"}), 403
+    finally:
+        cursor.close()
+        conn.close()
+
+@notes_bp.route("/changeImportantStatus",methods=["POST"])
+@with_resolved_power
+def change_note_imporant_status(role):
+    if role != "owner": return
+    current_user_id = session.get("user_id")
+    if not current_user_id:
+        return jsonify({"Status": "Not logged"}),401
+    conn = get_conn()
+    cursor = conn.cursor()
+    data = request.get_json()
+    if not data or "id" not in data or "boolean" not in data:
+        return jsonify({"Status": "Missing fields"}),400
+    note_id = data.get("id")
+    boolean = data.get("boolean")
+    try:
+        cursor.execute(
+            """
+            SELECT user_id
+            FROM secondary_notes
+            JOIN users_projects ON secondary_notes.on_project_id = users_projects.project_id
+            WHERE snote_id = %s
+            """, (note_id,))
+        r = cursor.fetchone()
+        if r is None:
+            return jsonify({"Status": "Note doesn't exists"}),401
+        if r[0] == current_user_id:
+            cursor.execute("UPDATE secondary_notes SET important = %s WHERE snote_id = %s", (boolean,note_id))
+            conn.commit()
+            return jsonify({"Status": "Important changed"}),200
         else:
             return jsonify({"Status": "Note doesn't belong to you"}), 403
     finally:

@@ -99,7 +99,7 @@ html{
     gap: 4px;
     min-width: 100%;
     min-height: 44px;
-    padding: 0;
+    padding: 5px 0 0 0;
     display: flex;
     align-items: flex-end;
     overflow-x: auto;
@@ -110,7 +110,6 @@ html{
     position: sticky;
     top: 0;
     z-index: 6;
-    border-bottom: 1px solid var(--border);
 }
 
 .windowCSS, .windowActive {
@@ -146,6 +145,7 @@ html{
 }
 .windowActive::after{
     background-color: var(--bg-primary);
+    height: 20px;
 }
 
 .windowLabelBtn {
@@ -196,6 +196,7 @@ html{
     bottom: -1px;
     height: 2px;
     border-radius: 2px;
+    background-color: var(--bg-primary);
 }
 
 .windowBtnDiv{

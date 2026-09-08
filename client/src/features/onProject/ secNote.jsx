@@ -1,9 +1,9 @@
 import './css/onProject.css'
 import './css/notesBtn.css'
-import { Trash2, Circle,ClockArrowDown, Settings2, Check, CircleArrowDown, File, ClockFading,FileText} from 'lucide-react';
+import { Trash2, Circle,ClockArrowDown, Settings2, Check, CircleArrowDown, File, ClockFading,FileText, StarCheckIcon, FlagIcon, BookmarkIcon, StarIcon, Settings} from 'lucide-react';
 import { useEffect, useState } from 'react';
 
-export default function SecondaryProjectComp({importance,name,noteId,content,windows,setWindow,activeWindowId,setActiveWindowId,modifiedNotesIds,isOnSettings, setIsOnSettings,isDeletingNotes,idsToBeDeleted,setIdsToBeDeleted,projectWanstAutoSave, wantsAutoSave,setIsOnProjectSettings,setDraggedNote,setDraggedNoteName,power}){
+export default function SecondaryProjectComp({importance,name,noteId,content,windows,setWindow,activeWindowId,setActiveWindowId,modifiedNotesIds,isOnSettings, setIsOnSettings,isDeletingNotes,idsToBeDeleted,setIdsToBeDeleted,projectWanstAutoSave, wantsAutoSave,setIsOnProjectSettings,setDraggedNote,setDraggedNoteName,power,important,handleChangeImportant}){
     wantsAutoSave = projectWanstAutoSave ? wantsAutoSave : false
     const inIt = modifiedNotesIds.find(id => id === noteId);
     const willBeDeleted = idsToBeDeleted.find(id => id === noteId)
@@ -36,7 +36,12 @@ export default function SecondaryProjectComp({importance,name,noteId,content,win
                 }
             }
         }}>
-        <span className='Slabel'>txt</span>
+        <div className='txtNimpDiv'>
+            {activeWindowId === noteId && !important ? <StarIcon size={14} onClick={() => handleChangeImportant(noteId,true)}/> : null}
+            {important ? <StarIcon fill='currentColor' onClick={() => handleChangeImportant(noteId,false)} size={14}/> : null}
+            <span className='Slabel'>txt</span>
+        </div>
+        
          <span className="noteNameOnNav" title={name}>{name}</span>
                     {!isDeletingNotes ? <div className='statusSettings'>
                         <Circle className='savedLabel' size={10} fill='currentColor'/> 
@@ -47,7 +52,7 @@ export default function SecondaryProjectComp({importance,name,noteId,content,win
                         setIsOnProjectSettings(false);
                         e.stopPropagation();
                     }}>
-                    {power === "owner" ? <Settings2 size={15}/> : null}
+                    {power === "owner" ? <Settings size={15}/> : null}
                     </div> : null}
                     </div> : <div className='addToBeDeletedbtn'> {willBeDeleted ? <Check size={16}/> : <Trash2 size={16}/> }</div>}
             </button>

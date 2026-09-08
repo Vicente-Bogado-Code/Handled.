@@ -20,6 +20,7 @@ import { createFolder } from '../api/createRequest/createFolder';
 import { deleteFolder } from '../api/deleteRequests/deleteFolder';
 import { getFolders } from '../api/getDataRequests/getProjectFolders';
 import { assingNoteToFolder } from '../api/alterRequests/addNoteToFolder';
+import { changeNoteImportantStatus } from '../api/alterRequests/alterNoteImporantStatus';
 import SecondaryProjectComp from "./ secNote";
 import Window from "./window";
 import TipTap from "./TipTap";
@@ -126,7 +127,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
           setOpenFolders(initialState)
         })
         getSecondaryNotes().then(response => setMySecNotes(response.Snotes));
-        if (response.power === "visitor") return
+        if (response.power === "owner"){
         getProjectPreferences().then(r => {
               if (r.Status === "Data retrieved"){
                     setHasMainNote(r.projectPreferences[0].includeMnote)
@@ -138,6 +139,7 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
                     setHasTheme(r.projectPreferences[0].theme)}
           })
       }
+    }
     });}
     catch (error){
       console.log(error)
@@ -332,6 +334,13 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
           setModifiedNotesId(prev => prev.filter(id => id !== note.id))
         }
   }
+  async function handleChangeImportant(id,boolean) {
+    if (power !== "owner") {alert("You don't have permission to do that.");  return}
+    const r = await changeNoteImportantStatus(id,boolean)
+    if (r.Status === "Important changed"){
+      setMySecNotes(prev => prev.map(n => n.id === id ? {...n, important:boolean} : n ))
+    }
+  }
 
   return (
   <div className={hasTheme === 1 ? "mainDiv" : "mainDivWhite"}>
@@ -377,6 +386,8 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
          wantsAutoSave={Mnote.auto_save}
          setIsOnProjectSettings={setIsOnProjectSettings}
          power={power}
+         important={Mnote.important}
+         handleChangeImportant={handleChangeImportant}
          />)}
       </div> : null}
       {power === "owner" ? <p className="mainNoteLabel">- modify</p> : null}
@@ -503,6 +514,8 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
           setDraggedNote={setDraggedNote}
           setDraggedNoteName={setDraggedNoteName}
           power={power}
+          important={Dnote.important}
+          handleChangeImportant={handleChangeImportant}
          />)}
         </div>
         <div className="snotesDiv">
@@ -560,6 +573,8 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
            setDraggedNote={setDraggedNote}
            setDraggedNoteName={setDraggedNoteName}
            power={power}
+           important={Snote.important}
+           handleChangeImportant={handleChangeImportant}
          />)}
         </div>
         <div>
@@ -621,6 +636,8 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
                    setDraggedNote={setDraggedNote}
                    setDraggedNoteName={setDraggedNoteName}
                    power={power}
+                   important={Snote.important}
+                   handleChangeImportant={handleChangeImportant}
                 />)}
             </div>
             </div>

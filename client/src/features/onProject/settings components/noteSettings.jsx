@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './noteSettings.css'
-import { Trash, Edit2, Undo2, Check, Save, Info,ClockArrowDown, MousePointer } from 'lucide-react';
+import { Trash, Edit2, Undo2, Check, Save, Info,ClockArrowDown, MousePointer, Edit } from 'lucide-react';
 import { deleteSecNote } from '../../api/deleteRequests/deleteSecNote';
 
 export default function NoteSettings({name,id,importance,setIsOnSettings, handleDeleteNote, setIsDeletingNotes, idsToBeDeleted, setIdsToBeDeleted, allIds, handleChangeNoteName,wantsAutoSave, handleChangeAutoSave, projectWantsAutoSave}){
@@ -25,11 +25,11 @@ export default function NoteSettings({name,id,importance,setIsOnSettings, handle
                 <div className='inputDiv'>
                     <label className='inputLabel'>{importance === "D" ? "You can't change the name of a default note":"Change name"}</label>
                     <div className='inputNicon'>
-                        {importance === "D" ? null : <Edit2 size={16}/>}
+                        {importance === "D" ? null : <Edit size={16} color='white'/>}
                         {importance === "D" ?  <input type="text"  className='changeNameInput' 
                         value={name}
                         readOnly
-                        /> : <input type="text" maxLength={25} className='changeNameInput' placeholder={name}
+                        /> : <input type="text" className='changeNameInput' placeholder={name}
                         value={newName}
                         onChange={(e) => {setNewName(e.target.value); setSavedName(false)}}
                         />}

@@ -39,7 +39,7 @@
     font-size: 21px;
     font-weight: 600;
     margin: 0;
-    max-width: 270px;
+    max-width: 450px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -100,7 +100,7 @@
 }
 .saveNotebtn{
     cursor: pointer;
-    width: 50px;
+    width: 100px;
     padding: 5px;
     background-color: var(--accent);
     border: none;
