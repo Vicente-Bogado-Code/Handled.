@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './projectSettings.css'
-import { Trash, Undo2, Check, TriangleAlert, Info, Copy, Link, Pointer, GitBranch, GitCommit } from 'lucide-react';
+import { Trash, Undo2, Check, TriangleAlert, Info, Copy, Link, Pointer, GitBranch, GitCommit, RefreshCcw, WholeWordIcon, Globe, PencilSparkles } from 'lucide-react';
 import { FaGithub } from "react-icons/fa"
 import { getLinkedRepositoryData } from '../../api/third-party-APIs/github_api';
 import { getAccesibleRepositories } from '../../api/third-party-APIs/github_api';
@@ -78,7 +78,7 @@ export default function ProjectSettings({
             <div className="generalSettingsDiv settingsCategorySeparator">
                 <label className='projectInputLabel'>Notes and preferences</label>
                 <div className="settingsToggleRow">
-                    <span className="settingsToggleLabel">Autosave</span>
+                    <span className="settingsToggleLabel"><RefreshCcw size={16}/>Autosave</span>
                     <button
                         className={`settingsToggleSwitch ${settingsAutoSaveValue ? "toggleOn" : ""}`}
                         onClick={() => {setSettingsAutoSaveValue(!settingsAutoSaveValue); setIsSaved(false)}}
@@ -88,7 +88,7 @@ export default function ProjectSettings({
                 </div>
                 {settingsAutoSaveValue && (
                     <div className="autoSaveIntervalRow">
-                        <span className="settingsToggleLabel">-- INTERVAL</span>
+                        <span className="settingsToggleLabel">-- INTERVAL (seconds)</span>
                         <div className="autoSaveIntervalOptions">
                             {[5,10,30,60].map((interval) => (
                                 <button
@@ -104,7 +104,7 @@ export default function ProjectSettings({
                     </div>
                 )}
                 <div className="settingsToggleRow">
-                    <span className="settingsToggleLabel">Make it public</span>
+                    <span className="settingsToggleLabel"><Globe size={16}/>Make this project public</span>
                     <button
                         className={`settingsToggleSwitch ${settingsIsPublic ? "toggleOn" : ""}`}
                         onClick={() => {setSettingsIsPublic(!settingsIsPublic); setIsSaved(false)}}

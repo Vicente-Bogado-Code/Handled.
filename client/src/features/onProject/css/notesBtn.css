@@ -438,6 +438,6 @@
     align-items: center;
 }
 .txtNimpDiv svg{
-    color: rgb(255, 204, 0);
+    color: rgb(255, 204, 0,0.5);
     flex-shrink: 0;
 }

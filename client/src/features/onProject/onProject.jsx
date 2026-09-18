@@ -33,7 +33,6 @@ import ProjectSettings from "./settings components/projectSettings";
 import ChooseRepository from "./github-components/repoChoice";
 import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon, ClockArrowDown,FilePlus, Pause, CircleArrowDown,X, TriangleAlert, Eye, Bell, Trash, Folder, FolderArchive, FolderCheck, Key, ChevronLeft, PaperBag, EthernetPort, KeyIcon, DeleteIcon, FolderEdit, FolderPlus, Trash2, BadgeAlert, FolderOpen, FileText, Info, LockIcon, LockOpenIcon, WholeWordIcon, Globe, User2Icon } from 'lucide-react';
 import { Color } from "@tiptap/extension-text-style";
-
 export default function CurrentProjectComp({ project_id , handleGoBack, repositoriesFound, setRepositoriesFound}) {
   const [editor,setEditor] = useState(null)
   const [projectName, setProjectName] = useState("");
@@ -263,7 +262,8 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
   //Delete Snote
   async function handleDeleteSnote(idsToBeDeletedArray, foldersIdsToBeDeleted, alsoNotes){
     clearInterval(timerRef.current)
-    for (let i = 0; i < foldersIdsToBeDeleted.length; i++){
+    if (foldersIdsToBeDeleted){
+      for (let i = 0; i < foldersIdsToBeDeleted.length; i++){
       const currentId = foldersIdsToBeDeleted[i]
       const response = await deleteFolder(currentId,alsoNotes)
       if (response.Status === "Folder deleted"){
@@ -271,7 +271,12 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
             setMySecNotes(prev => prev.map(n => n.on_folder === currentId ? {...n, on_folder:null} : n ))
             startAutoSaveTimer(0)
             setIsDeletingNotes(false)
-      }}
+            const ids = response.ids
+            if (ids.length === 0) return
+            for (let i = 0; i < ids.length; i++){
+              setMySecNotes(prev => prev.filter(n => n.id !== ids[i][0]))
+            }
+      }}}
     for (let i = 0; i < idsToBeDeletedArray.length; i++){
       const currentId = idsToBeDeletedArray[i]
       const response = await deleteSecNote(currentId)

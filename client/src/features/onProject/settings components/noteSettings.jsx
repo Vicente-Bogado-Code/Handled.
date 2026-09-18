@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './noteSettings.css'
-import { Trash, Edit2, Undo2, Check, Save, Info,ClockArrowDown, MousePointer, Edit } from 'lucide-react';
+import { Trash, Edit2, Undo2, Check, Save, Info,ClockArrowDown, MousePointer, Edit, RefreshCcw } from 'lucide-react';
 import { deleteSecNote } from '../../api/deleteRequests/deleteSecNote';
 
 export default function NoteSettings({name,id,importance,setIsOnSettings, handleDeleteNote, setIsDeletingNotes, idsToBeDeleted, setIdsToBeDeleted, allIds, handleChangeNoteName,wantsAutoSave, handleChangeAutoSave, projectWantsAutoSave}){
@@ -40,7 +40,7 @@ export default function NoteSettings({name,id,importance,setIsOnSettings, handle
                             {savedName ? <Check size={16}/> : "Save"}
                         </button>}
                         <div className='autoSaveAskDiv'>
-                            {projectWantsAutoSave ? <ClockArrowDown size={18} style={{borderLeft:"1px solid var(--border)", paddingLeft:"10px"}}/> : <ClockArrowDown size={18} style={{borderLeft:"1px solid var(--border)", paddingLeft:"10px", color:"red"}}/>}
+                            {projectWantsAutoSave ? <RefreshCcw size={18} style={{borderLeft:"1px solid var(--border)", paddingLeft:"10px"}}/> : <ClockArrowDown size={18} style={{borderLeft:"1px solid var(--border)", paddingLeft:"10px", color:"red"}}/>}
                             {projectWantsAutoSave ? <p className='includeAutoSlbl'>Autosave?</p> : null}
                             {projectWantsAutoSave ? <button onClick={() => 
                                 {

@@ -1,4 +1,4 @@
-import { CircleArrowDown,ClockArrowDown } from "lucide-react"
+import { CircleArrowDown,ClockArrowDown, RefreshCcw } from "lucide-react"
 import { useEffect } from "react"
 export default function CounterToSave({seconds,modifiedNotesId,mySecNotesRef,autoSave, handleSaveContent, currentSnoteId,currentSnoteContent,handleSaveNow,power}){
     useEffect(() => {
@@ -34,8 +34,8 @@ export default function CounterToSave({seconds,modifiedNotesId,mySecNotesRef,aut
             <div className="allSavedAutoSonDivLbl"> 
                {power === "owner" ? modifiedNotesId.length === 0? <p className="labelOnSavignIn">Changes saved<CircleArrowDown size={18} color="greenYellow"/></p> :
                <p className="labelOnSavignIn">Unsaved changes<CircleArrowDown size={18} style={{color:"red"}}/></p> : null}
-                {power === "owner" ? (autoSave ? <p className="labelOnSavignIn">Auto save ON<ClockArrowDown size={18} color="greenYellow"/></p> :
-                <p className="labelOnSavignIn">Auto save OFF<ClockArrowDown size={18} style={{color:"red"}}/> <label className="cntlSlabelhelp">(<span className="toAccent">ctrl + s </span>to save current note)</label> </p>) :
+                {power === "owner" ? (autoSave ? <p className="labelOnSavignIn">Auto save ON<RefreshCcw size={18} color="greenYellow"/></p> :
+                <p className="labelOnSavignIn">Auto save OFF<RefreshCcw size={18} style={{color:"red"}}/> <label className="cntlSlabelhelp">(<span className="toAccent">ctrl + s </span>to save current note)</label> </p>) :
                  <p className="labelOnSavignIn"><CircleArrowDown size={18} style={{color:"greenYellow"}}/>Everything up to date</p>
                 }
                 

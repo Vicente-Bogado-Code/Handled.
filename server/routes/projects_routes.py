@@ -417,19 +417,21 @@ def delete_folder(role):
         return jsonify({"Status":"Missing fields"}), 400
     folder_id = data.get("folderId")
     notes_bool = data.get("alsoNotes")
-    print(folder_id, notes_bool)
     conn = get_conn()
     cursor = conn.cursor()
+    snotes_ids = []
     try:
         cursor.execute("SELECT 1 FROM users_projects WHERE user_id = %s AND project_id = %s", (current_user_id, current_project_id))
         if cursor.fetchone() is None: return jsonify({"Status": "Not authorized for this project"}), 403
         if notes_bool == False:
             cursor.execute("UPDATE secondary_notes SET on_folder = null WHERE on_folder = %s AND on_project_id = %s",(folder_id,current_project_id))
         else:
-            cursor.execute("DELETE FROM secondary_notes WHERE on_project_id = %s AND on_folder = %s", (current_project_id,folder_id))
+            cursor.execute("DELETE FROM secondary_notes WHERE on_project_id = %s AND on_folder = %s RETURNING snote_id", (current_project_id,folder_id))
+            snotes_ids = cursor.fetchall()
+            print(snotes_ids)
         cursor.execute("DELETE FROM folders WHERE folder_id = %s AND project_id = %s",(folder_id,current_project_id))
         conn.commit()
-        return jsonify({"Status":"Folder deleted"}), 200
+        return jsonify({"Status":"Folder deleted", "ids":snotes_ids}), 200
     finally:
         cursor.close()
         conn.close()

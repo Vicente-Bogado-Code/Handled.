@@ -1,6 +1,6 @@
 import './css/onProject.css'
 import './css/notesBtn.css'
-import { Trash2, Circle,ClockArrowDown, Settings2, Check, CircleArrowDown, File, ClockFading,FileText, StarCheckIcon, FlagIcon, BookmarkIcon, StarIcon, Settings} from 'lucide-react';
+import { Trash2, Circle,ClockArrowDown, Settings2, Check, CircleArrowDown, File, ClockFading,FileText, StarCheckIcon, FlagIcon, BookmarkIcon, StarIcon, Settings, Badge, Medal, LoaderCircle, CloudCheck, RefreshCcw, Braces, TextIcon, NotebookPen} from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 export default function SecondaryProjectComp({importance,name,noteId,content,windows,setWindow,activeWindowId,setActiveWindowId,modifiedNotesIds,isOnSettings, setIsOnSettings,isDeletingNotes,idsToBeDeleted,setIdsToBeDeleted,projectWanstAutoSave, wantsAutoSave,setIsOnProjectSettings,setDraggedNote,setDraggedNoteName,power,important,handleChangeImportant}){
@@ -37,15 +37,15 @@ export default function SecondaryProjectComp({importance,name,noteId,content,win
             }
         }}>
         <div className='txtNimpDiv'>
-            {activeWindowId === noteId && !important ? <StarIcon size={14} onClick={() => handleChangeImportant(noteId,true)}/> : null}
-            {important ? <StarIcon fill='currentColor' onClick={() => handleChangeImportant(noteId,false)} size={14}/> : null}
-            <span className='Slabel'>txt</span>
+            {activeWindowId === noteId && !important ? <BookmarkIcon size={14} onClick={() => handleChangeImportant(noteId,true)}/> : null}
+            {important ? <BookmarkIcon fill='currentColor' onClick={() => handleChangeImportant(noteId,false)} size={14}/> : null}
+            <span className='Slabel'>.txt</span>
         </div>
         
          <span className="noteNameOnNav" title={name}>{name}</span>
                     {!isDeletingNotes ? <div className='statusSettings'>
                         <Circle className='savedLabel' size={10} fill='currentColor'/> 
-                        {power === "owner" ? (wantsAutoSave ? <ClockArrowDown style={{color:"green"}} size={15}/> : null) : null}
+                        {power === "owner" ? (wantsAutoSave ? <RefreshCcw style={{color:"white"}} size={15}/> : null) : null}
                     {activeWindowId === noteId ? <div className='settingsBtn' onClick={(e) =>{
                         setActiveWindowId(noteId)
                         setIsOnSettings(!isOnSettings);
