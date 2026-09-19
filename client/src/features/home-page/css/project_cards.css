@@ -68,15 +68,19 @@
     color: #3fb950;
 }
 .projectCardDesc {
-    min-height: 85px;
-    max-height: 85px;
-    text-align: left;
-    color: var(--text-secondary);
-    font-size: 0.9rem;
-    margin: 0;
-    flex: 1;
-    overflow-wrap: break-word;
-    overflow: hidden;
+   min-height: 85px;
+   max-height: 85px;
+   text-align: left;
+   color: var(--text-secondary);
+   font-size: 0.9rem;
+   margin: 0;
+   flex: 1;
+   overflow-wrap: break-word;
+   overflow: hidden;
+   text-overflow: ellipsis;
+}
+.projectCardDesc:hover{
+    color: var(--text-primary);
 }
 
 .footerOnCards{

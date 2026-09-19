@@ -4,4 +4,6 @@ export async function deleteMyAccount() {
         method:"POST",
         credentials:"include",
     });
+    const r = await request.json()
+    return r
 }

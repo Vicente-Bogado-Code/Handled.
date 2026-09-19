@@ -251,7 +251,7 @@
 }
 
 .emptyStateIcon {
-    color: red;
+    color: var(--text-secondary);
     opacity: 0.5;
     margin-bottom: 6px;
 }

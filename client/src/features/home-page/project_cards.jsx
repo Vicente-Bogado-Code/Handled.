@@ -37,9 +37,9 @@ function SettingsComp({makingChanges, isDeleting, setIsDeleting, isChangingName,
                     deleteProject(id)
                 }}>Yes, delete</button>
             </div> : (isChangingDesc === true ? <div className='changingDescDiv'>
-                <textarea placeholder="Talk a bit about your project (Max 150 characters)" 
+                <textarea placeholder="Talk a bit about your project. 235 characteres max" 
                     className="changingDescInput"
-                    maxLength={150}
+                    maxLength={235}
                     onClick={(e) => e.stopPropagation()}
                     value={newDesc}
                     onChange={e => setNewDesc(e.target.value)}/>

@@ -1,4 +1,4 @@
-import { Plus, Search, User,SearchX,BookPlus } from "lucide-react";
+import { Plus, Search, User,SearchX,BookPlus, CircleSlashed } from "lucide-react";
 import ProjectCreationForm from "../projectCreationForm";
 import ProjectCard from "../project_cards";
 
@@ -143,7 +143,7 @@ export default function MyProjects({
                 ) : null}
                 {activeProjects.length + markedAsDone.length === 0 && !searchTerm ? 
                 <div className="emptyProjectsState">
-                    <SearchX size={40} className="emptyStateIcon" />
+                    <CircleSlashed size={40} className="emptyStateIcon" />
                     <h3 className="emptyStateTitle">No projects yet</h3>
                     <p className="emptyStateText">Create your first project to start.</p>
                 </div> : null}

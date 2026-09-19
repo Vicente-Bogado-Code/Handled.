@@ -200,7 +200,15 @@ export default function UserSettings({ username, setUsername, onLogout, setDesc 
                 This action is permanent and cannot be undone.
             </p>
             <div className="accountDeleteBtnRow">
-              <button className="confirmDeleteAccountBtn" onClick={() => {deleteMyAccount(); onLogout()}}>
+              <button className="confirmDeleteAccountBtn" onClick={async () => {
+                const r = await deleteMyAccount();
+                if (r.Status === "Account deleted"){
+                  onLogout();
+                  return
+                }
+                alert( r.Status + ". Try again later.")
+                }
+                }>
                 Yes, delete my account.
               </button>
               <button

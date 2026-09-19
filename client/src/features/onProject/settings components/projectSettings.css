@@ -279,7 +279,7 @@
 .settingsToggleSwitch{
     cursor: pointer;
     width: 38px;
-    height: 30px;
+    height: 25px;
     border-radius: 10px;
     border: none;
     background-color: rgba(255, 255, 255, 0.12);
@@ -291,7 +291,7 @@
 }
 
 .settingsToggleSwitch.toggleOn{
-    background-color: rgba(255, 255, 255, 0.4);
+    background-color: rgb(71, 114, 58);
     justify-content: flex-end;
 }
 
@@ -306,6 +306,11 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+.rememberToLbl{
+    color: var(--text-secondary);
+    text-decoration: underline;
+    font-size: 12px;
 }
 
 .editorThemeSwatches{

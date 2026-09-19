@@ -77,6 +77,7 @@ export default function ProjectSettings({
 
             <div className="generalSettingsDiv settingsCategorySeparator">
                 <label className='projectInputLabel'>Notes and preferences</label>
+                <label className='rememberToLbl'>Remember to save any changes, otherwise they will not be applied.</label>
                 <div className="settingsToggleRow">
                     <span className="settingsToggleLabel"><RefreshCcw size={16}/>Autosave</span>
                     <button
@@ -118,7 +119,6 @@ export default function ProjectSettings({
                         <Link size={18}/>
                         <a className='shareURL' href={projectURL} target='_blank'>{projectURL}</a>
                         </div>
-                        <Copy size={16} style={{cursor:"pointer"}}/>
                     </div>
                 </div> : null}
 

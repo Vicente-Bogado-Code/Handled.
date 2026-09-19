@@ -94,7 +94,10 @@ def delete_account():
         if r is None:
             return jsonify({"Status":"Account doesn't exist"}),404 
         cursor.execute("DELETE FROM secondary_notes WHERE on_project_id IN (SELECT project_id FROM users_projects WHERE user_id = %s)", (current_user_id,))
+        cursor.execute("DELETE FROM project_preferences WHERE project_id IN (SELECT project_id FROM users_projects WHERE user_id = %s)", (current_user_id,))
+        cursor.execute("DELETE FROM webhook_deliveries WHERE project_id IN (SELECT project_id FROM users_projects WHERE user_id = %s)", (current_user_id,))
         cursor.execute("DELETE FROM users_projects WHERE user_id = %s", (current_user_id,))
+        cursor.execute("DELETE FROM preferences WHERE user_id = %s", (current_user_id,))
         cursor.execute("DELETE FROM handled_users WHERE id = %s", (current_user_id,))
         session.clear()
         conn.commit()

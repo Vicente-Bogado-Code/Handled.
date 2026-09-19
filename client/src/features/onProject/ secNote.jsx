@@ -37,22 +37,22 @@ export default function SecondaryProjectComp({importance,name,noteId,content,win
             }
         }}>
         <div className='txtNimpDiv'>
-            {activeWindowId === noteId && !important ? <BookmarkIcon size={14} onClick={() => handleChangeImportant(noteId,true)}/> : null}
-            {important ? <BookmarkIcon fill='currentColor' onClick={() => handleChangeImportant(noteId,false)} size={14}/> : null}
+            {activeWindowId === noteId && !important ? <StarIcon size={14} onClick={() => handleChangeImportant(noteId,true)}/> : null}
+            {important ? <StarIcon fill='currentColor' onClick={() => handleChangeImportant(noteId,false)} size={14}/> : null}
             <span className='Slabel'>.txt</span>
         </div>
         
          <span className="noteNameOnNav" title={name}>{name}</span>
                     {!isDeletingNotes ? <div className='statusSettings'>
-                        <Circle className='savedLabel' size={10} fill='currentColor'/> 
-                        {power === "owner" ? (wantsAutoSave ? <RefreshCcw style={{color:"white"}} size={15}/> : null) : null}
+                        {power === "owner" ? (wantsAutoSave ? <RefreshCcw style={{color:"var(--text-secondary)"}} size={11}/> : null) : null}
+                         <Circle className='savedLabel' size={13} fill='currentColor'/> 
                     {activeWindowId === noteId ? <div className='settingsBtn' onClick={(e) =>{
                         setActiveWindowId(noteId)
                         setIsOnSettings(!isOnSettings);
                         setIsOnProjectSettings(false);
                         e.stopPropagation();
                     }}>
-                    {power === "owner" ? <Settings size={15}/> : null}
+                    {power === "owner" ? <Settings size={15} className='secNotesSettingsIcon'/> : null}
                     </div> : null}
                     </div> : <div className='addToBeDeletedbtn'> {willBeDeleted ? <Check size={16}/> : <Trash2 size={16}/> }</div>}
             </button>

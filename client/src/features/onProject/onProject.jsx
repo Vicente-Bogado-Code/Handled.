@@ -31,7 +31,7 @@ import MainPlaceHolder from "./placeholder";
 import NoteSettings from "./settings components/noteSettings";
 import ProjectSettings from "./settings components/projectSettings";
 import ChooseRepository from "./github-components/repoChoice";
-import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon, ClockArrowDown,FilePlus, Pause, CircleArrowDown,X, TriangleAlert, Eye, Bell, Trash, Folder, FolderArchive, FolderCheck, Key, ChevronLeft, PaperBag, EthernetPort, KeyIcon, DeleteIcon, FolderEdit, FolderPlus, Trash2, BadgeAlert, FolderOpen, FileText, Info, LockIcon, LockOpenIcon, WholeWordIcon, Globe, User2Icon } from 'lucide-react';
+import { ArrowLeft,Plus,Minus,ChevronDown, ChevronRight, Undo2Icon, SettingsIcon, ClockArrowDown,FilePlus, Pause, CircleArrowDown,X, TriangleAlert, Eye, Bell, Trash, Folder, FolderArchive, FolderCheck, Key, ChevronLeft, PaperBag, EthernetPort, KeyIcon, DeleteIcon, FolderEdit, FolderPlus, Trash2, BadgeAlert, FolderOpen, FileText, Info, LockIcon, LockOpenIcon, WholeWordIcon, Globe, User2Icon, TrashIcon } from 'lucide-react';
 import { Color } from "@tiptap/extension-text-style";
 export default function CurrentProjectComp({ project_id , handleGoBack, repositoriesFound, setRepositoriesFound}) {
   const [editor,setEditor] = useState(null)
@@ -397,15 +397,21 @@ export default function CurrentProjectComp({ project_id , handleGoBack, reposito
       </div> : null}
       {power === "owner" ? <p className="mainNoteLabel">- modify</p> : null}
       {power === "owner" ? <div className="newSnoteForm">
-         <button className="addNoteBtn" onClick={() => {isCreating === false ? setIsCreating(true) : setIsCreating(false)}}>{isCreating === true ? <X size={18}/> : <FilePlus size={18}/>}</button>
+         <button className="addNoteBtn" onClick={() => {
+          isCreating === false ?
+           setIsCreating(true) :
+           setIsCreating(false)
+          setIsCreatingFolder(false);}
+           }>
+            {isCreating === true ? <X size={18}/> : <FilePlus size={18}/>}</button>
 
-        <button className="addNoteBtn" onClick={() => {setIsCreatingFolder(!isCreatingFolder)}}>{isCreatingFolder === true ? <X size={18}/> : <FolderPlus size={18}/>}</button>
+        <button className="addNoteBtn" onClick={() => {setIsCreatingFolder(!isCreatingFolder); setIsCreating(false)}}>{isCreatingFolder === true ? <X size={18}/> : <FolderPlus size={18}/>}</button>
 
         <button className="deleteModeBtn" onClick={() => {
           setIsDeletingNotes(!isDeletingNotes); 
           setIdsToBeDeleted([]); setFoldersIdsToBeDeleted([]);
           setIsCreating(false); setIsCreatingFolder(false)
-          }}>{isDeletingNotes === true ? <X size={18}/> : <DeleteIcon size={18}/>}</button>
+          }}>{isDeletingNotes === true ? <X size={18}/> : <TrashIcon size={18}/>}</button>
       </div> : null}
       <div className={isCreating === true ? "newNoteFormDiv" : "hide"} >
         <div className="parentNewNoteForm">

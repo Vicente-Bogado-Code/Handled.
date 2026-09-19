@@ -116,7 +116,7 @@ html{
     background: none;
     border: none;
     height: 40px;
-    width:min-content;
+    width:150px;
     margin: 0;
     font-size: 0.85rem;
     display: flex;
