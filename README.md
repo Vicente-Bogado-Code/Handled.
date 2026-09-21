@@ -7,6 +7,18 @@ At its core, Handled is a note-taking system built around a multi-window interfa
 Beyond note taking, Handled integrates with GitHub Apps to track commit and push history for connected repositories, authenticated through JWT-based GitHub App credentials. Projects can be set to public or private visibility, that allows you to share your project safely with people. The application includes a full authentication system, keeping every piece of data safe.
 
 Handled started as a personal tool meant purely for learning and solving my personal problem, with no expectation of long-term hosting or maintenance. As development progressed, it grew into a more complete application than initially intended, at which point questions of database hosting and long term deployment stability appeared. Resolving those problems would have required much more time for a project whose purpose was personal rather than long-term operation. Since the core learning goals had already been met through the features already built, continuing to solve deployment problems for their own sake was not considered a worthwhile use of time, and development concluded at that point.
+ The code will still be uploaded on this repository.
 
-The code will still be uploaded on this repository.
+Some screenshots i took on development:
+
+-On a project
+<img width="1920" height="1080" alt="Screenshot from 2026-09-21 12-37-58" src="https://github.com/user-attachments/assets/f0e54038-576f-481f-bd1b-e746e310acb7" />
+
+-Project settings
+<img width="1920" height="1080" alt="Screenshot from 2026-09-21 12-38-33" src="https://github.com/user-attachments/assets/03f3405e-e72e-4ea5-a48f-12051f6889ec" />
+
+-Homepage
+<img width="1920" height="1080" alt="Screenshot from 2026-09-21 12-40-39" src="https://github.com/user-attachments/assets/c221ce82-6b20-4176-aada-9635a357bb15" />
+
+-Entering a public project
 <img width="1920" height="1080" alt="Screenshot from 2026-09-21 12-36-38" src="https://github.com/user-attachments/assets/1e9749f9-54eb-4fec-96a6-54be97f80205" />
