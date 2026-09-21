@@ -1,6 +1,6 @@
 # Handled
 
-Handled is a full-stack project tracker built from scratch, React frontend, Flask backend, PostgreSQL database. Started as a way to manage and track ongoing personal projects and notes in one place.
+Handled is a full-stack project tracker built from scratch. Started as a way to manage and track ongoing personal projects and notes in one place, since i kept getting lost on my own notes.
 
 At its core, Handled is a note-taking system built around a multi-window interface, allowing several notes to be open and worked on side by side. Each note uses a full rich text editor powered by TipTap, supporting proper formatting throughout. A key feature is a note-to-note connection system, a feature that links one note directly to another. This turns a flat collection of notes into structured connection trees, keeping related information organized and easy to navigate rather than scattered across separate documents. Other than that, a folder system organizes notes further as their number grows, plus "mark as favorite" to keep important notes.
 
